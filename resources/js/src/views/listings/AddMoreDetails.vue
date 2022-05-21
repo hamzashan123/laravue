@@ -13,14 +13,14 @@
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="secondary"
-            :to="{ name: 'listings.add-more' }"
+            :to="{ name: 'listings.view' }"
           >
             Add More data
           </b-button>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name: 'listings.details' }"
+            :to="{ name: 'listings.detail' }"
           >
             See Latest Details
           </b-button>
@@ -38,31 +38,51 @@
               <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
               Target Compilation date Range
             </h4>
-            <b-form inline>
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle">Update Client Legal Status</span>
+              </b-button>
               <b-form-datepicker
-                placeholder="From"
+                placeholder="Date"
                 id="from"
-                class="mb-1 p-0"
+                class="mr-2"
               />
-              <b-form-datepicker placeholder="To" id="to" class="mb-1 p-0" />
+              <b-form-input id="listingTitle" placeholder="20%" />
+            </b-form>
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle">Update Contrcator Legal Status</span>
+              </b-button>
+              <b-form-datepicker
+                placeholder="Date"
+                id="from"
+                class="mr-2"
+              />
+              <b-form-input id="listingTitle" placeholder="20%" />
             </b-form>
           </b-col>
           <b-col md="6">
             <h4 class="mb-2 text-primary">
               <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
-              Target Budget - Min and Max
+              Doc
             </h4>
-            <b-form inline>
-              <b-form-select
-                v-model="minBudgetVal"
-                :options="minBudget"
-                class="mb-1"
-              />
-              <b-form-select
-                v-model="maxBudgetVal"
-                :options="maxBudget"
-                class="mb-1"
-              />
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle">Legal docuemnts upload</span>
+              </b-button>
+
             </b-form>
           </b-col>
         </b-row>
@@ -73,25 +93,104 @@
     <b-card>
       <b-form @submit.prevent>
         <b-row>
-          <!-- Images -->
+          <!-- Tabs -->
           <b-col md="6" class="mb-2">
-            <div class="d-flex flex-wrap mb-2">
-              <b-img
-                v-for="listingImage in listingImages"
-                :key="listingImage.imageUrl"
-                thumbnail
-                class="w-25"
-                :src="listingImage.imageUrl"
-              />
-            </div>
-            <div class="d-flex align-items-end">
-              <b-form-file
-                placeholder="Add Pictures"
-                drop-placeholder="Drop file here..."
-                multiple
-                accept=".jpg, .png,"
-              />
-            </div>
+            <b-tabs>
+              <b-tab active>
+                <template #title>
+                  <feather-icon icon="HomeIcon" />
+                  <span>Client</span>
+                </template>
+
+                <b-form-group
+                  label="Legal Docuemnt Name"
+                  label-for="legaldocName"
+                >
+                  <b-form-input id="legaldocName" placeholder="Doc Name" />
+                </b-form-group>
+                <b-form inline>
+                  <!-- <b-form-group label="Path" label-for="Path"> -->
+                  <b-form-input
+                    id="Path"
+                    placeholder="Path"
+                    class="mb-1 mr-2"
+                  />
+                  <!-- </b-form-group> -->
+                  <b-form-datepicker
+                    placeholder="Date"
+                    id="Date"
+                    class="mb-1"
+                  />
+                </b-form>
+                <div class="d-flex align-items-end">
+                  <b-form-file
+                    placeholder="Upload Document"
+                    drop-placeholder="Drop file here..."
+                    multiple
+                    accept=".jpg, .pdf, .doc"
+                  />
+                </div>
+              </b-tab>
+              <b-tab>
+                <template #title>
+                  <feather-icon icon="ToolIcon" />
+                  <span>Conractor</span>
+                </template>
+
+                <b-form-group
+                  label="Legal Docuemnt Name"
+                  label-for="legaldocName"
+                >
+                  <b-form-input id="legaldocName" placeholder="Doc Name" />
+                </b-form-group>
+                <b-form inline>
+                  <!-- <b-form-group label="Path" label-for="Path"> -->
+                  <b-form-input
+                    id="Path"
+                    placeholder="Path"
+                    class="mb-1 mr-2"
+                  />
+                  <!-- </b-form-group> -->
+                  <b-form-datepicker
+                    placeholder="Date"
+                    id="Date"
+                    class="mb-1"
+                  />
+                </b-form>
+                <div class="d-flex align-items-end">
+                  <b-form-file
+                    placeholder="Upload Document"
+                    drop-placeholder="Drop file here..."
+                    multiple
+                    accept=".jpg, .pdf, .doc"
+                  />
+                </div>
+              </b-tab>
+              <b-tab>
+                <template #title>
+                  <feather-icon icon="EyeOffIcon" />
+                  <span>Meida</span>
+                </template>
+
+                <div class="d-flex flex-wrap mb-2">
+                  <b-img
+                    v-for="listingImage in listingImages"
+                    :key="listingImage.imageUrl"
+                    thumbnail
+                    class="w-25"
+                    :src="listingImage.imageUrl"
+                  />
+                </div>
+                <div class="d-flex align-items-end">
+                  <b-form-file
+                    placeholder="Add Pictures"
+                    drop-placeholder="Drop file here..."
+                    multiple
+                    accept=".jpg, .png,"
+                  />
+                </div>
+              </b-tab>
+            </b-tabs>
           </b-col>
           <!-- Details Form -->
           <b-col md="6" class="mb-2">
@@ -198,6 +297,8 @@ import {
   BFormFile,
   BFormTextarea,
   BEmbed,
+  BTabs,
+  BTab,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 
@@ -272,6 +373,8 @@ export default {
     BFormFile,
     BFormTextarea,
     BEmbed,
+    BTabs,
+    BTab,
   },
   directives: {
     Ripple,
