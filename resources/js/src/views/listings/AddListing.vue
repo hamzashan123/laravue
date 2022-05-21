@@ -11,7 +11,7 @@
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name: 'viewListing' }"
+            :to="{ name: 'listings.view' }"
           >
             Publish Listing
           </b-button>
@@ -222,7 +222,6 @@ export default {
       district: [
         { value: null, text: "Select District" },
         { value: "state", text: "state 1" },
-
       ],
       listingImages: [
         {

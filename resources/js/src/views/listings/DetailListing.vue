@@ -13,10 +13,10 @@
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name: 'viewListing' }"
+            :to="{ name: 'listings.view' }"
           >
-            Back to Listing Details </b-button
-          >S
+            Back to Listing </b-button
+          >
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
