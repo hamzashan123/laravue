@@ -20,17 +20,16 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Models\CreateListing;
 use App\Models\ListingImages;
+use App\Models\ProjectListing_Bid;
 
 use App\Http\Resources\ListingResource;
-
+use App\Http\Resources\ProjectListingBidResource;
 
 class UserController extends Controller
 {
 
 
     public $successStatus = 200;
-
-
 
     public function login(Request $request){
 
@@ -334,7 +333,7 @@ class UserController extends Controller
         $input['country']  = $input['country'] ?? '';
         $input['state']  = $input['state'] ?? '';
         $input['district']  = $input['district'] ?? '';
-        $input['status']  = 'active';
+        $input['status']  = 'draft';
         $listing = CreateListing::create($input);
         $data = CreateListing::find($listing->id);
 
@@ -359,10 +358,119 @@ class UserController extends Controller
 
         $response_data = [
             'success' => true,
-            'message' =>  'Listing created successfully!',
-            'user' => new ListingResource($data),
+            'message' =>  'Account created successfully!',
+            'data' => new ListingResource($data),
         ];
         return response()->json($response_data, $this->successStatus);
+    }
+
+    public function publish_listing(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id'    => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $data = CreateListing::where('id',$request->id)->first();
+
+        if ($data != null) {
+            $data->status = 'publish';
+            $data->save();
+
+            $response_data = [
+                'success' => true,
+                'message' => 'Listing Published successfully!',
+                'data' => new ListingResource($data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function publishlisting_bid(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'clientid'    => 'required',
+            'listingid'    => 'required',
+            'contractorid'    => 'required',
+            'budget'    => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $data = CreateListing::where('id',$request->listingid)->where('status', 'publish')->first();
+
+        if ($data != null) {
+            $input = $request->all();
+            $input['clientid']  = $input['clientid'];
+            $input['listingid']  = $input['listingid'];
+            $input['contractorid'] = $input['contractorid'];
+            $input['budget']  = $input['budget'];
+            $input['status']  = 'active';
+            $projectlisting_bid = ProjectListing_Bid::create($input);
+            $bid_data = ProjectListing_Bid::find($projectlisting_bid->id);
+
+            $response_data = [
+                'success' => true,
+                'message' => 'Create Project Listing Bid successfully!',
+                'data' => new ProjectListingBidResource($bid_data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Listing Not Available For Bid',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function getpublishlisting_bid(Request $request)
+    {
+        $data = null;
+        if($request->id != null) {
+            $data = ProjectListing_Bid::where('id',$request->id)->get();
+        } else {
+            $data = ProjectListing_Bid::get();
+        }
+
+        if (count($data) > 0) {
+            $response_data = [
+                'success' => true,
+                'message' => 'Create Project Listing Bid',
+                'data' => ProjectListingBidResource::collection($data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
     }
 }
 

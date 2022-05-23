@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [App\Http\Controllers\API\UserController::class, 'login']);
 Route::post('register', [App\Http\Controllers\API\UserController::class, 'register']);
 Route::post('create-listing', [App\Http\Controllers\API\UserController::class, 'create_listing']);
+Route::post('create-listing', [App\Http\Controllers\API\UserController::class, 'create_listing']);
+Route::post('publish-listing', [App\Http\Controllers\API\UserController::class, 'publish_listing']);
+Route::post('publishlisting-bid', [App\Http\Controllers\API\UserController::class, 'publishlisting_bid']);
+Route::post('get-publishlisting-bid', [App\Http\Controllers\API\UserController::class, 'getpublishlisting_bid']);
 
 Route::group(['middleware' => 'auth:api'], function() {
 
