@@ -358,7 +358,7 @@ class UserController extends Controller
 
         $response_data = [
             'success' => true,
-            'message' =>  'Account created successfully!',
+            'message' =>  'Listing created successfully!',
             'data' => new ListingResource($data),
         ];
         return response()->json($response_data, $this->successStatus);
