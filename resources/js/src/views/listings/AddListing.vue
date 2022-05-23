@@ -1,7 +1,6 @@
 <template>
   <div>
     <!-- Header -->
-    <!-- <b-card> -->
     <b-row class="mb-4">
       <b-col md="6" sm="12">
         <b-card-text> <h1>New Listing</h1> </b-card-text>
@@ -18,7 +17,6 @@
         </div>
       </b-col>
     </b-row>
-    <!-- </b-card> -->
 
     <!-- Date and amount Form -->
     <b-card>
@@ -32,10 +30,18 @@
             <b-form inline>
               <b-form-datepicker
                 placeholder="From"
-                id="from"
+                id="target_completion_datefrom"
+                class="mb-1 p-0"
+                v-model="listing.target_completion_datefrom"
+                name="target_completion_datefrom"
+              />
+              <b-form-datepicker
+                placeholder="To"
+                id="target_completion_dateto"
+                v-model="listing.target_completion_dateto"
+                name="target_completion_dateto"
                 class="mb-1 p-0"
               />
-              <b-form-datepicker placeholder="To" id="to" class="mb-1 p-0" />
             </b-form>
           </b-col>
           <b-col md="6">
@@ -44,8 +50,16 @@
               Target Budget - Min and Max
             </h4>
             <b-form inline>
-              <b-form-select v-model="minBudgetVal" :options="minBudget" class="mb-1" />
-              <b-form-select v-model="maxBudgetVal" :options="maxBudget" class="mb-1" />
+              <b-form-select
+                v-model="listing.minimum_budget"
+                :options="minBudget"
+                class="mb-1"
+              />
+              <b-form-select
+                v-model="listing.maximum_budget"
+                :options="maxBudget"
+                class="mb-1"
+              />
             </b-form>
           </b-col>
         </b-row>
@@ -60,7 +74,7 @@
           <b-col md="6" class="mb-2">
             <div class="d-flex flex-wrap mb-2">
               <b-img
-                v-for="listingImage in listingImages"
+                v-for="listingImage in listing.images"
                 :key="listingImage.imageUrl"
                 thumbnail
                 class="w-25"
@@ -83,12 +97,13 @@
               Listing Details ( Please enter as mush as possible )
             </h4>
             <b-form-group label="Name your listing" label-for="listingTitle">
-              <b-form-input id="listingTitle" placeholder="Name" />
+              <b-form-input id="listingTitle" v-model="listing.name" placeholder="Name" />
             </b-form-group>
             <div class="mb-2">
               <label for="listingDetails">Details</label>
               <b-form-textarea
                 id="listingDetails"
+                v-model="listing.detail"
                 placeholder="Listing Details"
                 rows="3"
               />
@@ -112,6 +127,7 @@
                   label-for="address-line-1"
                 >
                   <b-form-input
+                    v-model="listing.address_line1"
                     id="address-line-1"
                     placeholder="Address Line 1 *"
                     required
@@ -122,40 +138,29 @@
                   label-for="address-line-2"
                 >
                   <b-form-input
+                    v-model="listing.address_line1"
                     id="address-line-2"
                     placeholder="Address Line 2 *"
                     required
                   />
                 </b-form-group>
-                <b-form-group
-                  label="Country"
-                  label-for="country"
-                >
-                  <b-form-input
-                    id="country"
-                    placeholder="Country"
-                    required
-                  />
+                <b-form-group label="Country" label-for="country">
+                  <b-form-input id="country" placeholder="Country" required  v-model="listing.country"/>
                 </b-form-group>
-                <b-form-group
-                  label="State"
-                  label-for="state"
-                >
+                <b-form-group label="State" label-for="state">
                   <b-form-select
-                    v-model="stateVal"
+                    v-model="listing.state"
                     :options="state"
                     id="state"
-                    />
+                  />
                 </b-form-group>
-                <b-form-group
-                  label="District"
-                  label-for="district"
-                >
+                <b-form-group label="District" label-for="district">
                   <b-form-select
-                    v-model="districtVal"
+                    v-model="listing.district"
                     :options="district"
                     id="district"
-                    />
+
+                  />
                 </b-form-group>
               </b-col>
             </b-row>
@@ -200,10 +205,25 @@ import Ripple from "vue-ripple-directive";
 export default {
   data() {
     return {
-      minBudgetVal: null,
-      maxBudgetVal: null,
-      stateVal: null,
-      districtVal: null,
+      listing: {
+        name: "Mobile Project",
+        target_completion_datefrom: "2022-02-02",
+        target_completion_dateto: "2022-12-12",
+        minimum_budget: 100000,
+        maximum_budget: null,
+        detail: "TEST DETAIL",
+        address_line1: "Address 1",
+        address_line2: "Address 2",
+        country: "Pakistan",
+        state: "Sindh",
+        district: "Karachi",
+        images: [
+          {
+            imageUrl:
+              "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+          },
+        ],
+      },
       minBudget: [
         { value: null, text: "Budget Minimum *" },
         { value: "100000", text: "1000,00" },
@@ -223,32 +243,7 @@ export default {
         { value: null, text: "Select District" },
         { value: "state", text: "state 1" },
       ],
-      listingImages: [
-        {
-          imageUrl:
-            "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-        },
-        {
-          imageUrl:
-            "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-        },
-        {
-          imageUrl:
-            "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-        },
-        {
-          imageUrl:
-            "https://media.istockphoto.com/photos/london-symbols-with-big-ben-double-decker-buses-and-red-phone-booth-picture-id1294454411?b=1&k=20&m=1294454411&s=170667a&w=0&h=UOVuoyqF8H9J3Q5u-HxrWQFRQVQnGgcoF_L8SVbhxQQ=",
-        },
-        {
-          imageUrl:
-            "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-        },
-        {
-          imageUrl:
-            "https://media.istockphoto.com/photos/skyscrapers-in-city-of-london-picture-id844050350?k=20&m=844050350&s=612x612&w=0&h=g9is0uhRESMFnHLfgICPpInOQd65YNF68OoFpbNuwUc=",
-        },
-      ],
+
     };
   },
   components: {

@@ -14,10 +14,17 @@ import './global-components'
 // 3rd party plugins
 import '@/libs/portal-vue'
 import '@/libs/toastification'
-
+console.log(axios.defaults.withCredentials);
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
 // axios.defaults.headers.post['Content-Type'] = 'application/json;'
+
+axios.interceptors.request.use(function (config) {
+    const accessToken = localStorage.getItem('accessToken');
+    config.headers.Authorization =  accessToken;
+
+    return config;
+});
 
 axios.interceptors.response.use(undefined, function(error) {
   if (error) {

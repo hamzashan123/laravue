@@ -89,7 +89,7 @@ export default {
   },
   mounted() {
       const getUser = JSON.parse(localStorage.getItem("userData"))
-
+      this.user = getUser
   },
   methods: {
     ...mapActions({ logout: "auth/logout" }),

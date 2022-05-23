@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+
 import AddListing from '@/views/listings/AddListing.vue'
 
 Vue.use(VueRouter)
