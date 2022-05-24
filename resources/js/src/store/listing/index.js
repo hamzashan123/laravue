@@ -42,18 +42,18 @@ export default {
         // Getting Single
 
         // Saving
-        saveListing: ( {commit}, data ) => {
-            return new Promise((resolve, reject) => {
-                axios( { url:'listing', data:data, method:'post' } )
-                .then((resp) => {
+        async saveListing ( {commit}, listingData ) {
+                await commit( 'isLoading', true )
+                await  axios( { url:'create-listing', data:listingData, method:'post' } )
+                .then( async (resp) => {
                     console.log( resp );
-                    commit('isCreated', true)
-                    resolve(resp)
+                    await commit('isCreated', true)
+                    await commit( 'isLoading', false )
+
                 })
-                .catch((err) => {
-                      reject(err)
+                .catch((error) => {
+                    console.log(error);
                 })
-            })
         },
 
         // Updating
