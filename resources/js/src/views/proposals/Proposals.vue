@@ -3,24 +3,36 @@
     <!-- Header -->
     <!-- <b-card> -->
     <b-row class="mb-4">
-      <b-col md="6" sm="12">
-        <b-card-text> <h1>Project Listings</h1> </b-card-text>
+      <b-col md="8" sm="12">
+        <b-card-text> <h1>Project Proposals</h1> </b-card-text>
       </b-col>
-      <b-col md="6" sm="12">
-        <div class="text-right">
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            :to="{ name: 'listings.add' }"
+      <b-col md="4" sm="12">
+        <div>
+          <b-form-group
+            label="Filter by Proposal Status"
+            label-size="md"
+            label-cols-sm="0"
+            label-for="sortByStatus"
+            class="mr-1 mb-md-0"
           >
-            Create New Listing
-          </b-button>
+            <b-input-group size="md">
+              <b-form-select
+                id="sortByStatus"
+                v-model="sortBy"
+                :options="contract_status[0]"
+              >
+                <template #first>
+                  <option value="">Select Status</option>
+                </template>
+              </b-form-select>
+            </b-input-group>
+          </b-form-group>
         </div>
       </b-col>
     </b-row>
     <!-- </b-card> -->
     <!-- Table -->
-    <b-card title="Latest Listings" no-body>
+    <b-card title="Latest Proposals" no-body>
       <b-card-body>
         <div class="d-flex justify-content-between flex-wrap">
           <!-- filter -->
@@ -71,8 +83,27 @@
             <span class="align-middle">Last 12 Months</span>
           </b-button>
 
+          <div class="form-row">
+            <div class="col p-0">
+              <b-form-datepicker
+                placeholder="From Date"
+                id="target_completion_datefrom"
+                class="mb-1 p-0"
+                name="target_completion_datefrom"
+              />
+            </div>
+            <div class="col p-0">
+              <b-form-datepicker
+                placeholder="To Date"
+                id="target_completion_dateto"
+                name="target_completion_dateto"
+                class="mb-1 p-0"
+              />
+            </div>
+          </div>
+
           <!-- sorting  -->
-          <b-form-group
+          <!-- <b-form-group
             label="Sort"
             label-size="md"
             label-align-sm="left"
@@ -95,7 +126,7 @@
                 <option :value="true">Desc</option>
               </b-form-select>
             </b-input-group>
-          </b-form-group>
+          </b-form-group> -->
         </div>
       </b-card-body>
 
@@ -114,25 +145,22 @@
         :filter-included-fields="filterOn"
         @filtered="onFiltered"
       >
-      <template #cell(listing_image)="data">
+        <template #cell(listing_image)="data">
           <b-avatar :src="data.value" class="mx-1" />
         </template>
         <template #cell(listing_name)="data">
           <span class="text-nowrap">{{ data.value }}</span>
         </template>
         <template #cell(contract_status)="data">
-          <b-badge
-          pill
-          :variant="contract_status[1][data.value]"
-        >
-          {{ contract_status[0][data.value] }}
-        </b-badge>
+          <b-badge pill :variant="contract_status[1][data.value]">
+            {{ contract_status[0][data.value] }}
+          </b-badge>
         </template>
         <template #cell(actions)>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name: 'listings.view' }"
+            :to="{ name: 'proposals.view' }"
           >
             See Details
           </b-button>
@@ -201,6 +229,7 @@ import {
   BFormInput,
   BInputGroupAppend,
   BCardBody,
+  BFormDatepicker,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 
@@ -222,6 +251,7 @@ export default {
     BFormInput,
     BInputGroupAppend,
     BCardBody,
+    BFormDatepicker,
   },
   data() {
     return {
@@ -234,11 +264,6 @@ export default {
       sortDirection: "asc",
       filter: null,
       filterOn: [],
-      //   infoModal: {
-      //     id: "info-modal",
-      //     title: "",
-      //     content: "",
-      //   },
       fields: [
         {
           key: "id",
@@ -254,9 +279,12 @@ export default {
         },
         { key: "contract_status", label: "Contract Status", sortable: true },
         { key: "location", label: "Location", sortable: true },
-        "listing_date",
+        "start_date",
         { key: "no_of_proposals", label: "# of proposals", sortable: true },
-        "actions",
+        {
+          key: "actions",
+          label: "Actions",
+        },
       ],
       /* eslint-disable global-require */
       items: [
@@ -266,7 +294,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 2,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -275,7 +303,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 1,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -284,7 +312,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 5,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -293,7 +321,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 3,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -302,7 +330,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 2,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -311,7 +339,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 1,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -320,7 +348,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 3,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -329,7 +357,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 3,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -338,7 +366,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 3,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
         {
@@ -347,7 +375,7 @@ export default {
           listing_name: "Korrie O'Crevy",
           contract_status: 2,
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
+          start_date: "09/23/2016",
           no_of_proposals: "61",
         },
       ],
@@ -383,15 +411,6 @@ export default {
     this.totalRows = this.items.length;
   },
   methods: {
-    // info(item, index, button) {
-    //   this.infoModal.title = `Row index: ${index}`;
-    //   this.infoModal.content = JSON.stringify(item, null, 2);
-    //   this.$root.$emit("bv::show::modal", this.infoModal.id, button);
-    // },
-    // resetInfoModal() {
-    //   this.infoModal.title = "";
-    //   this.infoModal.content = "";
-    // },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;

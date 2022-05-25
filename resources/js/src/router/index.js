@@ -119,6 +119,27 @@ const router = new VueRouter({
         },
     },
     {
+        path: '/proposals',
+        name: 'proposals',
+        component: () => import('@/views/proposals/Proposals.vue'),
+    },
+    {
+        path: '/proposals/view',
+        name: 'proposals.view',
+        component: () => import('@/views/proposals/ProposalView.vue'),
+        meta: {
+            navActiveLink: 'proposals'
+        },
+    },
+    {
+        path: '/proposals/detail',
+        name: 'proposals.detail',
+        component: () => import('@/views/proposals/ProposalDetails.vue'),
+        meta: {
+            navActiveLink: 'proposals'
+        },
+    },
+    {
       path: '/accounts',
       name: 'accounts',
       component: () => import('@/views/accounts/Accounts.vue'),
