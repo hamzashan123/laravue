@@ -43,6 +43,7 @@
   </div>
 
   <script src="{{ asset(mix('js/app.js')) }}"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAwXgQM1E39i6Mm6W1LAI8pM8efgcaoS2M"></script>
 
 </body>
 

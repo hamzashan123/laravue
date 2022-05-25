@@ -15,8 +15,8 @@
             variant="primary"
             :to="{ name: 'listings.view' }"
           >
-            Back to Listing </b-button
-          >
+            Back to Listing
+          </b-button>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
@@ -77,47 +77,111 @@
           <b-col md="6" class="mb-2">
             <h4 class="mb-2">
               <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
-              Updates Date etc
+              Updates About Project
             </h4>
+
             <app-timeline>
-              <app-timeline-item
-                title="Goal Achieved"
-                subtitle="All milestones are completed"
-                icon="AwardIcon"
-                time="few minutes ago"
-                variant="success"
-              />
+              <app-timeline-item variant="secondary">
+                <div
+                  class="
+                    d-flex
+                    align-items-start
+                    flex-sm-row flex-column flex-wrap
+                    justify-content-between
+                    mb-1 mb-sm-50
+                  "
+                >
+                  <h6>Report Week 4 - 40%</h6>
+                  <b-button
+                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                    variant="outline-primary"
+                  >
+                    <span class="align-middle">01.03.2022</span>
+                    <feather-icon icon="CalendarIcon" class="mr-50" />
+                  </b-button>
+                </div>
+                <div class="progress-wrapper">
+                  <b-progress
+                    v-model="progressValue"
+                    max="100"
+                    show-value
+                    height="20px"
+                  />
+                </div>
+              </app-timeline-item>
 
-              <app-timeline-item
-                title="Last milestone remain"
-                subtitle="You are just one step away from your goal"
-                icon="InfoIcon"
-                time="3 minutes ago"
-                variant="info"
-              />
+              <app-timeline-item variant="secondary">
+                <div
+                  class="
+                    d-flex
+                    align-items-start
+                    flex-sm-row flex-column flex-wrap
+                    justify-content-between
+                    mb-1 mb-sm-50
+                  "
+                >
+                  <h6>Report Week 3 - 30%</h6>
+                  <b-button
+                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                    variant="outline-primary"
+                  >
+                    <span class="align-middle">01.04.2022</span>
+                    <feather-icon icon="CalendarIcon" class="mr-50" />
+                  </b-button>
+                </div>
+                <div class="progress-wrapper">
+                  <b-progress value="30" max="100" show-value height="20px" />
+                </div>
+              </app-timeline-item>
 
-              <app-timeline-item
-                title="Your are running low on time"
-                subtitle="Only 30 minutes left to finish milestone"
-                icon="ClockIcon"
-                time="21 minutes ago"
-                variant="warning"
-              />
+              <app-timeline-item variant="secondary">
+                <div
+                  class="
+                    d-flex
+                    align-items-start
+                    flex-sm-row flex-column flex-wrap
+                    justify-content-between
+                    mb-1 mb-sm-50
+                  "
+                >
+                  <h6>Report Week 2 - 15%</h6>
+                  <b-button
+                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                    variant="outline-primary"
+                  >
+                    <span class="align-middle">25.03.2022</span>
+                    <feather-icon icon="CalendarIcon" class="mr-50" />
+                  </b-button>
+                </div>
+                <div class="progress-wrapper">
+                  <b-progress value="15" max="100" show-value height="20px" />
+                </div>
+              </app-timeline-item>
 
-              <app-timeline-item
-                title="Client Meeting"
-                subtitle="New event has been added to your schedule"
-                icon="UserIcon"
-                time="36 minutes ago"
-              />
-
-              <app-timeline-item
-                title="Product Design"
-                subtitle="Product design added in workflow"
-                icon="GridIcon"
-                time="1 hour ago"
-                variant="success"
-              />
+              <app-timeline-item variant="secondary">
+                <div
+                  class="
+                    d-flex
+                    align-items-start
+                    flex-sm-row flex-column flex-wrap
+                    justify-content-between
+                    mb-1 mb-sm-50
+                  "
+                >
+                  <h6>Report Week 1 - 10%</h6>
+                  <b-button
+                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                    variant="outline-primary"
+                  >
+                    <span class="align-middle">01.03.2022</span>
+                    <feather-icon icon="CalendarIcon" class="mr-50" />
+                  </b-button>
+                </div>
+                <p>Some info here</p>
+                <div class="progress-wrapper">
+                  <b-progress value="10" max="100" show-value height="20px" />
+                </div>
+              </app-timeline-item>
             </app-timeline>
           </b-col>
           <!-- Details Form -->
@@ -234,6 +298,16 @@ import {
   BFormFile,
   BFormTextarea,
   BEmbed,
+  BAvatar,
+  BMedia,
+  BCollapse,
+  VBToggle,
+  BListGroup,
+  BListGroupItem,
+  BAvatarGroup,
+  BBadge,
+  VBTooltip,
+  BProgress,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import AppTimeline from "@core/components/app-timeline/AppTimeline.vue";
@@ -242,6 +316,7 @@ import AppTimelineItem from "@core/components/app-timeline/AppTimelineItem.vue";
 export default {
   data() {
     return {
+      progressValue: "40%",
       minBudgetVal: null,
       maxBudgetVal: null,
       stateVal: null,
@@ -310,6 +385,16 @@ export default {
     BFormFile,
     BFormTextarea,
     BEmbed,
+    BAvatar,
+    BMedia,
+    BCollapse,
+    VBToggle,
+    BProgress,
+    BListGroup,
+    BListGroupItem,
+    BAvatarGroup,
+    BBadge,
+    VBTooltip,
     AppTimeline,
     AppTimelineItem,
   },
