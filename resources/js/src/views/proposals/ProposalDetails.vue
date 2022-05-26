@@ -12,17 +12,10 @@
         <div class="text-right">
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            :to="{ name: 'listings.view' }"
+            variant="secondary"
+            :to="{ name: 'listings.detail' }"
           >
-            Back to Listing
-          </b-button>
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            :to="{ name: 'listings' }"
-          >
-            See All Listings
+            Back to Proposals
           </b-button>
         </div>
       </b-col>
@@ -34,36 +27,74 @@
       <b-form @submit.prevent>
         <b-row>
           <b-col md="6">
-            <h4 class="mb-2 text-primary">
+            <!-- <h4 class="mb-2 text-primary">
               <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
-              Target Compilation date Range
-            </h4>
-            <b-form inline>
-              <b-form-datepicker
-                placeholder="From"
-                id="from"
-                class="mb-1 p-0"
+              Client Target Completeion Date
+            </h4> -->
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle">Client Target Completeion Date</span>
+              </b-button>
+              <b-form-input
+                id="listingTitle"
+                placeholder="12/12/2019 - 12/12/2020"
               />
-              <b-form-datepicker placeholder="To" id="to" class="mb-1 p-0" />
+            </b-form>
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle">Cleint Target Budget</span>
+              </b-button>
+              <b-form-input id="listingTitle" placeholder="10000 - 10000000" />
             </b-form>
           </b-col>
           <b-col md="6">
-            <h4 class="mb-2 text-primary">
+            <!-- <h4 class="mb-2 text-primary">
               <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
-              Target Budget - Min and Max
-            </h4>
-            <b-form inline>
-              <b-form-select
-                v-model="minBudgetVal"
-                :options="minBudget"
-                class="mb-1"
-              />
-              <b-form-select
-                v-model="maxBudgetVal"
-                :options="maxBudget"
-                class="mb-1"
-              />
+              Doc
+            </h4> -->
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle"
+                  >Contrator Target Date Estimates
+                </span>
+              </b-button>
+              <b-form-datepicker placeholder="Date" id="from" class="mr-2" />
+              <b-form-datepicker placeholder="Date" id="from" class="mr-2" />
             </b-form>
+            <b-form inline class="mb-2">
+              <b-button
+                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                variant="flat"
+              >
+                <feather-icon icon="UploadIcon" class="mr-50" />
+                <span class="align-middle">Cleint Target Budget</span>
+              </b-button>
+              <b-form-input id="listingTitle" placeholder="100000" />
+              <b-form-input id="listingTitle" placeholder="1000000" />
+            </b-form>
+          </b-col>
+          <b-col>
+            <div class="text-right">
+              <b-button
+                v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                variant="primary"
+                :to="{ name: 'listings.detail' }"
+              >
+                Approve Proposal
+              </b-button>
+            </div>
           </b-col>
         </b-row>
       </b-form>
@@ -73,116 +104,25 @@
     <b-card>
       <b-form @submit.prevent>
         <b-row>
-          <!-- Images -->
+          <!-- Tabs -->
           <b-col md="6" class="mb-2">
-            <h4 class="mb-2">
-              <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
-              Updates About Project
-            </h4>
-
-            <app-timeline>
-              <app-timeline-item variant="secondary">
-                <div
-                  class="
-                    d-flex
-                    align-items-start
-                    flex-sm-row flex-column flex-wrap
-                    justify-content-between
-                    mb-1 mb-sm-50
-                  "
-                >
-                  <h6>Report Week 4 - 40%</h6>
-                  <b-button
-                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                    variant="outline-primary"
-                  >
-                    <span class="align-middle">01.03.2022</span>
-                    <feather-icon icon="CalendarIcon" class="mr-50" />
-                  </b-button>
-                </div>
-                <div class="progress-wrapper">
-                  <b-progress
-                    v-model="progressValue"
-                    max="100"
-                    show-value
-                    height="20px"
-                  />
-                </div>
-              </app-timeline-item>
-
-              <app-timeline-item variant="secondary">
-                <div
-                  class="
-                    d-flex
-                    align-items-start
-                    flex-sm-row flex-column flex-wrap
-                    justify-content-between
-                    mb-1 mb-sm-50
-                  "
-                >
-                  <h6>Report Week 3 - 30%</h6>
-                  <b-button
-                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                    variant="outline-primary"
-                  >
-                    <span class="align-middle">01.04.2022</span>
-                    <feather-icon icon="CalendarIcon" class="mr-50" />
-                  </b-button>
-                </div>
-                <div class="progress-wrapper">
-                  <b-progress value="30" max="100" show-value height="20px" />
-                </div>
-              </app-timeline-item>
-
-              <app-timeline-item variant="secondary">
-                <div
-                  class="
-                    d-flex
-                    align-items-start
-                    flex-sm-row flex-column flex-wrap
-                    justify-content-between
-                    mb-1 mb-sm-50
-                  "
-                >
-                  <h6>Report Week 2 - 15%</h6>
-                  <b-button
-                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                    variant="outline-primary"
-                  >
-                    <span class="align-middle">25.03.2022</span>
-                    <feather-icon icon="CalendarIcon" class="mr-50" />
-                  </b-button>
-                </div>
-                <div class="progress-wrapper">
-                  <b-progress value="15" max="100" show-value height="20px" />
-                </div>
-              </app-timeline-item>
-
-              <app-timeline-item variant="secondary">
-                <div
-                  class="
-                    d-flex
-                    align-items-start
-                    flex-sm-row flex-column flex-wrap
-                    justify-content-between
-                    mb-1 mb-sm-50
-                  "
-                >
-                  <h6>Report Week 1 - 10%</h6>
-                  <b-button
-                    v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                    variant="outline-primary"
-                  >
-                    <span class="align-middle">01.03.2022</span>
-                    <feather-icon icon="CalendarIcon" class="mr-50" />
-                  </b-button>
-                </div>
-                <p>Some info here</p>
-                <div class="progress-wrapper">
-                  <b-progress value="10" max="100" show-value height="20px" />
-                </div>
-              </app-timeline-item>
-            </app-timeline>
+            <div class="d-flex flex-wrap mb-2">
+              <b-img
+                v-for="listingImage in listingImages"
+                :key="listingImage.imageUrl"
+                thumbnail
+                class="w-25"
+                :src="listingImage.imageUrl"
+              />
+            </div>
+            <div class="d-flex align-items-end">
+              <b-form-file
+                placeholder="Add Pictures"
+                drop-placeholder="Drop file here..."
+                multiple
+                accept=".jpg, .png,"
+              />
+            </div>
           </b-col>
           <!-- Details Form -->
           <b-col md="6" class="mb-2">
@@ -199,15 +139,6 @@
                 id="listingDetails"
                 placeholder="Listing Details"
                 rows="3"
-              />
-            </div>
-            <div class="d-flex flex-wrap mb-2">
-              <b-img
-                v-for="listingImage in listingImages"
-                :key="listingImage.imageUrl"
-                thumbnail
-                class="w-25"
-                :src="listingImage.imageUrl"
               />
             </div>
             <b-row>
@@ -298,25 +229,14 @@ import {
   BFormFile,
   BFormTextarea,
   BEmbed,
-  BAvatar,
-  BMedia,
-  BCollapse,
-  VBToggle,
-  BListGroup,
-  BListGroupItem,
-  BAvatarGroup,
-  BBadge,
-  VBTooltip,
-  BProgress,
+  BTabs,
+  BTab,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
-import AppTimeline from "@core/components/app-timeline/AppTimeline.vue";
-import AppTimelineItem from "@core/components/app-timeline/AppTimelineItem.vue";
 
 export default {
   data() {
     return {
-      progressValue: "40%",
       minBudgetVal: null,
       maxBudgetVal: null,
       stateVal: null,
@@ -385,18 +305,8 @@ export default {
     BFormFile,
     BFormTextarea,
     BEmbed,
-    BAvatar,
-    BMedia,
-    BCollapse,
-    VBToggle,
-    BProgress,
-    BListGroup,
-    BListGroupItem,
-    BAvatarGroup,
-    BBadge,
-    VBTooltip,
-    AppTimeline,
-    AppTimelineItem,
+    BTabs,
+    BTab,
   },
   directives: {
     Ripple,

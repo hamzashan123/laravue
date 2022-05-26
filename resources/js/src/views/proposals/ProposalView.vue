@@ -1,26 +1,60 @@
 <template>
   <div>
     <!-- Header -->
-    <!-- <b-card> -->
     <b-row class="mb-4">
-      <b-col md="6" sm="12">
-        <b-card-text> <h1>Project Listings</h1> </b-card-text>
+      <b-col md="8" sm="12">
+        <b-card-text> <h1>Proposals on Bhadurgarh</h1> </b-card-text>
+        <span class="text-small">Location: West bahdruarh, Virginia, US </span>
       </b-col>
-      <b-col md="6" sm="12">
+      <b-col md="4" sm="12">
         <div class="text-right">
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name: 'listings.add' }"
+            :to="{ name: 'listings.detail' }"
           >
-            Create New Listing
+            Back to Proposals Listings
           </b-button>
         </div>
       </b-col>
     </b-row>
-    <!-- </b-card> -->
+
+    <!-- Date and amount Form -->
+    <b-card>
+      <b-form @submit.prevent>
+        <b-row>
+          <b-col md="3">
+            <h5 class="mb-2 text-primary">
+              <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
+              Target Compilation date
+            </h5>
+
+          </b-col>
+          <b-col md="3">
+              <b-form-input
+                id="listingname"
+                placeholder="Date Range"
+                value="12/12/2019 - 12/12/2020"
+              />
+            </b-col>
+          <b-col md="3">
+            <h5 class="mb-2 text-primary">
+              <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
+              Target Budget
+            </h5>
+          </b-col>
+          <b-col md="3">
+              <b-form-input
+                id="listingname"
+                placeholder="Budget"
+                value="10000 - 1000000"
+              />
+            </b-col>
+        </b-row>
+      </b-form>
+    </b-card>
     <!-- Table -->
-    <b-card title="Latest Listings" no-body>
+    <b-card title="Latest Proposals" no-body>
       <b-card-body>
         <div class="d-flex justify-content-between flex-wrap">
           <!-- filter -->
@@ -71,8 +105,27 @@
             <span class="align-middle">Last 12 Months</span>
           </b-button>
 
+          <div class="form-row">
+            <div class="col p-0">
+              <b-form-datepicker
+                placeholder=" Date"
+                id="target_completion_datefrom"
+                class="mb-1 p-0"
+                name="target_completion_datefrom"
+              />
+            </div>
+            <div class="col p-0">
+              <b-form-datepicker
+                placeholder="To Date"
+                id="target_completion_dateto"
+                name="target_completion_dateto"
+                class="mb-1 p-0"
+              />
+            </div>
+          </div>
+
           <!-- sorting  -->
-          <b-form-group
+          <!-- <b-form-group
             label="Sort"
             label-size="md"
             label-align-sm="left"
@@ -95,7 +148,7 @@
                 <option :value="true">Desc</option>
               </b-form-select>
             </b-input-group>
-          </b-form-group>
+          </b-form-group> -->
         </div>
       </b-card-body>
 
@@ -114,25 +167,22 @@
         :filter-included-fields="filterOn"
         @filtered="onFiltered"
       >
-      <template #cell(listing_image)="data">
+        <template #cell(contractor_image)="data">
           <b-avatar :src="data.value" class="mx-1" />
         </template>
-        <template #cell(listing_name)="data">
+        <template #cell(contractor_name)="data">
           <span class="text-nowrap">{{ data.value }}</span>
         </template>
-        <template #cell(contract_status)="data">
-          <b-badge
-          pill
-          :variant="contract_status[1][data.value]"
-        >
-          {{ contract_status[0][data.value] }}
-        </b-badge>
+        <template #cell(target_budget)="data">
+          <div class="border">
+            {{ data.value }}
+          </div>
         </template>
         <template #cell(actions)>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name: 'listings.view' }"
+            :to="{ name: 'proposals.detail' }"
           >
             See Details
           </b-button>
@@ -201,6 +251,7 @@ import {
   BFormInput,
   BInputGroupAppend,
   BCardBody,
+  BFormDatepicker,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 
@@ -222,6 +273,7 @@ export default {
     BFormInput,
     BInputGroupAppend,
     BCardBody,
+    BFormDatepicker,
   },
   data() {
     return {
@@ -234,138 +286,119 @@ export default {
       sortDirection: "asc",
       filter: null,
       filterOn: [],
-      //   infoModal: {
-      //     id: "info-modal",
-      //     title: "",
-      //     content: "",
-      //   },
       fields: [
         {
           key: "id",
           label: "Id",
         },
         {
-          key: "listing_image",
+          key: "contractor_image",
           label: "",
         },
         {
-          key: "listing_name",
-          label: "Listing Name",
+          key: "contractor_name",
+          label: "Contractor Name",
         },
-        { key: "contract_status", label: "Contract Status", sortable: true },
+        { key: "target_budget", label: "Target Budget" },
         { key: "location", label: "Location", sortable: true },
-        "listing_date",
-        { key: "no_of_proposals", label: "# of proposals", sortable: true },
-        "actions",
+        "target_date",
+        { key: "proposal_date", label: "Proposal Date", sortable: true },
+        {
+          key: "actions",
+          label: "Actions",
+        },
       ],
       /* eslint-disable global-require */
       items: [
         {
           id: 1,
-          listing_image: require("@/assets/images/avatars/10-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 2,
+          contractor_image: require("@/assets/images/avatars/10-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 2,
-          listing_image: require("@/assets/images/avatars/1-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 1,
+          contractor_image: require("@/assets/images/avatars/1-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 3,
-          listing_image: require("@/assets/images/avatars/9-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 5,
+          contractor_image: require("@/assets/images/avatars/9-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 4,
-          listing_image: require("@/assets/images/avatars/3-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
+          contractor_image: require("@/assets/images/avatars/3-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 5,
-          listing_image: require("@/assets/images/avatars/4-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 2,
+          contractor_image: require("@/assets/images/avatars/4-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 6,
-          listing_image: require("@/assets/images/avatars/5-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 1,
+          contractor_image: require("@/assets/images/avatars/5-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 7,
-          listing_image: require("@/assets/images/avatars/7-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
+          contractor_image: require("@/assets/images/avatars/7-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 8,
-          listing_image: require("@/assets/images/avatars/9-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
+          contractor_image: require("@/assets/images/avatars/9-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 9,
-          listing_image: require("@/assets/images/avatars/2-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
+          contractor_image: require("@/assets/images/avatars/2-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
         {
           id: 10,
-          listing_image: require("@/assets/images/avatars/6-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 2,
+          contractor_image: require("@/assets/images/avatars/6-small.png"),
+          contractor_name: "Korrie O'Crevy",
+          target_budget: "100000 - 10000000",
           location: "Nuclear Power Engineer",
-          listing_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-      ],
-      /* eslint-disable global-require */
-      contract_status: [
-        {
-          1: "Contract Started!",
-          2: "Waiting Assigned",
-          3: "Draft Not yet publised",
-          4: "Contract Assigned",
-          5: "Completed",
-        },
-        {
-          1: "light-primary",
-          2: "light-warning",
-          3: "light-danger",
-          4: "light-info",
-          5: "light-success",
+          target_date: "09/23/2016",
+          proposal_date: "19/02/2019",
         },
       ],
     };
@@ -383,15 +416,6 @@ export default {
     this.totalRows = this.items.length;
   },
   methods: {
-    // info(item, index, button) {
-    //   this.infoModal.title = `Row index: ${index}`;
-    //   this.infoModal.content = JSON.stringify(item, null, 2);
-    //   this.$root.$emit("bv::show::modal", this.infoModal.id, button);
-    // },
-    // resetInfoModal() {
-    //   this.infoModal.title = "";
-    //   this.infoModal.content = "";
-    // },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;

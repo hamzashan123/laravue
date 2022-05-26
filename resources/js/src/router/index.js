@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+
 import AddListing from '@/views/listings/AddListing.vue'
 
 Vue.use(VueRouter)
@@ -115,6 +116,27 @@ const router = new VueRouter({
         component: () => import('@/views/listings/AddMoreDetails.vue'),
         meta: {
             navActiveLink: 'listings'
+        },
+    },
+    {
+        path: '/proposals',
+        name: 'proposals',
+        component: () => import('@/views/proposals/Proposals.vue'),
+    },
+    {
+        path: '/proposals/view',
+        name: 'proposals.view',
+        component: () => import('@/views/proposals/ProposalView.vue'),
+        meta: {
+            navActiveLink: 'proposals'
+        },
+    },
+    {
+        path: '/proposals/detail',
+        name: 'proposals.detail',
+        component: () => import('@/views/proposals/ProposalDetails.vue'),
+        meta: {
+            navActiveLink: 'proposals'
         },
     },
     {

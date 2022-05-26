@@ -1,5 +1,5 @@
 <template>
-  <b-card-code title="Latest Listings" no-body>
+  <b-card title="Latest Listings" no-body>
     <b-card-body>
       <div class="d-flex justify-content-between flex-wrap">
         <!-- filter -->
@@ -144,11 +144,12 @@
         </b-pagination>
       </div>
     </b-card-body>
-  </b-card-code>
+  </b-card>
 </template>
 
 <script>
 import BCardCode from "@core/components/b-card-code/BCardCode.vue";
+import Ripple from "vue-ripple-directive";
 import {
   BTable,
   BAvatar,
@@ -161,11 +162,13 @@ import {
   BInputGroupAppend,
   BButton,
   BCardBody,
+  BCard,
 } from "bootstrap-vue";
 
 export default {
   components: {
     BCardCode,
+    BCard,
     BTable,
     BAvatar,
     BBadge,
@@ -392,6 +395,9 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
+  },
+  directives: {
+    Ripple,
   },
 };
 </script>
