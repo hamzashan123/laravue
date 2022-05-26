@@ -12,7 +12,7 @@ use App\Models\UserRole;
 
 class User extends Authenticatable //implements MustVerifyEmail
 {
-    use HasFactory, Notifiable , HasApiTokens ;
+    use HasFactory, Notifiable , HasApiTokens ,HasRoles ;
 
     /**
      * The attributes that are mass assignable.
@@ -66,7 +66,7 @@ class User extends Authenticatable //implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-/*
+
     public function isSuperAdmin()
     {
         if(auth()->user()->hasRole('super-admin'))
@@ -78,5 +78,5 @@ class User extends Authenticatable //implements MustVerifyEmail
             return false;
         }
     }
-*/
+
 }
