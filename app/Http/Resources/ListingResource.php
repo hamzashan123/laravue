@@ -5,6 +5,9 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use URL;
 use Auth;
+use App\Http\Resources\ListingImagesResource;
+use App\Http\Resources\UserResource;
+
 class ListingResource extends JsonResource
 {
     /**
@@ -18,7 +21,7 @@ class ListingResource extends JsonResource
 
         return [
             'id'=> $this->id,
-            'userid'=> $this->userid,
+            'userid'=> new UserResource($this->getUser),
             'name'=> $this->name,
             'target_completion_datefrom'=> $this->target_completion_datefrom,
             'target_completion_dateto'=> $this->target_completion_dateto,
@@ -33,6 +36,7 @@ class ListingResource extends JsonResource
             'status'=> $this->status,
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
+            'images'=> ListingImagesResource::collection($this->getImages),
         ];
     }
 }

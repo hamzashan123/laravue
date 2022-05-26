@@ -18,10 +18,6 @@ use Validator;
 use Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use App\Models\CreateListing;
-use App\Models\ListingImages;
-
-use App\Http\Resources\ListingResource;
 
 
 class UserController extends Controller
@@ -29,8 +25,6 @@ class UserController extends Controller
 
 
     public $successStatus = 200;
-
-
 
     public function login(Request $request){
 
@@ -145,8 +139,6 @@ class UserController extends Controller
     public function updateProfile(Request $request){
 
         $user = Auth::user();
-        $oldemail = Auth::user()->email;
-        $ischangepassword = false;
 
         $validator = Validator::make($request->all(), [
             'email'         => 'required',
@@ -163,9 +155,9 @@ class UserController extends Controller
 
         $request->email = Str::lower($request->email);
 
-        if($request->password != null || $request->confirm_password != null || $request->old_password != null)
+        if($request->password != null || $request->confirm_password != null)
         {
-            if($request->password == null || $request->confirm_password == null || $request->old_password == null)
+            if($request->password == null || $request->confirm_password == null)
             {
                 $response_data = [
                     'success' => false,
@@ -173,20 +165,13 @@ class UserController extends Controller
                 ];
                 return response()->json($response_data);
             } else {
-                if (!Hash::check($request['old_password'], $user->password)) {
-                    $response_data = [
-                        'success' => false,
-                        'message' => 'Invalid old password'
-                    ];
-                    return response()->json($response_data);
-                } else if (request('old_password') == request('password')) {
+                 if (Hash::check($request['password'], $user->password)) {
                     $response_data = [
                         'success' => false,
                         'message' => 'New Password should not be same as old password'
                     ];
                     return response()->json($response_data);
                 } else {
-                    $ischangepassword = true;
                 }
             }
         }
@@ -221,19 +206,12 @@ class UserController extends Controller
         $user->lastname = ($request->lastname != null ? $request->lastname : $user->lastname);
         $user->email = $request->email;
         $user->password = ($request->password != null ? bcrypt($request['password']) : $user->password);
+        $user->contact = ($request->contact != null ? $request->contact : $user->contact);
+        $user->address = ($request->address != null ? $request->address : $user->address);
+        $user->dateofbirth = ($request->dateofbirth != null ? $request->dateofbirth : $user->dateofbirth);
         $user->country = ($request->country != null ? $request->country : $user->country);
         $user->state = ($request->state != null ? $request->state : $user->state);
         $user->city = ($request->city != null ? $request->city : $user->city);
-        $user->contact = ($request->contact != null ? $request->contact : $user->contact);
-        $user->authentication_type = ($request->authentication_type != null ? $request->authentication_type : $user->authentication_type);
-        $user->businesslegal_name = ($request->businesslegal_name != null ? $request->businesslegal_name : $user->businesslegal_name);
-        $user->whatsapp = ($request->whatsapp != null ? $request->whatsapp : $user->whatsapp);
-        $user->dateofbirth = ($request->dateofbirth != null ? $request->dateofbirth : $user->dateofbirth);
-        $user->address = ($request->address != null ? $request->address : $user->address);
-        $user->zipcode = ($request->zipcode != null ? $request->zipcode : $user->zipcode);
-        $user->pincode = ($request->pincode != null ? $request->pincode : $user->pincode);
-        $user->notification_type = ($request->notification_type != null ? $request->notification_type : $user->notification_type);
-        $user->status = ($request->status != null ? $request->status : $user->status);
         $user->save();
 
         //add user avatar
@@ -248,21 +226,10 @@ class UserController extends Controller
             $user->save();
         }
 
-        $message = 'Information updated successfully';
-        /*
-        if($oldemail != $user->email) {
-            $message = 'Email changed successfully.';
-            Helpers::sendemail_updateprofile($user, $oldemail, true, false);
-        }
-
-        if($ischangepassword) {
-            Helperss::sendemail_updateprofile($user, $oldemail, false, false);
-        }
-        */
         if($user){
             $response_data = [
                 'success' => true,
-                'message' => $message,
+                'message' => 'Listing updated successfully',
                 'data' => new UserResource($user)
             ];
 
@@ -275,94 +242,6 @@ class UserController extends Controller
             ];
             return response()->json($response_data,  $this->successStatus);
         }
-    }
-
-    public function create_listing(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name'                          => 'required',
-            'target_completion_datefrom'    => 'required',
-            'target_completion_dateto'      => 'required',
-            'minimum_budget'                => 'required',
-            'maximum_budget'                => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            $response_data = [
-                'success' => false,
-                'message' => 'Incomplete data provided!',
-                'errors' => $validator->errors()
-            ];
-            return response()->json($response_data);
-        }
-
-        //region Maximum 5 Images Validation
-        if ($request->hasfile('images')) {
-            $files_count = $request->file('images');
-            if (!is_array($files_count)) {
-                $response_data = [
-                    'success' => false,
-                    'message' => 'Images Parameter must be an array',
-                    'errors' => $validator->errors()
-                ];
-                return response()->json($response_data);
-            } else if (count($files_count) > 5) {
-                $response_data = [
-                    'success' => false,
-                    'message' => 'Maximum 5 images allowed.',
-                    'errors' => $validator->errors()
-                ];
-                return response()->json($response_data);
-            }
-        }
-        //endregion
-
-        $input = $request->all();
-
-        //Auth::user();
-
-        //dd(Auth::user());
-        $input['userid']  = 1;
-        $input['name']  = $input['name'];
-        $input['target_completion_datefrom']  = $input['target_completion_datefrom'];
-        $input['target_completion_dateto'] = $input['target_completion_dateto'];
-        $input['minimum_budget']  = $input['minimum_budget'];
-        $input['maximum_budget']  = $input['maximum_budget'];
-        $input['detail']  = $input['detail'] ?? '';
-        $input['address_line1']  = $input['address_line1'] ?? '';
-        $input['address_line2']  = $input['address_line2'] ?? '';
-        $input['country']  = $input['country'] ?? '';
-        $input['state']  = $input['state'] ?? '';
-        $input['district']  = $input['district'] ?? '';
-        $input['status']  = 'active';
-        $listing = CreateListing::create($input);
-        $data = CreateListing::find($listing->id);
-
-
-        //region Listing Images
-        if($request->hasfile('images'))
-        {
-            $files = $request->file('images');
-            foreach ($files as $file) {
-                $extension = $file->getClientOriginalExtension();
-                $image = Str::random(20) . ".png";
-                Storage::disk('local')->put('/public/Listing/' . $data->id . '/images/' . $image, File::get($file));
-                ListingImages::create([
-                    'listing_id' => $data->id,
-                    'image'  => $image,
-                    'status' => 'active'
-                ]);
-            }
-        }
-        //endregion
-
-
-        $response_data = [
-            'success' => true,
-            'message' =>  'Listing created successfully!',
-            'data' => new ListingResource($data),
-        ];
-        return response()->json($response_data, $this->successStatus);
     }
 }
 
