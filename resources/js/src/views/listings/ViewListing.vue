@@ -27,8 +27,8 @@
       </b-col>
     </b-row>
 
-    <!-- Date and amount Form -->
     <validation-observer ref="validationRules">
+    <!-- Date and amount Form -->
       <b-card>
         <b-form @submit.prevent>
           <b-row>
