@@ -15,6 +15,11 @@ export default [
     icon: 'LockIcon',
   },
   {
+    title: 'Proposals',
+    route: 'proposals',
+    icon: 'ShoppingBagIcon',
+  },
+  {
     title: 'Accounts',
     route: 'accounts',
     icon: 'UserPlusIcon',

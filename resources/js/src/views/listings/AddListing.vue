@@ -19,89 +19,98 @@
     </b-row>
 
     <!-- Date and amount Form -->
-    <validation-observer ref="validationRules">
-      <b-card>
-        <b-form @submit.prevent>
+    <b-form @submit.prevent enctype="multipart/form-data">
+      <validation-observer ref="validationRules">
+        <b-card>
           <b-row>
             <b-col md="6">
               <h4 class="mb-2 text-primary">
                 <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
                 Target Compilation date Range
               </h4>
-              <b-form inline>
-                <validation-provider
-                  #default="{ errors }"
-                  name="From Date"
-                  rules="required"
-                >
-                  <b-form-datepicker
-                    placeholder="Select From Date"
-                    id="target_completion_datefrom"
-                    class="mb-1 p-0"
-                    v-model="listing.target_completion_datefrom"
-                    name="target_completion_datefrom"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
 
-                <validation-provider
-                  #default="{ errors }"
-                  name="To Date"
-                  rules="required"
-                >
-                  <b-form-datepicker
-                    placeholder="Select To Date"
-                    id="target_completion_dateto"
-                    v-model="listing.target_completion_dateto"
-                    name="target_completion_dateto"
-                    class="mb-1 p-0"
-                    :state="errors.length > 0 ? false : null"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form>
+              <div class="form-row">
+                <div class="col">
+                  <validation-provider
+                    #default="{ errors }"
+                    name="From Date"
+                    rules="required"
+                  >
+                    <b-form-datepicker
+                      placeholder="Select From Date"
+                      id="target_completion_datefrom"
+                      class="mb-1 p-0"
+                      v-model="listing.target_completion_datefrom"
+                      name="target_completion_datefrom"
+                      :state="errors.length > 0 ? false : null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </div>
+                <div class="col">
+                  <validation-provider
+                    #default="{ errors }"
+                    name="To Date"
+                    rules="required"
+                  >
+                    <b-form-datepicker
+                      placeholder="Select To Date"
+                      id="target_completion_dateto"
+                      v-model="listing.target_completion_dateto"
+                      name="target_completion_dateto"
+                      class="mb-1 p-0"
+                      :state="errors.length > 0 ? false : null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </div>
+              </div>
             </b-col>
             <b-col md="6">
               <h4 class="mb-2 text-primary">
                 <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
                 Target Budget - Min and Max
               </h4>
-              <b-form inline>
-                <validation-provider
-                  #default="{ errors }"
-                  name="Minimum budget"
-                  rules="required"
-                >
-                  <b-form-select
-                    v-model="listing.minimum_budget"
-                    :options="minBudget"
-                    class="mb-1"
-                    :state="errors.length > 0 ? false : null"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
+              <div class="form-row">
+                <div class="col">
+                  <validation-provider
+                    #default="{ errors }"
+                    name="Minimum budget"
+                    rules="required"
+                  >
+                    <b-form-select
+                      v-model="listing.minimum_budget"
+                      :options="minBudget"
+                      class="mb-1"
+                      :state="errors.length > 0 ? false : null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </div>
+                <div class="col">
+                  <validation-provider
+                    #default="{ errors }"
+                    name="Maximum budget"
+                    rules="required"
+                  >
+                    <b-form-select
+                      v-model="listing.maximum_budget"
+                      :options="maxBudget"
+                      class="mb-1"
+                      :state="errors.length > 0 ? false : null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </div>
+              </div>
 
-                <validation-provider
-                  #default="{ errors }"
-                  name="Maximum budget"
-                  rules="required"
-                >
-                  <b-form-select
-                    v-model="listing.maximum_budget"
-                    :options="maxBudget"
-                    class="mb-1"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form>
+              <!-- </b-form> -->
             </b-col>
           </b-row>
-        </b-form>
-      </b-card>
+        </b-card>
 
-      <!-- Images and Detail -->
-      <b-card>
-        <b-form @submit.prevent enctype="multipart/form-data">
+        <!-- Images and Detail -->
+        <b-card>
           <b-row>
             <!-- Images -->
             <b-col md="6" class="mb-2">
@@ -166,12 +175,12 @@
               </div>
               <b-row>
                 <b-col lg="6" class="mb-2">
-                    <b-form-input
-                      v-model="gmapAutocompelte"
-                      id="gmap-autocompelte"
-                      placeholder="Search Address"
-                      @change="getAddressOnChange"
-                    />
+                  <b-form-input
+                    v-model="gmapAutocompelte"
+                    id="gmap-autocompelte"
+                    placeholder="Search Address"
+                    @change="getAddressOnChange"
+                  />
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
                     width="100%"
@@ -241,9 +250,9 @@
               </b-col>
             </b-col>
           </b-row>
-        </b-form>
-      </b-card>
-    </validation-observer>
+        </b-card>
+      </validation-observer>
+    </b-form>
   </div>
 </template>
 
@@ -274,7 +283,7 @@ import { required } from "@validations";
 export default {
   data() {
     return {
-        gmapAutocompelte: '',
+      gmapAutocompelte: "",
       imagesShowWhileUpload: [],
       imagesFileUploader: [],
       listing: {
@@ -323,17 +332,19 @@ export default {
         reader.onload = (e) => {
           this.imagesShowWhileUpload.push(e.target.result);
         };
-        this.listing.images.push(getImage.name);
+        this.listing.images.push(getImage);
       });
+      console.log(this.listing.images);
     },
     clearFiles() {
       this.imagesFileUploader = null;
       this.listing.images = [];
       this.imagesShowWhileUpload = [];
     },
-    async getAddressOnChange( e ) {
-        console.log(e);
-        console.log( this.gmapAutocompelte );
+    async getAddressOnChange(e) {
+      const place = autocomplete.getPlace();
+
+      console.log(place);
     },
 
     ...mapActions({ saveListing: "listing/saveListing" }),
@@ -342,19 +353,26 @@ export default {
       this.$refs.validationRules.validate().then(async (success) => {
         if (success) {
           const listingData = this.listing;
-          console.log(listingData);
-          await this.saveListing(listingData);
+          let formData = new FormData();
+          for (const key in listingData) {
+            formData.append(key, listingData[key]);
+          }
+          console.log(formData);
+          await this.saveListing(formData);
         }
       });
     },
   },
   mounted() {
     var autocomplete = new google.maps.places.Autocomplete(
-      document.getElementById("gmap-autocompelte")
+      document.getElementById("gmap-autocompelte"),
+      {
+        componentRestrictions: { country: ["us", "ca"] },
+        fields: ["address_components", "geometry"],
+        types: ["address"],
+      }
     );
-     autocomplete.setComponentRestrictions({ // restrict the country
-        country: ["pk"]
-        })
+    console.log(autocomplete);
   },
   components: {
     ValidationProvider,
