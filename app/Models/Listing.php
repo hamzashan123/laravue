@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ListingImages;
 
-class CreateListing extends Model
+class Listing extends Model
 {
-    protected $table = 'create_listing';
+    protected $table = 'listing';
 
     protected $fillable = [
         'id',
@@ -26,5 +27,15 @@ class CreateListing extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function getImages() {
+        return $this->hasMany(ListingImages::class,'listing_id','id')
+            ->select('listing_images.*');
+    }
+
+    public function getUser() {
+        return $this->hasOne(User::class,'id','userid')
+            ->select('users.*');
+    }
 
 }
