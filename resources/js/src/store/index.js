@@ -7,6 +7,7 @@ import appConfig from './app-config'
 import verticalMenu from './vertical-menu'
 import auth from './auth'
 import listing from './listing'
+import setting from './setting'
 
 Vue.use(Vuex)
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     verticalMenu,
     auth,
     listing,
+    setting,
   },
   strict: process.env.DEV,
 })
