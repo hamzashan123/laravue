@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
-        listing: {},
+        listings: "",
         message: "",
         error: "",
         isLoading: false,
@@ -12,16 +12,17 @@ export default {
         isDeleted: false,
     },
     getters: {
-        getListing: (state) => state.listing,
+        getListing: (state) => state.listings,
         getIsLoading: (state) => state.isLoading,
         getMessage: (state) => state.message,
         getError: (state) => state.error,
+        getIsCreated: (state) => state.isCreated,
     },
     mutations: {
-        setListing(state, listing) {
-            state.listing = listing;
+        setListings(state, listings) {
+            state.listings = listings;
         },
-        isLoading(state, isLoading) {
+        setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
         },
         setMessage(state, message) {
@@ -30,46 +31,84 @@ export default {
         setError(state, error) {
             state.error = error;
         },
+        setIsCreated(state, isCreated) {
+            state.isCreated = isCreated;
+        },
     },
     actions: {
         // Getting All
-        loadListings: ({ commit }) => {
-            commit("isLoading", true);
-            axios({ url: "listing", method: "GET" })
-                .then((resp) => {
-                    const data = resp.data.data;
-                    console.log(data, "Data");
-                    commit("isLoading", false);
-                    return commit("setListing", data);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    commit("isLoading", false);
-                });
+        loadListings({ commit }, ids) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "getlisting", data: ids, method: "POST" })
+                    .then((response) => {
+                        commit("setIsLoading", false);
+                        commit("setListings", response.data.data);
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsLoading", false);
+                        commit("setError", error);
+                        reject(error);
+                    });
+            });
         },
 
         // Getting Single
+        loadListing({ commit }, ids) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "getlistingbyid", data: ids, method: "POST" })
+                    .then((response) => {
+                        commit("setIsLoading", false);
+                        commit("setListings", response.data.data);
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsLoading", false);
+                        commit("setError", error);
+                        reject(error);
+                    });
+            });
+        },
 
         // Saving
-        async saveListing({ commit }, listingData) {
-            await commit("isLoading", true);
-            await axios({
-                url: "create-listing",
-                data: listingData,
-                method: "post",
-                headers: {
-                    'Accept': "multipart/form-data, application/json, text/plain, */*",
-                    'content-type': 'multipart/form-data'
-                  }
-            })
-                .then(async (resp) => {
-                    console.log(resp);
-                    await commit("isCreated", true);
-                    await commit("isLoading", false);
+        saveListing({ commit }, listingData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "createlisting",
+                    data: listingData,
+                    method: "post",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-type": "multipart/form-data charset=utf-8; boundary=" + Math.random().toString().substr(2),
+                    },
                 })
-                .catch((error) => {
-                    console.log(error);
-                });
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+
+                            commit("setIsCreated", true);
+                            commit("setMessage", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsCreated", false);
+                            commit("setError", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        reject(error);
+                    });
+            });
         },
 
         // Updating

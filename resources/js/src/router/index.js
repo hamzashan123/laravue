@@ -95,7 +95,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/listings/view',
+        path: '/listings/view/:id',
         name: 'listings.view',
         component: () => import('@/views/listings/ViewListing.vue'),
         meta: {
