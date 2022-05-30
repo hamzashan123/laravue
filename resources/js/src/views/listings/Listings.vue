@@ -120,15 +120,15 @@
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
                 >
-                    <template #cell(image)="data">
-                        <b-avatar :src="data.value.image" class="mx-1" />
+                    <template #cell(images)="data">
+                        <b-avatar v-for="(image, idx) in data.item.images.slice(0, 1)" :key="idx"  :src="image.image" class="mx-1" />
                     </template>
                     <template #cell(name)="data">
                         <span class="text-nowrap">{{ data.value }}</span>
                     </template>
                     <template #cell(status)="data">
-                        <b-badge pill :variant="data.vlue">
-                            {{ data.value }}
+                         <b-badge :variant="statuses_color[1][data.value]">
+                            {{ statuses_color[0][data.value] }}
                         </b-badge>
                     </template>
                     <template #cell(location)="data">
@@ -227,7 +227,7 @@ import {
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
-import { status } from "@/fieldsdata/index.js";
+import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
 export default {
@@ -252,7 +252,7 @@ export default {
     },
     data() {
         return {
-            perPage: 10,
+            perPage: 25,
             pageOptions: [10, 25, 50],
             totalRows: 1,
             currentPage: 1,
@@ -263,8 +263,8 @@ export default {
             filterOn: [],
             fields: [
                 { key: "id", label: "Id" },
-                { key: "image", label: "" },
-                { key: "name", label: "Listing Name" },
+                { key: "images", label: "" },
+                { key: "title", label: "Listing Title" },
                 {
                     key: "status",
                     label: "Contract Status",
@@ -275,7 +275,7 @@ export default {
                 "actions",
             ],
             items: [],
-            status,
+            statuses_color,
         };
     },
     computed: {
@@ -285,7 +285,6 @@ export default {
                 .filter((f) => f.sortable)
                 .map((f) => ({ text: f.label, value: f.key }));
         },
-
         ...mapGetters({
             isLoading: "listing/getIsLoading",
             getMessage: "listing/getMessage",
@@ -294,10 +293,13 @@ export default {
     },
     mounted() {
         // getting lsiting
-        this.loadListings({ userid: 1, roleid: 3 })
+        this.loadListings()
             .then((response) => {
                 if( response.success ) {
                     this.items = response.data
+                    console.log(response.data.length);
+                    // Set the initial number of items
+                    this.totalRows = response.data.length;
 
                 } else {
                     this.$toast({
@@ -323,8 +325,7 @@ export default {
                 });
             });
 
-            // Set the initial number of items
-        this.totalRows = this.items.length;
+
     },
     methods: {
         ...mapActions({ loadListings: "listing/loadListings" }),

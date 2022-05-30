@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
-        listings: "",
+        proposals: "",
         message: "",
         error: "",
         isLoading: false,
@@ -12,15 +12,15 @@ export default {
         isDeleted: false,
     },
     getters: {
-        getListing: (state) => state.listings,
+        getProposal: (state) => state.proposals,
         getIsLoading: (state) => state.isLoading,
         getMessage: (state) => state.message,
         getError: (state) => state.error,
         getIsCreated: (state) => state.isCreated,
     },
     mutations: {
-        setListings(state, listings) {
-            state.listings = listings;
+        setProposals(state, proposals) {
+            state.proposals = proposals;
         },
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
@@ -37,13 +37,13 @@ export default {
     },
     actions: {
         // Getting All
-        loadListings({ commit }) {
+        loadProposals({ commit }) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "get-listing", method: "POST" })
+                axios({ url: "get-proposals", method: "POST" })
                     .then((response) => {
                         commit("setIsLoading", false);
-                        commit("setListings", response.data.data);
+                        commit("setProposals", response.data.data);
                         resolve(response.data);
                     })
                     .catch((error) => {
@@ -56,13 +56,13 @@ export default {
         },
 
         // Getting Single
-        loadListing({ commit }, ids) {
+        loadProposal({ commit }, ids) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "getlistingbyid", data: ids, method: "POST" })
+                axios({ url: "getproposalbyid", data: ids, method: "POST" })
                     .then((response) => {
                         commit("setIsLoading", false);
-                        commit("setListings", response.data.data);
+                        commit("setProposals", response.data.data);
                         resolve(response.data);
                     })
                     .catch((error) => {
@@ -75,17 +75,13 @@ export default {
         },
 
         // Saving
-        saveListing({ commit }, listingData) {
+        sendProposal({ commit }, proposalData) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({
-                    url: "create-listings",
-                    data: listingData,
+                    url: "send-proposal",
+                    data: proposalData,
                     method: "post",
-                    headers: {
-                        Accept: "*/*",
-                        "Content-type": "multipart/form-data charset=utf-8; boundary=" + Math.random().toString().substr(2),
-                    },
                 })
                     .then((response) => {
                         if (response.data.success) {
@@ -111,11 +107,11 @@ export default {
             });
         },
 
-        // publish listing
-        publishLising({commit}, draftListingId) {
+        // publish proposal
+        publishLising({commit}, draftProposalId) {
             commit("setIsLoading", true)
             return new Promise((resolve, reject) => {
-                axios({ url: 'publish-listing', data: draftListingId, method: 'post' })
+                axios({ url: 'publish-proposal', data: draftProposalId, method: 'post' })
                     .then(( response ) => {
                         console.log(response);
                         commit("setIsLoading", false)

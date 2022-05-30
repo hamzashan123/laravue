@@ -8,11 +8,13 @@
             <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
+                        v-if="draftListingId"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        :to="{ name: 'listings.view' }"
+                        @click="publishListingTrigger"
                     >
                         Publish Listing
+                        <b-spinner small v-if="isLoading" />
                     </b-button>
                 </div>
             </b-col>
@@ -46,7 +48,7 @@
                                             class="mb-1 p-0"
                                             v-model="listing.target_completion_datefrom"
                                             name="target_completion_datefrom"
-                                            :state=" errors.length > 0 ? false : null"
+                                            :state="errors.length > 0 ? false : null "
                                         />
                                         <small class="text-danger">{{
                                             errors[0]
@@ -62,8 +64,12 @@
                                         <b-form-datepicker
                                             placeholder="Select To Date"
                                             id="target_completion_dateto"
-                                            v-model="listing.target_completion_dateto"
-                                            :min="listing.target_completion_datefrom"
+                                            v-model="
+                                                listing.target_completion_dateto
+                                            "
+                                            :min="
+                                                listing.target_completion_datefrom
+                                            "
                                             name="target_completion_dateto"
                                             class="mb-1 p-0"
                                             :state="
@@ -94,7 +100,7 @@
                                         rules="required"
                                     >
                                         <b-form-input
-                                            v-model="listing.minimum_budget"
+                                            v-model="listing.min_budget"
                                             class="mb-1"
                                             placeholder="Minimum Budget"
                                             :state="
@@ -113,7 +119,7 @@
                                         rules="required"
                                     >
                                         <b-form-input
-                                            v-model="listing.maximum_budget"
+                                            v-model="listing.max_budget"
                                             placeholder="Maximum Budget"
                                             class="mb-1"
                                             :state="
@@ -191,7 +197,7 @@
                                 >
                                     <b-form-input
                                         id="listingname"
-                                        v-model="listing.name"
+                                        v-model="listing.title"
                                         placeholder="Name"
                                     />
                                 </b-form-group>
@@ -204,7 +210,7 @@
                                 <label for="listingDetails">Details</label>
                                 <b-form-textarea
                                     id="listingDetails"
-                                    v-model="listing.detail"
+                                    v-model="listing.description"
                                     placeholder="Listing Details"
                                     rows="3"
                                 />
@@ -215,6 +221,7 @@
                                         v-model="gmapAutocompelte"
                                         id="gmap-autocompelte"
                                         placeholder="Search Address"
+                                        @focus="setGmapOnFocus"
                                         @change="getAddressOnChange"
                                     />
                                     <iframe
@@ -352,7 +359,10 @@ export default {
     },
     data() {
         return {
+            // map
             gmapAutocompelte: "",
+            autocomplete: null,
+            // listing
             imagesShowWhileUpload: [],
             imagesFileUploader: [],
             newImages: [],
@@ -370,6 +380,7 @@ export default {
                 state: null,
                 district: null,
             },
+            draftListingId: "",
             //   Validation
             required,
         };
@@ -378,11 +389,10 @@ export default {
         onFileUpload(e) {
             let getImages = e.target.files;
 
-            let maxImg = this.imagesShowWhileUpload.length
+            let maxImg = this.imagesShowWhileUpload.length;
             console.log(maxImg);
 
             if (maxImg < 5) {
-
                 getImages.forEach((getImage) => {
                     let reader = new FileReader();
                     reader.readAsDataURL(getImage);
@@ -391,9 +401,8 @@ export default {
                     };
                     this.newImages.push(getImage);
                 });
-
             } else {
-                this.isFileUploaderFull = true
+                this.isFileUploaderFull = true;
                 this.$toast({
                     component: ToastificationContent,
                     props: {
@@ -407,21 +416,20 @@ export default {
         clearFiles() {
             this.imagesFileUploader = null;
             this.imagesShowWhileUpload = [];
-            this.newImages = []
-            this.isFileUploaderFull = false
-        },
-        async getAddressOnChange(e) {
-            // const place = autocomplete.getPlace();
-            // console.log(place);
+            this.newImages = [];
+            this.isFileUploaderFull = false;
         },
 
-        ...mapActions({ saveListing: "listing/saveListing" }),
+        ...mapActions({
+            saveListing: "listing/saveListing",
+            publishLising: "listing/publishLising",
+        }),
 
         async saveListingTrigger() {
             this.$refs.validationRules.validate().then(async (success) => {
                 if (success) {
                     let listingData = new FormData();
-                    listingData.append("name", this.listing.name);
+                    listingData.append("title", this.listing.title);
                     listingData.append(
                         "target_completion_datefrom",
                         this.listing.target_completion_datefrom
@@ -430,15 +438,9 @@ export default {
                         "target_completion_dateto",
                         this.listing.target_completion_dateto
                     );
-                    listingData.append(
-                        "minimum_budget",
-                        this.listing.minimum_budget
-                    );
-                    listingData.append(
-                        "maximum_budget",
-                        this.listing.maximum_budget
-                    );
-                    listingData.append("detail", this.listing.detail);
+                    listingData.append("min_budget", this.listing.min_budget);
+                    listingData.append("max_budget", this.listing.max_budget);
+                    listingData.append("description", this.listing.description);
                     listingData.append(
                         "address_line1",
                         this.listing.address_line1
@@ -450,7 +452,6 @@ export default {
                     listingData.append("country", this.listing.country);
                     listingData.append("state", this.listing.state);
                     listingData.append("district", this.listing.district);
-                    listingData.append("images", this.newAvatar);
 
                     this.newImages.forEach((newImage) => {
                         listingData.append("images[]", newImage);
@@ -459,6 +460,10 @@ export default {
                     await this.saveListing(listingData)
                         .then((response) => {
                             if (response.success) {
+                                console.log(response.data);
+                                this.draftListingId = response.data.id;
+                                console.log(this.draftListingId, "draftListingId");
+
                                 this.$toast({
                                     component: ToastificationContent,
                                     props: {
@@ -493,6 +498,66 @@ export default {
                 }
             });
         },
+
+        // publish listing
+        publishListingTrigger() {
+            let listingData = new FormData();
+            listingData.append( "id", this.draftListingId );
+            this.publishLising(listingData)
+                .then((response) => {
+                    if (response.success) {
+                        console.log(response.data);
+                        this.draftListingId = response.data.id;
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While Adding!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        },
+
+        // Start Google Map on focus
+        async setGmapOnFocus(e) {
+            this.autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById("gmap-autocompelte"),
+                {
+                    componentRestrictions: { country: ["us", "ca"] },
+                    fields: ["address_components", "geometry"],
+                    types: ["address"],
+                }
+            );
+            console.log("autocomplete", this.autocomplete);
+        },
+        // Get address on change
+        async getAddressOnChange(e) {
+            const place = this.autocomplete.getPlace();
+            console.log("place", place);
+        },
     },
     computed: {
         ...mapGetters({
@@ -500,22 +565,11 @@ export default {
             isCreated: "listing/getIsCreated",
         }),
     },
-    mounted() {
-        var autocomplete = new google.maps.places.Autocomplete(
-            document.getElementById("gmap-autocompelte"),
-            {
-                componentRestrictions: { country: ["us", "ca"] },
-                fields: ["address_components", "geometry"],
-                types: ["address"],
-            }
-        );
-        // console.log(autocomplete);
-    },
+    mounted() {},
     directives: {
         Ripple,
     },
 };
 </script>
 
-<style>
-</style>
+<style></style>

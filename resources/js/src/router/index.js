@@ -124,9 +124,17 @@ const router = new VueRouter({
         component: () => import('@/views/proposals/Proposals.vue'),
     },
     {
-        path: '/proposals/view',
+        path: '/proposals/:listingId/add',
+        name: 'proposals.add',
+        component: () => import('@/views/proposals/AddProposal.vue'),
+        meta: {
+            navActiveLink: 'proposals'
+        },
+    },
+    {
+        path: '/proposals/view/:proposalId',
         name: 'proposals.view',
-        component: () => import('@/views/proposals/ProposalView.vue'),
+        component: () => import('@/views/proposals/ViewProposal.vue'),
         meta: {
             navActiveLink: 'proposals'
         },
@@ -134,7 +142,7 @@ const router = new VueRouter({
     {
         path: '/proposals/detail',
         name: 'proposals.detail',
-        component: () => import('@/views/proposals/ProposalDetails.vue'),
+        component: () => import('@/views/proposals/DetailProposal.vue'),
         meta: {
             navActiveLink: 'proposals'
         },
@@ -202,6 +210,19 @@ const router = new VueRouter({
     },
   ],
 })
+
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/', '/register', '/reset', '/forgot'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = localStorage.getItem('userData');
+    // trying to access a restricted page + not logged in
+    // redirect to login page
+    if (authRequired && !loggedIn) {
+      next('/');
+    } else {
+      next();
+    }
+  });
 
 // ? For splash screen
 // Remove afterEach hook if you are not using splash screen

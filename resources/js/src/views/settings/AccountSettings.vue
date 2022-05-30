@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { BButton, BRow, BCol, BCard, BFormCheckbox } from "bootstrap-vue";
+import { BButton, BRow, BCol, BCard, BCardText, BFormCheckbox } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import SettingTabButton from "./SettingTabButton.vue";
 import PasswordSetting from "./PasswordSetting.vue";
@@ -127,6 +127,7 @@ export default {
     BRow,
     BCol,
     BCard,
+    BCardText,
     BFormCheckbox,
     SettingTabButton,
     PasswordSetting,
