@@ -24,27 +24,27 @@ class User extends Authenticatable //implements MustVerifyEmail
 
     protected $fillable = [
         'id',
-        'firstname',
-        'middlename',
-        'lastname',
-        'userid',
+        'first_name',
+        'user_name',
+        'last_name',
+        'user_id',
         'email',
         'password',
         'contact',
         'address',
-        'dateofbirth',
+        'date_of_birth',
         'country',
         'state',
         'city',
         'status',
-        'roleid',
+        'role_id',
         'avatar',
         'updated_at',
         'created_at',
     ];
 
     public function getUserRole() {
-        return $this->hasOne(UserRole::class,'id','roleid')
+        return $this->hasOne(UserRole::class,'id','role_id')
                     ->select('user_role.*');
     }
 

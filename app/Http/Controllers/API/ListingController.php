@@ -30,11 +30,11 @@ class ListingController extends Controller
     public function createListing(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'                          => 'required',
+            'title'                          => 'required',
             'target_completion_datefrom'    => 'required',
             'target_completion_dateto'      => 'required',
-            'minimum_budget'                => 'required',
-            'maximum_budget'                => 'required'
+            'min_budget'                => 'required',
+            'max_budget'                => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -68,13 +68,13 @@ class ListingController extends Controller
         //endregion
 
         $input = $request->all();
-        $input['userid']  = Auth::user()->id;
-        $input['name']  = $input['name'];
+        $input['user_id']  = Auth::user()->id;
+        $input['title']  = $input['title'];
         $input['target_completion_datefrom']  = $input['target_completion_datefrom'];
         $input['target_completion_dateto'] = $input['target_completion_dateto'];
-        $input['minimum_budget']  = $input['minimum_budget'];
-        $input['maximum_budget']  = $input['maximum_budget'];
-        $input['detail']  = $input['detail'] ?? '';
+        $input['min_budget']  = $input['min_budget'];
+        $input['max_budget']  = $input['max_budget'];
+        $input['description']  = $input['description'] ?? '';
         $input['address_line1']  = $input['address_line1'] ?? '';
         $input['address_line2']  = $input['address_line2'] ?? '';
         $input['country']  = $input['country'] ?? '';
@@ -153,12 +153,12 @@ class ListingController extends Controller
 
         if($listingdata != null)
         {
-            $listingdata->name = $input['name'] ?? $listingdata->name;
+            $listingdata->title = $input['title'] ?? $listingdata->title;
             $listingdata->target_completion_datefrom = $input['target_completion_datefrom'] ?? $listingdata->target_completion_datefrom;
             $listingdata->target_completion_dateto = $input['target_completion_dateto'] ?? $listingdata->target_completion_dateto;
-            $listingdata->minimum_budget = $input['minimum_budget'] ?? $listingdata->minimum_budget;
-            $listingdata->maximum_budget = $input['maximum_budget'] ?? $listingdata->maximum_budget;
-            $listingdata->detail = $input['detail'] ?? $listingdata->detail;
+            $listingdata->min_budget = $input['min_budget'] ?? $listingdata->min_budget;
+            $listingdata->max_budget = $input['max_budget'] ?? $listingdata->max_budget;
+            $listingdata->description = $input['description'] ?? $listingdata->description;
             $listingdata->address_line1 = $input['address_line1'] ?? $listingdata->address_line1;
             $listingdata->address_line2 = $input['address_line2'] ?? $listingdata->address_line2;
             $listingdata->country = $input['country'] ?? $listingdata->country;
@@ -199,11 +199,10 @@ class ListingController extends Controller
         }
     }
 
-    public function getListing(Request $request)
+    public function deleteListing(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'userid' => 'required',
-            'roleid' => 'required',
+            'id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -213,30 +212,79 @@ class ListingController extends Controller
                 'errors' => $validator->errors()
             ];
             return response()->json($response_data);
-        }
+        }        
 
-        $data = null;
-        switch ($request->roleid) {
-            case 1:
-                $data = Listing::where('userid', $request->userid)->orderBy('id','asc');
-                break;
-            case 2:
-                $data = Listing::where('status', 'publish')->orderBy('id','asc');
-                break;
-            case 3:
-                $data = Listing::orderBy('id','asc');
-                break;
-            default:
-                break;
-        }
+        if(Auth::user()->role_id != 2) {
+            $listingResponse = Listing::where('id', $request->id)->delete();
 
-        $data = $data->paginate(10);
+            $listingImagesResponse = ListingImages::where('listing_id', $request->id)->delete();       
+            
+            $response_data = [
+                'success' => true,
+                'message' =>  'Listing Delete successfully!',                
+            ];
+            return response()->json($response_data, $this->successStatus);
+
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Contractor has no permission to delete this record',                
+            ];
+            return response()->json($response_data);
+        }       
+    }
+
+    public function getListing(Request $request)
+    {       
+        $data = Listing::orderBy('id','asc')->paginate(10);
 
         if(count($data) > 0)
         {
             $response_data = [
                 'success' => true,
-                'message' =>  'Listings',
+                'message' =>  'Get Listings',
+                'data' => ListingResource::collection($data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function myListings(Request $request)
+    {        
+        $data = Listing::where('user_id', Auth::user()->id)->orderBy('id','asc')->paginate(10);
+
+        if(count($data) > 0)
+        {
+            $response_data = [
+                'success' => true,
+                'message' =>  'My Listings',
+                'data' => ListingResource::collection($data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function getPublishedListings(Request $request)
+    {
+        $data = Listing::where('status', 'publish')->orderBy('id','asc')->paginate(10);
+
+        if(count($data) > 0)
+        {
+            $response_data = [
+                'success' => true,
+                'message' =>  'Published Listings',
                 'data' => ListingResource::collection($data),
             ];
             return response()->json($response_data, $this->successStatus);
@@ -253,7 +301,7 @@ class ListingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
-            'roleid' => 'required',
+            'role_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -266,7 +314,7 @@ class ListingController extends Controller
         }
 
         $data = null;
-        switch ($request->roleid) {
+        switch ($request->role_id) {
             case 1:
             case 3:
                 $data = Listing::where('id', $request->id)->orderBy('id','asc');
@@ -297,7 +345,7 @@ class ListingController extends Controller
         }
     }
 
-    public function publish_listing(Request $request)
+    public function publishListing(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id'     => 'required',
@@ -312,10 +360,11 @@ class ListingController extends Controller
             return response()->json($response_data);
         }
 
-        $data = Listing::where('userid', Auth::user()->id)->where('id',$request->id)->first();
+        $data = Listing::where('user_id', Auth::user()->id)->where('id',$request->id)->first();
 
         if ($data != null) {
             $data->status = 'publish';
+            $data->published_by = Auth::user()->id;
             $data->save();
 
             $response_data = [
