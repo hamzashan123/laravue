@@ -62,12 +62,12 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'firstname'         => 'required',
-            'lastname'         => 'required',
+            'first_name'         => 'required',
+            'last_name'         => 'required',
             'email'         => 'required|email|unique:users',
             'country'         => 'required',
             'contact'         => 'required',
-            'roleid'         => 'required',
+            'role_id'         => 'required',
             'password'      => 'required',
             'confirm_password'    => 'required|same:password'
         ]);
@@ -108,20 +108,20 @@ class UserController extends Controller
 
         $input = $request->all();
 
-        $randomstring = Helper::generateRandomString($input['firstname'], $input['lastname'], $input['email']);
+        $randomstring = Helper::generateRandomString($input['first_name'], $input['last_name'], $input['email']);
 
-        $input['firstname']  = $input['firstname'];
-        $input['middlename']  = $input['middlename'] ?? '';
-        $input['lastname']  = $input['lastname'];
+        $input['first_name']  = $input['first_name'];
+        $input['user_name']  = $input['user_name'] ?? '';
+        $input['last_name']  = $input['last_name'];
         $input['password'] = bcrypt($input['password']);
         $input['country']  = $input['country'];
         $input['state']  = $input['state'] ?? '';
         $input['city']  = $input['city'] ?? '';
         $input['contact']  = $input['contact'];
-        $input['userid']  = $randomstring;
-        $input['dateofbirth']  = $input['dateofbirth'] ?? null;
+        $input['user_id']  = $randomstring;
+        $input['date_of_birth']  = $input['date_of_birth'] ?? null;
         $input['address']  = $input['address'] ?? null;
-        $input['roleid']  = $input['roleid'];
+        $input['role_id']  = $input['role_id'];
         $input['status']  = 'active';
         $user = User::create($input);
         $data = User::find($user->id);
@@ -201,14 +201,14 @@ class UserController extends Controller
             return response()->json($response_data);
         }
 
-        $user->firstname = ($request->firstname != null ? $request->firstname : $user->firstname);
-        $user->middlename = ($request->middlename != null ? $request->middlename : $user->middlename);
-        $user->lastname = ($request->lastname != null ? $request->lastname : $user->lastname);
+        $user->first_name = ($request->first_name != null ? $request->first_name : $user->first_name);
+        $user->user_name = ($request->user_name != null ? $request->user_name : $user->user_name);
+        $user->last_name = ($request->last_name != null ? $request->last_name : $user->last_name);
         $user->email = $request->email;
         $user->password = ($request->password != null ? bcrypt($request['password']) : $user->password);
         $user->contact = ($request->contact != null ? $request->contact : $user->contact);
         $user->address = ($request->address != null ? $request->address : $user->address);
-        $user->dateofbirth = ($request->dateofbirth != null ? $request->dateofbirth : $user->dateofbirth);
+        $user->date_of_birth = ($request->date_of_birth != null ? $request->date_of_birth : $user->date_of_birth);
         $user->country = ($request->country != null ? $request->country : $user->country);
         $user->state = ($request->state != null ? $request->state : $user->state);
         $user->city = ($request->city != null ? $request->city : $user->city);
@@ -229,7 +229,7 @@ class UserController extends Controller
         if($user){
             $response_data = [
                 'success' => true,
-                'message' => 'Listing updated successfully',
+                'message' => 'Profile updated successfully',
                 'data' => new UserResource($user)
             ];
 

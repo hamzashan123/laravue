@@ -12,27 +12,39 @@ class Proposals extends Model
 
     protected $fillable = [
         'id',
-        'client_id',
         'listing_id',
-        'contractor_id',
+        'user_id',
         'min_budget',
         'max_budget',
         'target_startdate',
         'target_enddate',
+        'approved_by',
+        'rejected_by',
         'status',
         'created_at',
         'updated_at'
     ];
 
-    public function getClinet() {
+    
+    /*public function getClinet() {
         return $this->hasOne(User::class,'id','client_id')
+            ->select('users.*');
+    }*/
+
+    public function getContractor() {
+        return $this->hasOne(User::class,'id','user_id')
             ->select('users.*');
     }
 
-    public function getContractor() {
-        return $this->hasOne(User::class,'id','contractor_id')
+    public function getApprovedBy() {
+        return $this->hasOne(User::class,'id','approved_by')
             ->select('users.*');
     }
+
+    public function getRejectBy() {
+        return $this->hasOne(User::class,'id','rejected_by')
+            ->select('users.*');
+    }    
 
     public function getListing() {
         return $this->hasOne(Listing::class,'id','listing_id')

@@ -17,22 +17,23 @@ class ListingResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {
+    {        
 
         return [
             'id'=> $this->id,
-            'userid'=> new UserResource($this->getUser),
-            'name'=> $this->name,
+            'user'=> new UserResource($this->getUser),
+            'title'=> $this->title,
             'target_completion_datefrom'=> $this->target_completion_datefrom,
             'target_completion_dateto'=> $this->target_completion_dateto,
-            'minimum_budget'=> $this->minimum_budget,
-            'maximum_budget'=> $this->maximum_budget,
-            'detail'=> $this->detail,
+            'min_budget'=> $this->min_budget,
+            'max_budget'=> $this->max_budget,
+            'description'=> $this->description,
             'address_line1'=> $this->address_line1,
             'address_line2'=> $this->address_line2,
             'country'=> $this->country,
             'state'=> $this->state,
             'district'=> $this->district,
+            'published_by' => new UserResource($this->getPublishBy) ?? null,
             'status'=> $this->status,
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
