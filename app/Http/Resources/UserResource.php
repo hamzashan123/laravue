@@ -18,24 +18,24 @@ class UserResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {       
+    {
         $Avatarurl = '';
         if (($this->avatar == 'placeholder.png')  || ($this->avatar == null)){
             $Avatarurl = URL::to('/') . Storage::disk('local')->url('public/users/placeholder.png');
         } else {
             $Avatarurl = URL::to('/') . Storage::disk('local')->url('public/users/' .$this->id . '/' . $this->avatar);
-        }                
+        }
 
-        return [            
+        return [
             'id'=> $this->id,
-            'firstname'=> $this->firstname,
-            'middlename'=> $this->middlename,
-            'lastname'=> $this->lastname,
-            'userid'=> $this->userid,
+            'first_name'=> $this->first_name,
+            'user_name'=> $this->user_name,
+            'last_name'=> $this->last_name,
+            'user_id'=> $this->user_id,
             'email'=> $this->email,
             'contact'=> $this->contact,
             'address'=> $this->address,
-            'dateofbirth'=> $this->dateofbirth,
+            'date_of_birth'=> $this->date_of_birth,
             'country'=> $this->country,
             'state'=> $this->state,
             'city'=> $this->city,

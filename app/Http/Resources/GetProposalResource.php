@@ -8,7 +8,7 @@ use Auth;
 use App\Http\Resources\ListingImagesResource;
 use App\Http\Resources\UserResource;
 
-class ListingResource extends JsonResource
+class GetProposalResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,7 @@ class ListingResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {        
-
+    {
         return [
             'id'=> $this->id,
             'user'=> new UserResource($this->getUser),
@@ -38,6 +37,7 @@ class ListingResource extends JsonResource
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
             'images'=> ListingImagesResource::collection($this->getImages),
+            'proposals'=> $this->getListingProposals->count(),
         ];
     }
 }

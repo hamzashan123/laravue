@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ListingImages;
+use App\Models\Proposals;
 
 class Listing extends Model
 {
@@ -11,18 +12,19 @@ class Listing extends Model
 
     protected $fillable = [
         'id',
-        'userid',
-        'name',
+        'user_id',
+        'title',
         'target_completion_datefrom',
         'target_completion_dateto',
-        'minimum_budget',
-        'maximum_budget',
-        'detail',
+        'min_budget',
+        'max_budget',
+        'description',
         'address_line1',
         'address_line2',
         'country',
         'state',
         'district',
+        'published_by',
         'status',
         'created_at',
         'updated_at'
@@ -34,8 +36,18 @@ class Listing extends Model
     }
 
     public function getUser() {
-        return $this->hasOne(User::class,'id','userid')
+        return $this->hasOne(User::class,'id','user_id')
             ->select('users.*');
+    }
+
+    public function getPublishBy() {
+        return $this->hasOne(User::class,'id','published_by')
+            ->select('users.*');
+    }
+
+    public function getListingProposals() {
+        return $this->hasMany(Proposals::class,'listing_id','id')
+            ->select('proposals.*');
     }
 
 }
