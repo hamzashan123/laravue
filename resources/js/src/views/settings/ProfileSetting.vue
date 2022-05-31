@@ -20,12 +20,16 @@
                         <b-media no-body>
                             <b-media-aside>
                                 <b-link>
-                                    <b-img
-                                        rounded
-                                        :src="userAvatar"
-                                        height="80"
-                                        accept="image/*"
-                                    />
+                                    <b-avatar
+                                    size="80"
+                                    variant="light-primary"
+                                    badge
+                                    :text="userAvatarText"
+                                    :src="userAvatar"
+                                    class="badge-minimal"
+                                    badge-variant="success"
+                                    accept="image/*"
+                                />
                                 </b-link>
                                 <!--/ avatar -->
                             </b-media-aside>
@@ -240,6 +244,7 @@ import {
     BImg,
     BFormSelect,
     BSpinner,
+    BAvatar,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import SettingTabButton from "./SettingTabButton.vue";
@@ -266,6 +271,7 @@ export default {
         BFormSelect,
         SettingTabButton,
         BSpinner,
+        BAvatar,
     },
     directives: {
         Ripple,
@@ -285,6 +291,12 @@ export default {
         ...mapGetters({ isLoading: "setting/getIsLoading" }),
 
         userAvatar() { return this.user.avatar; },
+
+        userAvatarText() {
+          let f = this.user.first_name && this.user.first_name.substring(0, 1);
+          let l = this.user.last_name && this.user.last_name.substring(0, 1);
+          return f +""+ l
+        }
     },
     mounted() {
         const getUser = JSON.parse(localStorage.getItem("userData"));

@@ -32,8 +32,8 @@
             size="40"
             variant="light-primary"
             badge
-            text="PI"
-            :src="require('@/assets/images/avatars/13-small.png')"
+            :text="userAvatarText"
+            :src="user.avatar"
             class="badge-minimal"
             badge-variant="success"
           />
@@ -106,6 +106,13 @@ export default {
         await this.logout()
         this.$router.push({ name: 'login' })
       }
+  },
+  computed: {
+      userAvatarText() {
+          let f = this.user.first_name && this.user.first_name.substring(0, 1);
+          let l = this.user.last_name && this.user.last_name.substring(0, 1);
+          return f +""+ l
+    }
   },
   props: {
     toggleVerticalMenuActive: {

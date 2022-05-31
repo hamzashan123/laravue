@@ -222,7 +222,6 @@
                                         id="gmap-autocompelte"
                                         placeholder="Search Address"
                                         @focus="setGmapOnFocus"
-                                        @change="getAddressOnChange"
                                     />
                                     <iframe
                                         src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
@@ -541,22 +540,49 @@ export default {
                 });
         },
 
-        // Start Google Map on focus
-        async setGmapOnFocus(e) {
+        // Initialize Google Map on focus
+        setGmapOnFocus() {
             this.autocomplete = new google.maps.places.Autocomplete(
                 document.getElementById("gmap-autocompelte"),
                 {
-                    componentRestrictions: { country: ["us", "ca"] },
+                    componentRestrictions: { country: ["in"] },
                     fields: ["address_components", "geometry"],
                     types: ["address"],
                 }
             );
-            console.log("autocomplete", this.autocomplete);
+            // console.log("autocomplete", this.autocomplete);
+            this.autocomplete.addListener("place_changed", this.getAddressOnChange);
         },
         // Get address on change
-        async getAddressOnChange(e) {
+        getAddressOnChange() {
             const place = this.autocomplete.getPlace();
-            console.log("place", place);
+
+             for (const component of place.address_components) {
+                // @ts-ignore remove once typings fixed
+                const componentType = component.types[0];
+
+                switch (componentType) {
+                case "street_number": {
+                    this.listing.address_line1 = `${component.long_name} ${address1}`;
+                    break;
+                }
+
+                case "route": {
+                    this.listing.address_line1 += component.short_name;
+                    break;
+                }
+                case "locality":
+                    this.listing.district = component.long_name;
+                    break;
+                case "administrative_area_level_1": {
+                    this.listing.state = component.long_name;
+                    break;
+                }
+                case "country":
+                    this.listing.country = component.long_name;
+                    break;
+                }
+            }
         },
     },
     computed: {

@@ -71,6 +71,35 @@ export default {
                     console.log(err, "Error While loggin in!");
                 });
         },
+
+        // registerData
+        register({ commit }, registerData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "register",
+                    data: registerData,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        reject(error);
+                    });
+            });
+        },
+
+        // Logout
         async logout({commit}){
             await axios({ url: "logout", method: "POST" })
             localStorage.removeItem("accessToken");
