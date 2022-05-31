@@ -1,17 +1,23 @@
-export const status = [
+export const statuses_color = [
     {
-        1: "Contract Started!",
-        2: "Waiting Assigned",
-        3: "Draft Not yet publised",
-        4: "Contract Assigned",
-        5: "Completed",
+        "draft": "Draft",
+        "publish": "Published",
+        "pending": "Pending",
+        "wating_assign": "Waiting Assigned",
+        "contract_started": "Contract Started!",
+        "contract_assigned": "Contract Assigned",
+        "approved": "Approved",
+        "completed": "Completed",
     },
     {
-        1: "light-primary",
-        2: "light-warning",
-        3: "light-danger",
-        4: "light-info",
-        5: "light-success",
+        "draft": "light-warning",
+        "publish": "light-primary",
+        "pending": "light-danger",
+        "wating_assign": "light-danger",
+        "contract_started": "blue",
+        "contract_assigned": "green",
+        "approved": "light-info",
+        "completed": "light-success",
     },
 ];
 

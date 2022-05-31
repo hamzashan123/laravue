@@ -8,6 +8,7 @@ import verticalMenu from './vertical-menu'
 import auth from './auth'
 import listing from './listing'
 import setting from './setting'
+import proposal from './proposal'
 
 Vue.use(Vuex)
 
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     auth,
     listing,
     setting,
+    proposal,
   },
   strict: process.env.DEV,
 })

@@ -1,243 +1,255 @@
 <template>
-  <div>
-    <!-- Header -->
-    <!-- <b-card> -->
-    <b-row class="mb-4">
-      <b-col md="8" sm="12">
-        <b-card-text> <h1>Project Proposals</h1> </b-card-text>
-      </b-col>
-      <b-col md="4" sm="12">
-        <div>
-          <b-form-group
-            label="Filter by Proposal Status"
-            label-size="md"
-            label-cols-sm="0"
-            label-for="sortByStatus"
-            class="mr-1 mb-md-0"
-          >
-            <b-input-group size="md">
-              <b-form-select
-                id="sortByStatus"
-                v-model="sortBy"
-                :options="contract_status[0]"
-              >
-                <template #first>
-                  <option value="">Select Status</option>
-                </template>
-              </b-form-select>
-            </b-input-group>
-          </b-form-group>
-        </div>
-      </b-col>
-    </b-row>
-    <!-- </b-card> -->
-    <!-- Table -->
-    <b-card title="Latest Proposals" no-body>
-      <b-card-body>
-        <div class="d-flex justify-content-between flex-wrap">
-          <!-- filter -->
-          <b-form-group
-            label="Search"
-            label-cols-sm="3"
-            label-align-sm="left"
-            label-size="md"
-            label-for="filterInput"
-            class="mb-0"
-          >
-            <b-input-group size="md">
-              <b-form-input
-                id="filterInput"
-                v-model="filter"
-                type="search"
-                placeholder="Search Project Listing"
-              />
-              <b-input-group-append>
-                <b-button :disabled="!filter" @click="filter = ''">
-                  Clear
-                </b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </b-form-group>
-          <!-- Dates Filter -->
-          <b-button
-            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-            variant="flat-primary"
-          >
-            <feather-icon icon="CalendarIcon" class="mr-50" />
-            <span class="align-middle">Last 3 Months</span>
-          </b-button>
+    <div>
+        <!-- Header -->
+        <b-row class="mb-4">
+            <b-col md="8" sm="12">
+                <b-card-text> <h1>Project Proposals</h1> </b-card-text>
+            </b-col>
+            <b-col md="4" sm="12">
+                <div>
+                    <b-form-group
+                        label="Filter by Proposal Status"
+                        label-size="md"
+                        label-cols-sm="0"
+                        label-for="sortByStatus"
+                        class="mr-1 mb-md-0"
+                    >
+                        <b-input-group size="md">
+                            <b-form-select
+                                id="sortByStatus"
+                                v-model="sortBy"
+                                :options="statuses_color[0]"
+                            >
+                                <template #first>
+                                    <option value="">Select Status</option>
+                                </template>
+                            </b-form-select>
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+            </b-col>
+        </b-row>
+        <!-- Table -->
+        <b-card title="Latest Proposals" no-body>
+            <b-overlay :show="isLoading" rounded="sm">
+                <b-card-body>
+                    <div class="d-flex justify-content-between flex-wrap">
+                        <!-- filter -->
+                        <b-form-group
+                            label="Search"
+                            label-cols-sm="3"
+                            label-align-sm="left"
+                            label-size="md"
+                            label-for="filterInput"
+                            class="mb-0"
+                        >
+                            <b-input-group size="md">
+                                <b-form-input
+                                    id="filterInput"
+                                    v-model="filter"
+                                    type="search"
+                                    placeholder="Search Proposals"
+                                />
+                                <b-input-group-append>
+                                    <b-button
+                                        :disabled="!filter"
+                                        @click="filter = ''"
+                                    >
+                                        Clear
+                                    </b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+                        <!-- Dates Filter -->
+                        <b-button
+                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                            variant="flat-primary"
+                        >
+                            <feather-icon icon="CalendarIcon" class="mr-50" />
+                            <span class="align-middle">Last 3 Months</span>
+                        </b-button>
 
-          <b-button
-            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-            variant="flat-primary"
-          >
-            <feather-icon icon="CalendarIcon" class="mr-50" />
-            <span class="align-middle">Last 6 Months</span>
-          </b-button>
+                        <b-button
+                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                            variant="flat-primary"
+                        >
+                            <feather-icon icon="CalendarIcon" class="mr-50" />
+                            <span class="align-middle">Last 6 Months</span>
+                        </b-button>
 
-          <b-button
-            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-            variant="flat-primary"
-          >
-            <feather-icon icon="CalendarIcon" class="mr-50" />
-            <span class="align-middle">Last 12 Months</span>
-          </b-button>
+                        <b-button
+                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                            variant="flat-primary"
+                        >
+                            <feather-icon icon="CalendarIcon" class="mr-50" />
+                            <span class="align-middle">Last 12 Months</span>
+                        </b-button>
 
-          <div class="form-row">
-            <div class="col p-0">
-              <b-form-datepicker
-                placeholder="From Date"
-                id="target_completion_datefrom"
-                class="mb-1 p-0"
-                name="target_completion_datefrom"
-              />
-            </div>
-            <div class="col p-0">
-              <b-form-datepicker
-                placeholder="To Date"
-                id="target_completion_dateto"
-                name="target_completion_dateto"
-                class="mb-1 p-0"
-              />
-            </div>
-          </div>
+                        <div class="form-row">
+                            <div class="col p-0">
+                                <b-form-datepicker
+                                    placeholder="From Date"
+                                    id="target_completion_datefrom"
+                                    class="mb-1 p-0"
+                                    name="target_completion_datefrom"
+                                />
+                            </div>
+                            <div class="col p-0">
+                                <b-form-datepicker
+                                    placeholder="To Date"
+                                    id="target_completion_dateto"
+                                    name="target_completion_dateto"
+                                    class="mb-1 p-0"
+                                />
+                            </div>
+                        </div>
 
-          <!-- sorting  -->
-          <!-- <b-form-group
-            label="Sort"
-            label-size="md"
-            label-align-sm="left"
-            label-cols-sm="2"
-            label-for="sortBySelect"
-            class="mr-1 mb-md-0"
-          >
-            <b-input-group size="md">
-              <b-form-select
-                id="sortBySelect"
-                v-model="sortBy"
-                :options="sortOptions"
-              >
-                <template #first>
-                  <option value="">none</option>
-                </template>
-              </b-form-select>
-              <b-form-select v-model="sortDesc" size="md" :disabled="!sortBy">
-                <option :value="false">Asc</option>
-                <option :value="true">Desc</option>
-              </b-form-select>
-            </b-input-group>
-          </b-form-group> -->
-        </div>
-      </b-card-body>
+                        <!-- sorting  -->
+                        <!-- <b-form-group
+                            label="Sort"
+                            label-size="md"
+                            label-align-sm="left"
+                            label-cols-sm="2"
+                            label-for="sortBySelect"
+                            class="mr-1 mb-md-0"
+                        >
+                            <b-input-group size="md">
+                                <b-form-select
+                                    id="sortBySelect"
+                                    v-model="sortBy"
+                                    :options="sortOptions"
+                                >
+                                    <template #first>
+                                        <option value="">none</option>
+                                    </template>
+                                </b-form-select>
+                                <b-form-select
+                                    v-model="sortDesc"
+                                    size="md"
+                                    :disabled="!sortBy"
+                                >
+                                    <option :value="false">Asc</option>
+                                    <option :value="true">Desc</option>
+                                </b-form-select>
+                            </b-input-group>
+                        </b-form-group> -->
+                    </div>
+                </b-card-body>
 
-      <b-table
-        striped
-        responsive
-        class="position-relative"
-        :per-page="perPage"
-        :current-page="currentPage"
-        :items="items"
-        :fields="fields"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        :sort-direction="sortDirection"
-        :filter="filter"
-        :filter-included-fields="filterOn"
-        @filtered="onFiltered"
-      >
-        <template #cell(listing_image)="data">
-          <b-avatar :src="data.value" class="mx-1" />
-        </template>
-        <template #cell(listing_name)="data">
-          <span class="text-nowrap">{{ data.value }}</span>
-        </template>
-        <template #cell(contract_status)="data">
-          <b-badge pill :variant="contract_status[1][data.value]">
-            {{ contract_status[0][data.value] }}
-          </b-badge>
-        </template>
-        <template #cell(actions)>
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            :to="{ name: 'proposals.view' }"
-          >
-            See Details
-          </b-button>
-        </template>
-      </b-table>
+                <b-table
+                    striped
+                    responsive
+                    class="position-relative"
+                    :per-page="perPage"
+                    :current-page="currentPage"
+                    :items="items"
+                    :fields="fields"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    :sort-direction="sortDirection"
+                    :filter="filter"
+                    :filter-included-fields="filterOn"
+                    @filtered="onFiltered"
+                >
+                    <template #cell(images)="data">
+                        <b-avatar
+                            v-for="(image, idx) in data.item.images.slice(0, 1)"
+                            :key="idx"
+                            :src="image.image"
+                            class="mx-1"
+                        />
+                    </template>
+                    <template #cell(name)="data">
+                        <span class="text-nowrap">{{ data.value }}</span>
+                    </template>
+                    <template #cell(status)="data">
+                        <b-badge :variant="statuses_color[1][data.value]">
+                            {{ statuses_color[0][data.value] }}
+                        </b-badge>
+                    </template>
+                    <template #cell(location)="data">
+                        {{
+                            data.item.addaddress_line1
+                                ? data.item.addaddress_line1
+                                : ""
+                        }}
+                        {{ data.item.district ? data.item.district : "" }}
+                        {{ data.item.state ? data.item.state : "" }}
+                        {{ data.item.country ? data.item.country : "" }}
+                    </template>
+                    <template #cell(actions)="data">
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="primary"
+                            :class="data.value"
+                            :to="{
+                                name: 'proposals.view',
+                                params: { proposalId: data.item.id },
+                            }"
+                        >
+                            See Details
+                        </b-button>
+                    </template>
+                </b-table>
 
-      <b-card-body class="d-flex justify-content-between flex-wrap pt-0">
-        <!-- page length -->
-        <b-form-group
-          label="Per Page"
-          label-cols="6"
-          label-align="left"
-          label-size="sm"
-          label-for="sortBySelect"
-          class="text-nowrap mb-md-0 mr-1"
-        >
-          <b-form-select
-            id="perPageSelect"
-            v-model="perPage"
-            size="sm"
-            inline
-            :options="pageOptions"
-          />
-        </b-form-group>
+                <b-card-body
+                    class="d-flex justify-content-between flex-wrap pt-0"
+                >
+                    <!-- page length -->
+                    <b-form-group
+                        label="Per Page"
+                        label-cols="6"
+                        label-align="left"
+                        label-size="sm"
+                        label-for="sortBySelect"
+                        class="text-nowrap mb-md-0 mr-1"
+                    >
+                        <b-form-select
+                            id="perPageSelect"
+                            v-model="perPage"
+                            size="sm"
+                            inline
+                            :options="pageOptions"
+                        />
+                    </b-form-group>
 
-        <!-- pagination -->
-        <div>
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            first-number
-            last-number
-            prev-class="prev-item"
-            next-class="next-item"
-            class="mb-0"
-          >
-            <template #prev-text>
-              <feather-icon icon="ChevronLeftIcon" size="18" />
-            </template>
-            <template #next-text>
-              <feather-icon icon="ChevronRightIcon" size="18" />
-            </template>
-          </b-pagination>
-        </div>
-      </b-card-body>
-    </b-card>
-  </div>
+                    <!-- pagination -->
+                    <div>
+                        <b-pagination
+                            v-model="currentPage"
+                            :total-rows="totalRows"
+                            :per-page="perPage"
+                            first-number
+                            last-number
+                            prev-class="prev-item"
+                            next-class="next-item"
+                            class="mb-0"
+                        >
+                            <template #prev-text>
+                                <feather-icon
+                                    icon="ChevronLeftIcon"
+                                    size="18"
+                                />
+                            </template>
+                            <template #next-text>
+                                <feather-icon
+                                    icon="ChevronRightIcon"
+                                    size="18"
+                                />
+                            </template>
+                        </b-pagination>
+                    </div>
+                </b-card-body>
+            </b-overlay>
+        </b-card>
+    </div>
 </template>
 
 <script>
 import {
-  BCard,
-  BRow,
-  BCol,
-  BButton,
-  BCardText,
-  BLink,
-  BTable,
-  BAvatar,
-  BBadge,
-  BFormGroup,
-  BFormSelect,
-  BPagination,
-  BInputGroup,
-  BFormInput,
-  BInputGroupAppend,
-  BCardBody,
-  BFormDatepicker,
-} from "bootstrap-vue";
-import Ripple from "vue-ripple-directive";
-
-export default {
-  components: {
+    BCard,
     BRow,
     BCol,
-    BCard,
     BButton,
     BCardText,
     BLink,
@@ -251,177 +263,128 @@ export default {
     BFormInput,
     BInputGroupAppend,
     BCardBody,
-    BFormDatepicker,
-  },
-  data() {
-    return {
-      perPage: 5,
-      pageOptions: [3, 5, 10],
-      totalRows: 1,
-      currentPage: 1,
-      sortBy: "",
-      sortDesc: false,
-      sortDirection: "asc",
-      filter: null,
-      filterOn: [],
-      fields: [
-        {
-          key: "id",
-          label: "Id",
-        },
-        {
-          key: "listing_image",
-          label: "",
-        },
-        {
-          key: "listing_name",
-          label: "Listing Name",
-        },
-        { key: "contract_status", label: "Contract Status", sortable: true },
-        { key: "location", label: "Location", sortable: true },
-        "start_date",
-        { key: "no_of_proposals", label: "# of proposals", sortable: true },
-        {
-          key: "actions",
-          label: "Actions",
-        },
-      ],
-      /* eslint-disable global-require */
-      items: [
-        {
-          id: 1,
-          listing_image: require("@/assets/images/avatars/10-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 2,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 2,
-          listing_image: require("@/assets/images/avatars/1-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 1,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 3,
-          listing_image: require("@/assets/images/avatars/9-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 5,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 4,
-          listing_image: require("@/assets/images/avatars/3-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 5,
-          listing_image: require("@/assets/images/avatars/4-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 2,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 6,
-          listing_image: require("@/assets/images/avatars/5-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 1,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 7,
-          listing_image: require("@/assets/images/avatars/7-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 8,
-          listing_image: require("@/assets/images/avatars/9-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 9,
-          listing_image: require("@/assets/images/avatars/2-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 3,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-        {
-          id: 10,
-          listing_image: require("@/assets/images/avatars/6-small.png"),
-          listing_name: "Korrie O'Crevy",
-          contract_status: 2,
-          location: "Nuclear Power Engineer",
-          start_date: "09/23/2016",
-          no_of_proposals: "61",
-        },
-      ],
-      /* eslint-disable global-require */
-      contract_status: [
-        {
-          1: "Contract Started!",
-          2: "Waiting Assigned",
-          3: "Draft Not yet publised",
-          4: "Contract Assigned",
-          5: "Completed",
-        },
-        {
-          1: "light-primary",
-          2: "light-warning",
-          3: "light-danger",
-          4: "light-info",
-          5: "light-success",
-        },
-      ],
-    };
-  },
-  computed: {
-    sortOptions() {
-      // Create an options list from our fields
-      return this.fields
-        .filter((f) => f.sortable)
-        .map((f) => ({ text: f.label, value: f.key }));
+    BOverlay,
+  BFormDatepicker,
+} from "bootstrap-vue";
+import Ripple from "vue-ripple-directive";
+import { mapGetters, mapActions } from "vuex";
+import { statuses_color } from "@/fieldsdata/index.js";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+
+export default {
+    components: {
+        BRow,
+        BCol,
+        BCard,
+        BButton,
+        BCardText,
+        BLink,
+        BTable,
+        BAvatar,
+        BBadge,
+        BFormGroup,
+        BFormSelect,
+        BPagination,
+        BInputGroup,
+        BFormInput,
+        BInputGroupAppend,
+        BCardBody,
+        BOverlay,
+  BFormDatepicker,
     },
-  },
-  mounted() {
-    // Set the initial number of items
-    this.totalRows = this.items.length;
-  },
-  methods: {
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
-      this.currentPage = 1;
+    data() {
+        return {
+            perPage: 25,
+            pageOptions: [10, 25, 50],
+            totalRows: 1,
+            currentPage: 1,
+            sortBy: "",
+            sortDesc: false,
+            sortDirection: "asc",
+            filter: null,
+            filterOn: [],
+            fields: [
+                { key: "id", label: "Id" },
+                { key: "images", label: "" },
+                { key: "title", label: "Listing Title" },
+                {
+                    key: "status",
+                    label: "Contract Status",
+                    sortable: true,
+                },
+                { key: "location", label: "Location", sortable: true },
+                {
+                    key: "target_completion_datefrom",
+                    label: "Listing Date",
+                    sortable: true,
+                },
+                { key: "proposals", label: "# of Proposals", sortable: true },
+                "actions",
+            ],
+            items: [],
+            statuses_color,
+        };
     },
-  },
-  directives: {
-    Ripple,
-  },
+    computed: {
+        sortOptions() {
+            // Create an options list from our fields
+            return this.fields
+                .filter((f) => f.sortable)
+                .map((f) => ({ text: f.label, value: f.key }));
+        },
+        ...mapGetters({
+            isLoading: "listing/getIsLoading",
+            getMessage: "listing/getMessage",
+            getError: "listing/getError",
+        }),
+    },
+    mounted() {
+        // getting proposal
+        this.loadProposals()
+            .then((response) => {
+                if (response.success) {
+                    this.items = response.data;
+                } else {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
+
+
+                    // Set the initial number of items
+                    this.totalRows = this.items.length;
+    },
+    methods: {
+        ...mapActions({ loadProposals: "proposal/loadProposals" }),
+
+        onFiltered(filteredItems) {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            this.totalRows = filteredItems.length;
+            this.currentPage = 1;
+        },
+    },
+    directives: {
+        Ripple,
+    },
 };
 </script>
 
-<style>
-</style>
+<style></style>
+

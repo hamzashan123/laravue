@@ -25,8 +25,8 @@
       >
         <template #button-content>
           <div class="d-sm-flex d-none user-nav">
-            <p class="user-name font-weight-bolder mb-0">{{ user. firstname }} {{ user. lastname }}</p>
-            <span class="user-status">Admin</span>
+            <p class="user-name font-weight-bolder mb-0">{{ user.first_name }} {{ user.last_name }}</p>
+            <span class="user-status">{{ userRole.role }}</span>
           </div>
           <b-avatar
             size="40"
@@ -71,7 +71,8 @@ import { mapActions, mapGetters } from "vuex";
 export default {
     data() {
         return {
-            user: {}
+            user: {},
+            userRole: {}
 
         }
     },
@@ -90,6 +91,10 @@ export default {
   mounted() {
       const getUser = JSON.parse(localStorage.getItem("userData"))
       this.user = getUser
+
+      const userRole = getUser.user_role;
+      this.userRole = userRole
+
   },
   methods: {
     ...mapActions({ logout: "auth/logout" }),

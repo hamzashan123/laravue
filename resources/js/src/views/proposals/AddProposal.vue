@@ -4,51 +4,23 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1> {{ listing.title }} </h1>
-                    <b-badge :variant="statuses_color[1][listing.status]">
-                        {{ statuses_color[0][listing.status] }}
-                     </b-badge>
+                    <h1>Create Proposal - {{ listing.title }}</h1>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
                 <div class="text-right">
-
-                    <b-button
-                        v-if="listing.status === 'draft'"
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="primary"
-                        @click="publishListingTrigger"
-                    >
-                        Publish Listing
-                    </b-button>
-
-                    <b-button
-                        v-if="listing.status === 'publish'"
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="primary"
-                        :to="{ name: 'proposals.add', params: { listingId: id } }"
-                    >
-                        Send Proposal
-                    </b-button>
-
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
-                        :to="{ name: 'listings.add-more' }"
+                        :to="{ name: 'proposals' }"
                     >
-                        Add More data
-                    </b-button>
-                    <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="light"
-                        :to="{ name: 'listings.detail' }"
-                    >
-                        See Latest Details
+                        Back to Proposals
                     </b-button>
                 </div>
             </b-col>
         </b-row>
 
+        <!-- Date and amount Form -->
         <b-card>
             <b-overlay :show="isLoading" rounded="sm">
                 <b-row>
@@ -59,27 +31,44 @@
                                 size="18"
                                 class="mr-50"
                             />
-                            Target Compilation date Range
+                            Client Target Date and Budget
                         </h4>
-
-                        <div class="form-row">
-                            <div class="col">
+                        <b-col cols="12">
+                            <b-form-group
+                                label="Target Date"
+                                label-for="target-date"
+                                label-cols-md="3"
+                            >
                                 <b-form-input
-                                    v-model="listing.target_completion_datefrom"
-                                    id="target_completion_datefrom"
-                                    placeholder="From Date"
+                                    id="target-date"
+                                    placeholder="Target Date"
+                                    :value="
+                                        listing.target_completion_datefrom +
+                                        ' - ' +
+                                        listing.target_completion_dateto
+                                    "
                                     disabled
                                 />
-                            </div>
-                            <div class="col">
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="Target Budget"
+                                label-for="target-budget"
+                                label-cols-md="3"
+                            >
                                 <b-form-input
-                                    v-model="listing.target_completion_dateto"
-                                    id="target_completion_dateto"
-                                    placeholder="Date To"
+                                    id="target-budget"
+                                    placeholder="Target Budget"
+                                    :value="
+                                        listing.min_budget +
+                                        ' - ' +
+                                        listing.max_budget
+                                    "
                                     disabled
                                 />
-                            </div>
-                        </div>
+                            </b-form-group>
+                        </b-col>
                     </b-col>
                     <b-col md="6">
                         <h4 class="mb-2 text-primary">
@@ -88,28 +77,67 @@
                                 size="18"
                                 class="mr-50"
                             />
-                            Target Budget - Min and Max
+                            Contractor Target Date and Budget
                         </h4>
-                        <div class="form-row">
-                            <div class="col">
-                                <b-form-input
-                                    v-model="listing.min_budget"
-                                    id="min_budget"
-                                    placeholder="Minimum Budget"
-                                    disabled
-                                />
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    v-model="listing.max_budget"
-                                    id="max_budget"
-                                    placeholder="Maximum Budget"
-                                    disabled
-                                />
-                            </div>
-                        </div>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="Target Date"
+                                label-for="target-date"
+                                label-cols-md="3"
+                            >
+                            <div class="form-inline">
 
-                        <!-- </b-form> -->
+                                <b-form-datepicker
+                                    placeholder="Select From Date"
+                                    id="target_startdate"
+                                    class="mb-1 p-0 mr-1"
+                                    v-model="proposal.target_startdate"
+                                    name="target_startdate"
+                                />
+                                <b-form-datepicker
+                                    placeholder="Select End Date"
+                                    id="target_enddate"
+                                    class="mb-1 p-0"
+                                    v-model="proposal.target_enddate"
+                                    :min="proposal.target_startdate"
+                                    name="target_enddate"
+                                />
+                            </div>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="Target Budget"
+                                label-for="target-budget"
+                                label-cols-md="3"
+                            >
+                            <div class="form-inline">
+
+                                <b-form-input
+                                    v-model="proposal.min_budget"
+                                    class="mb-1 mr-1"
+                                    placeholder="Minimum Budget"
+                                />
+                                <b-form-input
+                                    v-model="proposal.max_budget"
+                                    class="mb-1"
+                                    placeholder="Maximum Budget"
+                                />
+                            </div>
+                            </b-form-group>
+                        </b-col>
+                    </b-col>
+                    <b-col>
+                        <div class="text-right">
+                            <b-button
+                                v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                variant="primary"
+                                @click="sendProposalTrigger"
+                            >
+                                Send Proposal
+                                <b-spinner small v-if="isLoading" />
+                            </b-button>
+                        </div>
                     </b-col>
                 </b-row>
             </b-overlay>
@@ -235,18 +263,6 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
-                        <!-- Save -->
-                        <!-- <b-col class="text-right">
-                        <b-button
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            type="submit"
-                            variant="primary"
-                            @click.prevent="saveListingTrigger"
-                        >
-                            Save Details
-                            <b-spinner small v-if="isLoading" />
-                        </b-button>
-                    </b-col> -->
                     </b-col>
                 </b-row>
             </b-overlay>
@@ -274,6 +290,9 @@ import {
     BEmbed,
     BOverlay,
     BBadge,
+    BInputGroup,
+    BInputGroupPrepend,
+    BSpinner,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
@@ -300,54 +319,74 @@ export default {
         BEmbed,
         BOverlay,
         BBadge,
+        BInputGroup,
+        BInputGroupPrepend,
+        BSpinner,
     },
     data() {
         return {
-            id: "",
+            listingId: "",
             listing: {},
+            proposal: {},
             statuses_color,
-            draftListingId: '',
         };
     },
     methods: {
-        ...mapActions({ loadListing: "listing/loadListing", publishLising: 'listing/publishLising' }),
+        ...mapActions({ loadListing: "listing/loadListing", sendProposal: 'proposal/sendProposal' }),
 
-        publishListingTrigger() {
-            let listingData = new FormData();
-            listingData.append("id", this.id );
-            this.publishLising( listingData )
+        // publish listing
+        sendProposalTrigger() {
+            let proposalData = new FormData();
+            proposalData.append( "listing_id", this.listingId );
+            proposalData.append( "min_budget", this.proposal.min_budget );
+            proposalData.append( "max_budget", this.proposal.max_budget );
+            proposalData.append( "target_startdate", this.proposal.target_startdate );
+            proposalData.append( "target_enddate", this.proposal.target_enddate );
+
+            this.sendProposal(proposalData)
                 .then((response) => {
-                            if (response.success) {
-                                console.log(response.data);
-                                this.draftListingId = response.data.id
-                                this.$toast({
-                                    component: ToastificationContent,
-                                    props: { title: response.message, icon: "EditIcon", variant: "success" },
-                                });
-                            } else {
-                                console.log(response);
-                                this.$toast({
-                                    component: ToastificationContent,
-                                    props: { title: response.message,icon: "EditIcon",variant: "danger" },
-                                });
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            this.$toast({
-                                component: ToastificationContent,
-                                props: { title: "Error While Adding!", icon: "EditIcon", variant: "danger" },
-                            });
+                    if (response.success) {
+                        console.log(response.data);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
                         });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While sending!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
         },
     },
     computed: {
         ...mapGetters({ isLoading: "listing/getIsLoading" }),
     },
     created() {
-        this.id = this.$route.params.id;
+        this.listingId = this.$route.params.listingId;
 
-        this.loadListing({ id: this.id, role_id: 3 })
+        this.loadListing({ id: this.listingId, role_id: 3 })
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];
