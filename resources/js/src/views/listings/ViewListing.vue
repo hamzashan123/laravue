@@ -4,11 +4,33 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Published Listing ( {{ listing.name }} )</h1>
+                    <h1> {{ listing.title }} </h1>
+                    <b-badge :variant="statuses_color[1][listing.status]">
+                        {{ statuses_color[0][listing.status] }}
+                     </b-badge>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
                 <div class="text-right">
+
+                    <b-button
+                        v-if="listing.status === 'draft'"
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="primary"
+                        @click="publishListingTrigger"
+                    >
+                        Publish Listing
+                    </b-button>
+
+                    <b-button
+                        v-if="listing.status === 'publish'"
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="primary"
+                        :to="{ name: 'proposals.add', params: { listingId: id } }"
+                    >
+                        Send Proposal
+                    </b-button>
+
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
@@ -18,7 +40,7 @@
                     </b-button>
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="primary"
+                        variant="light"
                         :to="{ name: 'listings.detail' }"
                     >
                         See Latest Details
@@ -71,16 +93,16 @@
                         <div class="form-row">
                             <div class="col">
                                 <b-form-input
-                                    v-model="listing.minimum_budget"
-                                    id="minimum_budget"
+                                    v-model="listing.min_budget"
+                                    id="min_budget"
                                     placeholder="Minimum Budget"
                                     disabled
                                 />
                             </div>
                             <div class="col">
                                 <b-form-input
-                                    v-model="listing.maximum_budget"
-                                    id="maximum_budget"
+                                    v-model="listing.max_budget"
+                                    id="max_budget"
                                     placeholder="Maximum Budget"
                                     disabled
                                 />
@@ -125,17 +147,17 @@
                         >
                             <b-form-input
                                 id="listingname"
-                                v-model="listing.name"
+                                v-model="listing.title"
                                 placeholder="Name"
                                 disabled
                             />
                         </b-form-group>
 
                         <div class="mb-2">
-                            <label for="listingDetails">Details</label>
+                            <label for="listingDetails">Description</label>
                             <b-form-textarea
                                 id="listingDetails"
-                                v-model="listing.detail"
+                                v-model="listing.description"
                                 placeholder="Listing Details"
                                 rows="3"
                                 disabled
@@ -251,9 +273,11 @@ import {
     BFormTextarea,
     BEmbed,
     BOverlay,
+    BBadge,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
+import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
 export default {
@@ -275,15 +299,47 @@ export default {
         BFormTextarea,
         BEmbed,
         BOverlay,
+        BBadge,
     },
     data() {
         return {
             id: "",
             listing: {},
+            statuses_color,
+            draftListingId: '',
         };
     },
     methods: {
-        ...mapActions({ loadListing: "listing/loadListing" }),
+        ...mapActions({ loadListing: "listing/loadListing", publishLising: 'listing/publishLising' }),
+
+        publishListingTrigger() {
+            let listingData = new FormData();
+            listingData.append("id", this.id );
+            this.publishLising( listingData )
+                .then((response) => {
+                            if (response.success) {
+                                console.log(response.data);
+                                this.draftListingId = response.data.id
+                                this.$toast({
+                                    component: ToastificationContent,
+                                    props: { title: response.message, icon: "EditIcon", variant: "success" },
+                                });
+                            } else {
+                                console.log(response);
+                                this.$toast({
+                                    component: ToastificationContent,
+                                    props: { title: response.message,icon: "EditIcon",variant: "danger" },
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: { title: "Error While Adding!", icon: "EditIcon", variant: "danger" },
+                            });
+                        });
+        },
     },
     computed: {
         ...mapGetters({ isLoading: "listing/getIsLoading" }),
@@ -291,7 +347,7 @@ export default {
     created() {
         this.id = this.$route.params.id;
 
-        this.loadListing({ id: this.id, roleid: 3 })
+        this.loadListing({ id: this.id, role_id: 3 })
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];

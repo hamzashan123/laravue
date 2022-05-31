@@ -31,9 +31,10 @@
                             </b-media-aside>
 
                             <b-media-body class="mt-75 ml-75">
-                                <h3>
-                                    {{ user.firstname }} {{ user.lastname }}
-                                </h3>
+                                <div class="mb-2">
+                                    <h3>{{ user.first_name }} {{ user.last_name }} </h3>
+                                    <span class="user-status">{{ userRole.role }}</span>
+                                </div>
                                 <!-- upload button -->
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
@@ -71,7 +72,7 @@
                                     label-for="account-name"
                                 >
                                     <b-form-input
-                                        v-model="user.firstname"
+                                        v-model="user.first_name"
                                         name="firstname"
                                         placeholder="First Name"
                                     />
@@ -79,13 +80,13 @@
                             </b-col>
                             <b-col sm="4">
                                 <b-form-group
-                                    label="Middle Name"
-                                    label-for="middle-name"
+                                    label="Username"
+                                    label-for="user-name"
                                 >
                                     <b-form-input
-                                        v-model="user.middlename"
-                                        name="middlename"
-                                        placeholder="Middle Name"
+                                        v-model="user.user_name"
+                                        name="username"
+                                        placeholder="Username"
                                     />
                                 </b-form-group>
                             </b-col>
@@ -95,7 +96,7 @@
                                     label-for="account-name"
                                 >
                                     <b-form-input
-                                        v-model="user.lastname"
+                                        v-model="user.last_name"
                                         name="lastname"
                                         placeholder="Last Name"
                                     />
@@ -132,7 +133,7 @@
                                     label-for="dateofbirth"
                                 >
                                     <b-form-input
-                                        v-model="user.dateofbirth"
+                                        v-model="user.date_of_birth"
                                         name="dateofbirth"
                                         placeholder="Date of Birth"
                                     />
@@ -274,21 +275,23 @@ export default {
             user: {
                 avatar: '',
             },
+            userRole: {},
             newAvatar: null,
             imageFileUploader: null,
             imageShowWhileUpload: null,
         };
     },
     computed: {
-        ...mapGetters({
-            isLoading: "setting/getIsLoading",
-        }),
+        ...mapGetters({ isLoading: "setting/getIsLoading" }),
 
         userAvatar() { return this.user.avatar; },
     },
     mounted() {
         const getUser = JSON.parse(localStorage.getItem("userData"));
         this.user = getUser;
+
+        const userRole = getUser.user_role;
+        this.userRole = userRole
     },
     methods: {
         // resetForm() {
@@ -301,22 +304,20 @@ export default {
         UpdateProfileTrigger() {
 
             var ProfileData = new FormData();
-            ProfileData.append('firstname', this.user.firstname);
-            ProfileData.append('middlename', this.user.middlename);
-            ProfileData.append('lastname', this.user.lastname);
+            ProfileData.append('first_name', this.user.first_name);
+            ProfileData.append('user_name', this.user.user_name);
+            ProfileData.append('last_name', this.user.last_name);
             ProfileData.append('email', this.user.email);
             ProfileData.append('contact', this.user.contact);
             ProfileData.append('address', this.user.address);
-            ProfileData.append('dateofbirth', this.user.dateofbirth);
+            ProfileData.append('date_of_birth', this.user.date_of_birth);
             ProfileData.append('country', this.user.country);
             ProfileData.append('state', this.user.state);
             ProfileData.append('city', this.user.city);
             ProfileData.append('avatar', this.newAvatar);
 
-            console.log(ProfileData, "profileData");
             this.updateProfile(ProfileData)
                 .then((response) => {
-                    console.log(response, "r");
                     if( response.success ) {
 
                         this.$toast({
@@ -335,7 +336,7 @@ export default {
                     this.$toast({
                         component: ToastificationContent,
                         props: {
-                            title: err,
+                            title: "Error while updating!",
                             icon: "EditIcon",
                             variant: "danger",
                         },
@@ -351,8 +352,6 @@ export default {
 
             this.user.avatar = URL.createObjectURL(e.target.files[0]);
             this.newAvatar = e.target.files[0];
-
-            console.log(this.newAvatar);
         },
         clearFiles() {
             this.imageShowWhileUpload = null;

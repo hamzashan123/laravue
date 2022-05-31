@@ -37,10 +37,10 @@ export default {
     },
     actions: {
         // Getting All
-        loadListings({ commit }, ids) {
+        loadListings({ commit }) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "getlisting", data: ids, method: "POST" })
+                axios({ url: "get-listing", method: "POST" })
                     .then((response) => {
                         commit("setIsLoading", false);
                         commit("setListings", response.data.data);
@@ -79,7 +79,7 @@ export default {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({
-                    url: "createlisting",
+                    url: "create-listings",
                     data: listingData,
                     method: "post",
                     headers: {
@@ -110,6 +110,24 @@ export default {
                     });
             });
         },
+
+        // publish listing
+        publishLising({commit}, draftListingId) {
+            commit("setIsLoading", true)
+            return new Promise((resolve, reject) => {
+                axios({ url: 'publish-listing', data: draftListingId, method: 'post' })
+                    .then(( response ) => {
+                        console.log(response);
+                        commit("setIsLoading", false)
+                        resolve( response.data )
+                    })
+                    .catch((error) => {
+                        commit("setIsLoading", false)
+                        console.log(error)
+                        reject(error)
+                     })
+            })
+        }
 
         // Updating
 
