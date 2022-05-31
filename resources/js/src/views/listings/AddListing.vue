@@ -223,7 +223,8 @@
                                         placeholder="Search Address"
                                         @focus="setGmapOnFocus"
                                     />
-                                    <iframe
+                                    <div id="map" class="h-100 mt-2"></div>
+                                    <!-- <iframe
                                         src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
                                         width="100%"
                                         height="300"
@@ -231,7 +232,7 @@
                                         allowfullscreen=""
                                         loading="lazy"
                                         referrerpolicy="no-referrer-when-downgrade"
-                                    ></iframe>
+                                    ></iframe> -->
                                 </b-col>
                                 <b-col lg="6">
                                     <b-form-group
@@ -361,6 +362,8 @@ export default {
             // map
             gmapAutocompelte: "",
             autocomplete: null,
+            place: '',
+            latLng: { lat: 20.5937, lng: 78.9629 },
             // listing
             imagesShowWhileUpload: [],
             imagesFileUploader: [],
@@ -555,9 +558,17 @@ export default {
         },
         // Get address on change
         getAddressOnChange() {
-            const place = this.autocomplete.getPlace();
+            this.place = this.autocomplete.getPlace();
 
-             for (const component of place.address_components) {
+            // let lat = place.geometry.location.lat()
+            // let lng = place.geometry.location.lng()
+
+            this.latLng = { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() }
+
+            this.initMap()
+
+
+             for (const component of this.place.address_components) {
                 // @ts-ignore remove once typings fixed
                 const componentType = component.types[0];
 
@@ -584,6 +595,14 @@ export default {
                 }
             }
         },
+        // Initialize map
+        initMap() {
+            let map = new google.maps.Map(document.getElementById("map"), {
+                center: this.latLng,
+                zoom: 12,
+            });
+        }
+
     },
     computed: {
         ...mapGetters({
@@ -591,7 +610,9 @@ export default {
             isCreated: "listing/getIsCreated",
         }),
     },
-    mounted() {},
+    mounted() {
+        this.initMap()
+    },
     directives: {
         Ripple,
     },
