@@ -28,6 +28,9 @@ Route::post('getproposal', [App\Http\Controllers\API\ProposalController::class, 
 Route::post('get-listing', [App\Http\Controllers\API\ListingController::class, 'getListing']);
 Route::post('get-published-listings', [App\Http\Controllers\API\ListingController::class, 'getPublishedListings']);
 
+Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
+Route::post('get-visit-details', [App\Http\Controllers\API\VisitController::class, 'getVisitDetails']);
+
 
 Route::group(['middleware' => 'auth:api'], function() {
 
@@ -46,9 +49,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('send-proposal', [App\Http\Controllers\API\ProposalController::class, 'sendProposal']);
     Route::post('approve-proposal', [App\Http\Controllers\API\ProposalController::class, 'approveProposal']);
     Route::post('deny-proposal', [App\Http\Controllers\API\ProposalController::class, 'denyProposal']);
-
-
     Route::post('my-listing-proposals', [App\Http\Controllers\API\ProposalController::class, 'myListingProposals']);
+    
+
+    //Visits
+    Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);
     
     
     
