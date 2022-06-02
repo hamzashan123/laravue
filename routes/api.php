@@ -54,6 +54,10 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     //Visits
     Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);
+
+
+    //Upload Legal Document
+    Route::post('upload-legal-document', [App\Http\Controllers\API\LegalDocumentsController::class, 'uploadLegalDocument']);
     
     
     
