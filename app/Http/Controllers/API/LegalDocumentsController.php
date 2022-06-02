@@ -30,11 +30,11 @@ class LegalDocumentsController extends Controller
 {
     public $successStatus = 200;
 
-    public function uploadListingVisit(Request $request)
+    public function uploadLegalDocument(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'listing_id'          => 'required',
-            'legal_document_name'          => 'required',
+            'legal_document'          => 'required',            
             'legal_document_date'          => 'required',
             'user_type'          => 'required',
         ]);
@@ -48,6 +48,43 @@ class LegalDocumentsController extends Controller
             return response()->json($response_data);
         }
 
+        $files_count = $request->file('legal_document');
+        if (!is_array($files_count)) {
+            $response_data = [
+                'success' => false,
+                'message' => 'legal_document Parameter must be an array',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }        
+
+        $input = $request->all();
+        $input['user_id'] = Auth::user()->id;
+        $input['listing_id'] = $input['listing_id'];
+        $input['legal_document_date'] = $input['legal_document_date'];
+        $input['user_type'] = $input['user_type'];
+        $input['status'] = 'active';
+
+        $files = $request->file('legal_document');
+        foreach ($files as $file) {
+            $extension = $file->getClientOriginalExtension();            
+
+            $filename = Str::random(20) . $extension;
+            Storage::disk('local')->put('/public/ListingDocuments/' . $request->listing_id . '/' . $request->user_type . '/' . $filename, File::get($file));
+            
+            $input['legal_document_name'] = $file->getClientOriginalName();
+            $input['legal_document_path'] = $filename;
+            LegalDocuments::create($input);           
+        }
+
+        $data = LegalDocuments::where('listing_id', $request->listing_id)->get();
+
+        $response_data = [
+            'success' => true,
+            'message' =>  'Upload Legal Documents successfully!',
+            'user' => LegalDocumentsResource::collection($data),
+        ];
+        return response()->json($response_data, $this->successStatus);
        
     }
 
