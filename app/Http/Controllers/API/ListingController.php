@@ -45,6 +45,16 @@ class ListingController extends Controller
             ];
             return response()->json($response_data);
         }
+        
+        if(Auth::user()->role_id == 2) {
+            $response_data = [
+                'success' => true,
+                'message' =>  'Cannot create listing ,please contact with support!',                
+            ];
+            return response()->json($response_data, $this->successStatus);
+
+        }
+        
 
         //region Maximum 5 Images Validation
         if ($request->hasfile('images')) {
@@ -382,6 +392,8 @@ class ListingController extends Controller
             return response()->json($response_data, $this->successStatus);
         }
     }
+
+    
 
 }
 
