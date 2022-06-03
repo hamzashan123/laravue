@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { can } from '@/auth/authentication.js'
+
 export default {
     namespaced: true,
     state: {
@@ -39,8 +41,16 @@ export default {
         // Getting All
         loadListings({ commit }) {
             commit("setIsLoading", true);
+            let endpoint = ''
+            if( can("create", "proposal") ){
+                endpoint = 'get-published-listings'
+            } else if( can("create", "listing") ){
+                endpoint = 'my-listings'
+            } else {
+                endpoint = 'get-listings'
+            }
             return new Promise((resolve, reject) => {
-                axios({ url: "get-listing", method: "POST" })
+                axios({ url: endpoint, method: "POST" })
                     .then((response) => {
                         commit("setIsLoading", false);
                         commit("setListings", response.data.data);
@@ -127,9 +137,44 @@ export default {
                         reject(error)
                      })
             })
-        }
+        },
 
         // Updating
+        updateListing({ commit }, listingData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "update-listing",
+                    data: listingData,
+                    method: "post",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-type": "multipart/form-data charset=utf-8; boundary=" + Math.random().toString().substr(2),
+                    },
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+
+                            commit("setIsCreated", true);
+                            commit("setMessage", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsCreated", false);
+                            commit("setError", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        reject(error);
+                    });
+            });
+        },
 
         // Deleting
     },

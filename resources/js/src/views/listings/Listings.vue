@@ -10,6 +10,7 @@
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
+                        v-if="can('create', 'listing')"
                         :to="{ name: 'listings.add' }"
                     >
                         Create New Listing
@@ -229,6 +230,7 @@ import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { can } from '@/auth/authentication.js'
 
 export default {
     components: {
@@ -271,11 +273,13 @@ export default {
                     sortable: true,
                 },
                 { key: "location", label: "Location", sortable: true },
-                { key: "target_completion_datefrom", label: "Listing Date", sortable: true },
+                { key: "created_at", label: "Listing Date", sortable: true },
                 "actions",
             ],
             items: [],
             statuses_color,
+            // check user
+            can,
         };
     },
     computed: {
@@ -292,6 +296,7 @@ export default {
         }),
     },
     mounted() {
+
         // getting lsiting
         this.loadListings()
             .then((response) => {

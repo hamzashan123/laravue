@@ -95,6 +95,14 @@ const router = new VueRouter({
         },
     },
     {
+        path: '/listings/edit/:id',
+        name: 'listings.edit',
+        component: () => import('@/views/listings/EditListing.vue'),
+        meta: {
+            navActiveLink: 'listings'
+        },
+    },
+    {
         path: '/listings/view/:id',
         name: 'listings.view',
         component: () => import('@/views/listings/ViewListing.vue'),
