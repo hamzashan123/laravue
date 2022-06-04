@@ -7,14 +7,15 @@ export default {
         message: "",
         isLoading: false,
         error: "",
-        accessToken: localStorage.getItem("accessToken") || "",
+        isLoggedIn: false,
     },
     getters: {
-        isLoggedIn: (state) => !!state.accessToken,
         getMessage: (state) => state.message,
         getUser: (state) => state.user,
         getError: (state) => state.error,
         isLoading: (state) => state.isLoading,
+        isLoggedIn: (state) => state.isLoggedIn,
+
     },
     mutations: {
         setMessage(state, message) {
@@ -23,18 +24,17 @@ export default {
         setIsLoading(state, LoadText) {
             state.isLoading = LoadText;
         },
-        setToken(state, accessToken) {
-            state.accessToken = accessToken;
-        },
         setUser(state, user) {
             state.user = user;
         },
         setError(state, error) {
             state.error = error;
         },
+        isLoggedIn(state, isLoggedIn) {
+            state.isLoggedIn = isLoggedIn;
+        },
         logout(state) {
             state.message = "";
-            state.accessToken = "";
             state.user = {};
         },
     },
@@ -51,7 +51,8 @@ export default {
                         localStorage.setItem("userData", user);
                         axios.defaults.headers.common.Authorization = accessToken;
 
-                        await commit("setToken", accessToken);
+                        await commit("isLoggedIn", true);
+
                         await commit("setUser", user);
                         await commit("setError", "");
                         await commit("setMessage", resp.data.message);

@@ -3,20 +3,7 @@
         <!-- Header -->
         <b-row class="mb-4">
             <b-col md="6" sm="12">
-                <b-card-text> <h1>New Listing</h1> </b-card-text>
-            </b-col>
-            <b-col md="6" sm="12">
-                <div class="text-right">
-                    <b-button
-                        v-if="draftListingId"
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="primary"
-                        @click="publishListingTrigger"
-                    >
-                        Publish Listing
-                        <b-spinner small v-if="isLoading" />
-                    </b-button>
-                </div>
+                <b-card-text> <h1>Update Listing</h1> </b-card-text>
             </b-col>
         </b-row>
 
@@ -289,15 +276,15 @@
                                     </b-form-group>
                                 </b-col>
                             </b-row>
-                            <!-- Save -->
+                            <!-- Update -->
                             <b-col class="text-right">
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                     type="submit"
                                     variant="primary"
-                                    @click.prevent="saveListingTrigger"
+                                    @click.prevent="updateListingTrigger"
                                 >
-                                    Save Details
+                                    Update Details
                                     <b-spinner small v-if="isLoading" />
                                 </b-button>
                             </b-col>
@@ -369,6 +356,7 @@ export default {
             imagesFileUploader: [],
             newImages: [],
             isFileUploaderFull: false,
+            id: '',
             listing: {
                 name: "",
                 target_completion_datefrom: "",
@@ -382,7 +370,6 @@ export default {
                 state: null,
                 district: null,
             },
-            draftListingId: "",
             //   Validation
             required,
         };
@@ -423,14 +410,15 @@ export default {
         },
 
         ...mapActions({
-            saveListing: "listing/saveListing",
-            publishLising: "listing/publishLising",
+            updateListing: "listing/updateListing",
+            loadListing: "listing/loadListing",
         }),
 
-        async saveListingTrigger() {
+        async updateListingTrigger() {
             this.$refs.validationRules.validate().then(async (success) => {
                 if (success) {
                     let listingData = new FormData();
+                    listingData.append("id", this.id);
                     listingData.append("title", this.listing.title);
                     listingData.append(
                         "target_completion_datefrom",
@@ -459,12 +447,9 @@ export default {
                         listingData.append("images[]", newImage);
                     });
 
-                    await this.saveListing(listingData)
+                    await this.updateListing(listingData)
                         .then((response) => {
                             if (response.success) {
-                                console.log(response.data);
-                                this.draftListingId = response.data.id;
-                                console.log(this.draftListingId, "draftListingId");
 
                                 this.$toast({
                                     component: ToastificationContent,
@@ -474,6 +459,8 @@ export default {
                                         variant: "success",
                                     },
                                 });
+
+                                this.$router.push({ name: 'listings.view', params: { id: this.id} })
                             } else {
                                 console.log(response);
                                 this.$toast({
@@ -499,48 +486,6 @@ export default {
                         });
                 }
             });
-        },
-
-        // publish listing
-        publishListingTrigger() {
-            let listingData = new FormData();
-            listingData.append( "id", this.draftListingId );
-            this.publishLising(listingData)
-                .then((response) => {
-                    if (response.success) {
-                        console.log(response.data);
-                        this.draftListingId = response.data.id;
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
-                                title: response.message,
-                                icon: "EditIcon",
-                                variant: "success",
-                            },
-                        });
-                    } else {
-                        console.log(response);
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
-                                title: response.message,
-                                icon: "EditIcon",
-                                variant: "danger",
-                            },
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                            title: "Error While Adding!",
-                            icon: "EditIcon",
-                            variant: "danger",
-                        },
-                    });
-                });
         },
 
         // Initialize Google Map on focus
@@ -612,6 +557,35 @@ export default {
     },
     mounted() {
         this.initMap()
+
+        this.id = this.$route.params.id;
+
+        this.loadListing({ id: this.id, role_id: 3 })
+            .then((response) => {
+                if (response.success) {
+                    this.listing = response.data[0];
+                } else {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
     },
     directives: {
         Ripple,

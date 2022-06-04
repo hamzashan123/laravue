@@ -7,6 +7,7 @@
           <feather-icon icon="MenuIcon" size="21" />
         </b-link>
       </li>
+
     </ul>
 
     <!-- Left Col -->
@@ -67,12 +68,15 @@ import {
 import DarkToggler from "@core/layouts/components/app-navbar/components/DarkToggler.vue";
 import NotificationDropdown from "./NotificationDropdown.vue";
 import { mapActions, mapGetters } from "vuex";
+import { can } from '@/auth/authentication'
 
 export default {
     data() {
         return {
             user: {},
-            userRole: {}
+            userRole: {},
+            can
+
 
         }
     },

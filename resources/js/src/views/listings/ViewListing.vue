@@ -23,7 +23,7 @@
                     </b-button>
 
                     <b-button
-                        v-if="listing.status === 'publish'"
+                        v-if="listing.status === 'publish' && can('create', 'proposal') "
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'proposals.add', params: { listingId: id } }"
@@ -32,15 +32,17 @@
                     </b-button>
 
                     <b-button
+                        v-if="can('update', 'visit')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
                         :to="{ name: 'listings.add-more' }"
                     >
-                        Add More data
+                        Add Visits data
                     </b-button>
                     <b-button
+                        v-if="can('read', 'listing')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="light"
+                        variant="primary"
                         :to="{ name: 'listings.detail' }"
                     >
                         See Latest Details
@@ -52,6 +54,18 @@
         <b-card>
             <b-overlay :show="isLoading" rounded="sm">
                 <b-row>
+                    <b-col lg="12" >
+                        <div class="text-right">
+                            <b-button
+                            v-if="can('update', 'listing')"
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="primary"
+                            :to="{ name: 'listings.edit', params: { listingId: id } }"
+                        >
+                            Edit
+                            </b-button>
+                        </div>
+                    </b-col>
                     <b-col md="6">
                         <h4 class="mb-2 text-primary">
                             <feather-icon
@@ -139,7 +153,7 @@
                                 size="18"
                                 class="mr-50"
                             />
-                            Listing Details ( Please enter as mush as possible )
+                            Listing Details
                         </h4>
                         <b-form-group
                             label="Name your listing"
@@ -279,6 +293,7 @@ import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { can } from '@/auth/authentication.js'
 
 export default {
     components: {
@@ -307,6 +322,7 @@ export default {
             listing: {},
             statuses_color,
             draftListingId: '',
+            can,
         };
     },
     methods: {
