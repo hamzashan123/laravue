@@ -4,7 +4,7 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Create Proposal - {{ listing.title }}</h1>
+                    <h1>Send your proposal - {{ listing.title }}</h1>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
@@ -157,6 +157,7 @@
                                 class="w-25"
                                 :src="image.image"
                             />
+                            <div v-if="!listing.images">No images found</div>
                         </div>
                     </b-col>
                     <!-- Details Form -->
@@ -167,7 +168,7 @@
                                 size="18"
                                 class="mr-50"
                             />
-                            Listing Details ( Please enter as mush as possible )
+                            Listing Details ( by Client )
                         </h4>
                         <b-form-group
                             label="Name your listing"
@@ -355,6 +356,7 @@ export default {
                                 variant: "success",
                             },
                         });
+                        this.$router.push({ name: 'proposals' })
                     } else {
                         console.log(response);
                         this.$toast({
@@ -381,12 +383,17 @@ export default {
         },
     },
     computed: {
-        ...mapGetters({ isLoading: "listing/getIsLoading" }),
+        ...mapGetters({ isLoading: "listing/getIsLoading"  }),
     },
     created() {
         this.listingId = this.$route.params.listingId;
 
-        this.loadListing({ id: this.listingId, role_id: 3 })
+        const getUser = JSON.parse(localStorage.getItem("userData")) || ''
+        const user_Role = getUser.user_role || '';
+        const userRoleID = user_Role.id || ''
+
+
+        this.loadListing({ id: this.listingId, role_id: userRoleID })
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];

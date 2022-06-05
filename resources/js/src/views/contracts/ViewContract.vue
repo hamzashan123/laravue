@@ -1,0 +1,727 @@
+<template>
+    <div>
+        <!-- Header -->
+        <b-row class="mb-4">
+            <b-col md="6" sm="12">
+                <b-card-text>
+                    <h1>Published Listing ( Bahdurgarh Peeragarhi )</h1>
+                </b-card-text>
+            </b-col>
+            <b-col md="6" sm="12" >
+                <div class="text-right">
+                    <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="secondary"
+                        :to="{ name: 'listings.view' }"
+                    >
+                        Back to listing
+                    </b-button>
+                    <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="primary"
+                        :to="{ name: 'listings.detail' }"
+                    >
+                        See Latest Details
+                    </b-button>
+                </div>
+            </b-col>
+        </b-row>
+
+        <!-- Date and amount Form -->
+        <b-row>
+            <b-col md="4" >
+                <b-card class="bg-primary bg-lighten-5">
+                    <b-row>
+                        <b-col cols="6">
+                            <b-card-title class="mb-1"> Clients Expectation </b-card-title>
+                            <div class="font-small-2">This Month</div>
+                            <h5 class="mb-1">$4055.56</h5>
+                            <b-card-text class="text-muted font-small-2">
+                                <span class="font-weight-bolder">68.2%</span
+                                ><span> more earnings than last month.</span>
+                            </b-card-text>
+                        </b-col>
+                        <b-col cols="6">
+                            <b-card-title class="mb-1"> Earnings </b-card-title>
+                            <div class="font-small-2">This Month</div>
+                            <h5 class="mb-1">$4055.56</h5>
+                            <b-card-text class="text-muted font-small-2">
+                                <span class="font-weight-bolder">68.2%</span
+                                ><span> more earnings than last month.</span>
+                            </b-card-text>
+                        </b-col>
+                    </b-row>
+                </b-card>
+            </b-col>
+            <b-col md="4">
+                <b-card class="bg-danger bg-lighten-5">
+                    <b-row>
+                        <b-col cols="6">
+                            <b-card-title class="mb-1"> Contractor Estimates </b-card-title>
+                            <div class="font-small-2">This Month</div>
+                            <h5 class="mb-1">$4055.56</h5>
+                            <b-card-text class="text-muted font-small-2">
+                                <span class="font-weight-bolder">68.2%</span
+                                ><span> more earnings than last month.</span>
+                            </b-card-text>
+                        </b-col>
+                        <b-col cols="6">
+                            <b-card-title class="mb-1"> Contract Status </b-card-title>
+                            <div class="font-small-2">This Month</div>
+                            <h5 class="mb-1">$4055.56</h5>
+                            <b-card-text class="text-muted font-small-2">
+                                <span class="font-weight-bolder">68.2%</span
+                                ><span> more earnings than last month.</span>
+                            </b-card-text>
+                        </b-col>
+                    </b-row>
+                </b-card>
+            </b-col>
+            <b-col md="4">
+                <b-card class="bg-success bg-lighten-5">
+                    <b-row>
+                        <b-col cols="6">
+                            <b-card-title class="mb-1"> Contract Status </b-card-title>
+                            <div class="font-small-2">This Month</div>
+                            <h5 class="mb-1">$4055.56</h5>
+                            <b-card-text class="text-muted font-small-2">
+                                <span class="font-weight-bolder">68.2%</span
+                                ><span> more earnings than last month.</span>
+                            </b-card-text>
+                        </b-col>
+                        <b-col cols="6">
+                            <b-card-title class="mb-1"> Earnings </b-card-title>
+                            <div class="font-small-2">This Month</div>
+                            <h5 class="mb-1">$4055.56</h5>
+                            <b-card-text class="text-muted font-small-2">
+                                <span class="font-weight-bolder">68.2%</span
+                                ><span> more earnings than last month.</span>
+                            </b-card-text>
+                        </b-col>
+                    </b-row>
+                </b-card>
+            </b-col>
+        </b-row>
+
+        <!-- Images and Detail -->
+        <b-card>
+            <b-form @submit.prevent>
+                <b-row>
+                    <!-- Tabs -->
+                    <b-col md="6" class="mb-2">
+                        <b-tabs>
+                            <b-tab active>
+                                <template #title>
+                                    <feather-icon icon="HomeIcon" />
+                                    <span>Legal</span>
+                                </template>
+                                <b-row>
+                                    <!-- timeline -->
+                                    <b-col md="12" class="mb-2">
+                                        <h4 class="mb-2">
+                                            <feather-icon
+                                                icon="ChevronsUpIcon"
+                                                size="18"
+                                                class="mr-50"
+                                            />
+                                            Updates About Project
+                                        </h4>
+
+                                        <app-timeline>
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 4 - 40%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >01.03.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="40%"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 3 - 30%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >01.04.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="30"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 2 - 15%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >25.03.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="15"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 1 - 10%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >01.03.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <p>Some info here</p>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="10"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+                                        </app-timeline>
+                                    </b-col>
+                                </b-row>
+                            </b-tab>
+                            <b-tab>
+                                <template #title>
+                                    <feather-icon icon="ToolIcon" />
+                                    <span>Payments</span>
+                                </template>
+
+                                <b-row>
+                                    <!-- timeline -->
+                                    <b-col md="12" class="mb-2">
+                                        <h4 class="mb-2">
+                                            <feather-icon
+                                                icon="ChevronsUpIcon"
+                                                size="18"
+                                                class="mr-50"
+                                            />
+                                            Updates About Project
+                                        </h4>
+
+                                        <app-timeline>
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 4 - 40%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >01.03.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        v-model="progressValue"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 3 - 30%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >01.04.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="30"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 2 - 15%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >25.03.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="15"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+
+                                            <app-timeline-item
+                                                variant="secondary"
+                                            >
+                                                <div
+                                                    class="
+                                                        d-flex
+                                                        align-items-start
+                                                        flex-sm-row
+                                                        flex-column
+                                                        flex-wrap
+                                                        justify-content-between
+                                                        mb-1 mb-sm-50
+                                                    "
+                                                >
+                                                    <h6>Report Week 1 - 10%</h6>
+                                                    <b-button
+                                                        v-ripple.400="
+                                                            'rgba(113, 102, 240, 0.15)'
+                                                        "
+                                                        variant="outline-primary"
+                                                    >
+                                                        <span
+                                                            class="align-middle"
+                                                            >01.03.2022</span
+                                                        >
+                                                        <feather-icon
+                                                            icon="CalendarIcon"
+                                                            class="mr-50"
+                                                        />
+                                                    </b-button>
+                                                </div>
+                                                <p>Some info here</p>
+                                                <div class="progress-wrapper">
+                                                    <b-progress
+                                                        value="10"
+                                                        max="100"
+                                                        show-value
+                                                        height="20px"
+                                                    />
+                                                </div>
+                                            </app-timeline-item>
+                                        </app-timeline>
+                                    </b-col>
+                                </b-row>
+                            </b-tab>
+                        </b-tabs>
+                    </b-col>
+                    <!-- Details Form -->
+                    <b-col md="6" class="mb-2">
+                        <h4 class="mb-2">
+                            <feather-icon
+                                icon="ChevronsUpIcon"
+                                size="18"
+                                class="mr-50"
+                            />
+                            Listing Details
+                        </h4>
+                        <b-form-group
+                            label="Name your listing"
+                            label-for="listingTitle"
+                        >
+                            <b-form-input
+                                id="listingTitle"
+                                placeholder="Name"
+                            />
+                        </b-form-group>
+                        <div class="mb-2">
+                            <label for="listingDetails">Details</label>
+                            <b-form-textarea
+                                id="listingDetails"
+                                placeholder="Listing Details"
+                                rows="3"
+                            />
+                        </div>
+                        <b-row>
+                            <b-col lg="6" class="mb-2">
+                                <!-- <b-embed type="iframe" aspect="16by9" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen/> -->
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
+                                    width="100%"
+                                    height="300"
+                                    style="border: 0"
+                                    allowfullscreen=""
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                ></iframe>
+                            </b-col>
+                            <b-col lg="6">
+                                <b-form-group
+                                    label="Address Line 1 *"
+                                    label-for="address-line-1"
+                                >
+                                    <b-form-input
+                                        id="address-line-1"
+                                        placeholder="Address Line 1 *"
+                                        required
+                                    />
+                                </b-form-group>
+                                <b-form-group
+                                    label="Address Line 2 *"
+                                    label-for="address-line-2"
+                                >
+                                    <b-form-input
+                                        id="address-line-2"
+                                        placeholder="Address Line 2 *"
+                                        required
+                                    />
+                                </b-form-group>
+                                <b-form-group
+                                    label="Country"
+                                    label-for="country"
+                                >
+                                    <b-form-input
+                                        id="country"
+                                        placeholder="Country"
+                                        required
+                                    />
+                                </b-form-group>
+                                <b-form-group label="State" label-for="state">
+                                    <b-form-select
+                                        v-model="stateVal"
+                                        :options="state"
+                                        id="state"
+                                    />
+                                </b-form-group>
+                                <b-form-group
+                                    label="District"
+                                    label-for="district"
+                                >
+                                    <b-form-select
+                                        v-model="districtVal"
+                                        :options="district"
+                                        id="district"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <!-- Save -->
+                        <b-col class="text-right">
+                            <b-button
+                                v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                type="submit"
+                                variant="primary"
+                            >
+                                Save Details
+                            </b-button>
+                        </b-col>
+                    </b-col>
+                </b-row>
+            </b-form>
+        </b-card>
+    </div>
+</template>
+
+<script>
+import {
+    BCard,
+    BCardTitle,
+    BRow,
+    BCol,
+    BButton,
+    BCardText,
+    BLink,
+    BFormGroup,
+    BFormInput,
+    BFormCheckbox,
+    BFormDatepicker,
+    BForm,
+    BFormSelect,
+    BImg,
+    BFormFile,
+    BFormTextarea,
+    BEmbed,
+    BTabs,
+    BTab,
+    BFormRadioGroup,
+    BAvatar,
+    BMedia,
+    VBToggle,
+    BProgress,
+    BListGroup,
+    BListGroupItem,
+    BAvatarGroup,
+    BBadge,
+} from "bootstrap-vue";
+import Ripple from "vue-ripple-directive";
+import AppTimeline from "@core/components/app-timeline/AppTimeline.vue";
+import AppTimelineItem from "@core/components/app-timeline/AppTimelineItem.vue";
+
+export default {
+    data() {
+        return {
+            document_type_options: [
+                { text: "Legal Document", value: "1" },
+                { text: "Payment Document", value: "2" },
+            ],
+            minBudgetVal: null,
+            maxBudgetVal: null,
+            stateVal: null,
+            districtVal: null,
+            minBudget: [
+                { value: null, text: "Budget Minimum *" },
+                { value: "100000", text: "1000,00" },
+                { value: "1000000", text: "1000,000" },
+            ],
+            maxBudget: [
+                { value: null, text: "Budget Maximum *" },
+                { value: "100500", text: "1000,500" },
+                { value: "10000400", text: "10000,1400" },
+            ],
+            state: [
+                { value: null, text: "Select State" },
+                { value: "state", text: "state 1" },
+                { value: "state", text: "state 1" },
+            ],
+            district: [
+                { value: null, text: "Select District" },
+                { value: "state", text: "state 1" },
+            ],
+            listingImages: [
+                {
+                    imageUrl:
+                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+                },
+                {
+                    imageUrl:
+                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+                },
+                {
+                    imageUrl:
+                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+                },
+                {
+                    imageUrl:
+                        "https://media.istockphoto.com/photos/london-symbols-with-big-ben-double-decker-buses-and-red-phone-booth-picture-id1294454411?b=1&k=20&m=1294454411&s=170667a&w=0&h=UOVuoyqF8H9J3Q5u-HxrWQFRQVQnGgcoF_L8SVbhxQQ=",
+                },
+                {
+                    imageUrl:
+                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+                },
+                {
+                    imageUrl:
+                        "https://media.istockphoto.com/photos/skyscrapers-in-city-of-london-picture-id844050350?k=20&m=844050350&s=612x612&w=0&h=g9is0uhRESMFnHLfgICPpInOQd65YNF68OoFpbNuwUc=",
+                },
+            ],
+        };
+    },
+    components: {
+        BRow,
+        BCol,
+        BCard,
+        BCardTitle,
+        BButton,
+        BCardText,
+        BLink,
+        BFormGroup,
+        BFormInput,
+        BFormCheckbox,
+        BFormDatepicker,
+        BForm,
+        BFormSelect,
+        BImg,
+        BFormFile,
+        BFormTextarea,
+        BEmbed,
+        BTabs,
+        BTab,
+        BFormRadioGroup,
+        VBToggle,
+        BProgress,
+        BListGroup,
+        BListGroupItem,
+        BAvatarGroup,
+        BBadge,
+        BAvatar,
+        BMedia,
+        AppTimeline,
+        AppTimelineItem,
+    },
+    directives: {
+        Ripple,
+    },
+};
+</script>
+
+<style>
+</style>

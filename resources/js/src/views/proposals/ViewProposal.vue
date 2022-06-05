@@ -200,8 +200,8 @@
                             variant="primary"
                             :class="data.value"
                             :to="{
-                                name: 'proposals.view',
-                                params: { proposalId: data.item.id },
+                                name: 'proposals.detail',
+                                params: { id: data.item.id },
                             }"
                         >
                             See Details

@@ -138,6 +138,9 @@
                             {{ ( data.item.state ) ? data.item.state : "" }}
                             {{ ( data.item.country ) ? data.item.country : "" }}
                     </template>
+                    <template #cell(created_at)="data">
+                            {{ new Date(data.value).toDateString() }}
+                    </template>
                     <template #cell(actions)="data">
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"

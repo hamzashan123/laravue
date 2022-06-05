@@ -224,15 +224,6 @@
                                         @focus="setGmapOnFocus"
                                     />
                                     <div id="map" class="h-100 mt-2"></div>
-                                    <!-- <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
-                                        width="100%"
-                                        height="300"
-                                        style="border: 0"
-                                        allowfullscreen=""
-                                        loading="lazy"
-                                        referrerpolicy="no-referrer-when-downgrade"
-                                    ></iframe> -->
                                 </b-col>
                                 <b-col lg="6">
                                     <b-form-group
@@ -392,7 +383,6 @@ export default {
             let getImages = e.target.files;
 
             let maxImg = this.imagesShowWhileUpload.length;
-            console.log(maxImg);
 
             if (maxImg < 5) {
                 getImages.forEach((getImage) => {
@@ -462,9 +452,7 @@ export default {
                     await this.saveListing(listingData)
                         .then((response) => {
                             if (response.success) {
-                                console.log(response.data);
                                 this.draftListingId = response.data.id;
-                                console.log(this.draftListingId, "draftListingId");
 
                                 this.$toast({
                                     component: ToastificationContent,
@@ -474,6 +462,7 @@ export default {
                                         variant: "success",
                                     },
                                 });
+                                this.$router.push({ name: 'listings' })
                             } else {
                                 console.log(response);
                                 this.$toast({
@@ -508,7 +497,6 @@ export default {
             this.publishLising(listingData)
                 .then((response) => {
                     if (response.success) {
-                        console.log(response.data);
                         this.draftListingId = response.data.id;
                         this.$toast({
                             component: ToastificationContent,
@@ -518,6 +506,7 @@ export default {
                                 variant: "success",
                             },
                         });
+                        this.$router.push({ name: 'listings' })
                     } else {
                         console.log(response);
                         this.$toast({
@@ -553,7 +542,6 @@ export default {
                     types: ["address"],
                 }
             );
-            // console.log("autocomplete", this.autocomplete);
             this.autocomplete.addListener("place_changed", this.getAddressOnChange);
         },
         // Get address on change
@@ -579,7 +567,7 @@ export default {
                 }
 
                 case "route": {
-                    this.listing.address_line1 += component.short_name;
+                    this.listing.address_line1 = component.short_name;
                     break;
                 }
                 case "locality":

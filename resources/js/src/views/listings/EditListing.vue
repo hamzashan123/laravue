@@ -553,6 +553,7 @@ export default {
         ...mapGetters({
             isLoading: "listing/getIsLoading",
             isCreated: "listing/getIsCreated",
+
         }),
     },
     mounted() {
@@ -560,10 +561,16 @@ export default {
 
         this.id = this.$route.params.id;
 
-        this.loadListing({ id: this.id, role_id: 3 })
+        const getUser = JSON.parse(localStorage.getItem("userData")) || ''
+        const user_Role = getUser.user_role || '';
+        const userRoleID = user_Role.id || ''
+
+        this.loadListing({ id: this.id, role_id: userRoleID })
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];
+                    console.log(response.data[0].images);
+                    this.imagesShowWhileUpload = response.data[0].images
                 } else {
                     this.$toast({
                         component: ToastificationContent,

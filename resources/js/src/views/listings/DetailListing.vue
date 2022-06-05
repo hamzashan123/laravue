@@ -188,7 +188,7 @@
           <b-col md="6" class="mb-2">
             <h4 class="mb-2">
               <feather-icon icon="ChevronsUpIcon" size="18" class="mr-50" />
-              Listing Details ( Please enter as mush as possible )
+              Listing Details ( by Client )
             </h4>
             <b-form-group label="Name your listing" label-for="listingTitle">
               <b-form-input id="listingTitle" placeholder="Name" />
