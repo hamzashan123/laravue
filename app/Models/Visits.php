@@ -16,7 +16,9 @@ class Visits extends Model
         'user_id',
         'listing_id',
         'visit_date',
-        'progress',
+        'percentage',
+        'visit_summary',
+        'visit_detail',
         'status',
         'updated_at',
         'created_at'
@@ -30,6 +32,11 @@ class Visits extends Model
     public function getListing() {
         return $this->hasOne(Listing::class,'id','listing_id')
             ->select('listing.*');
+    }
+
+    public function getImages() {
+        return $this->hasMany(VisitImages::class,'visit_id','id')
+            ->select('visit_images.*');
     }
 
 }

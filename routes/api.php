@@ -21,15 +21,11 @@ Route::post('register', [App\Http\Controllers\API\UserController::class, 'regist
 
 Route::post('getlistingbyid', [App\Http\Controllers\API\ListingController::class, 'getListingById']);
 
-Route::post('get-proposals', [App\Http\Controllers\API\ProposalController::class, 'getProposals']);
-Route::post('getproposal', [App\Http\Controllers\API\ProposalController::class, 'getProposal']);
+
 
 
 Route::post('get-listing', [App\Http\Controllers\API\ListingController::class, 'getListing']);
 Route::post('get-published-listings', [App\Http\Controllers\API\ListingController::class, 'getPublishedListings']);
-
-Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
-Route::post('get-visit-details', [App\Http\Controllers\API\VisitController::class, 'getVisitDetails']);
 
 
 Route::group(['middleware' => 'auth:api'], function() {
@@ -50,15 +46,22 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('approve-proposal', [App\Http\Controllers\API\ProposalController::class, 'approveProposal']);
     Route::post('deny-proposal', [App\Http\Controllers\API\ProposalController::class, 'denyProposal']);
     Route::post('my-listing-proposals', [App\Http\Controllers\API\ProposalController::class, 'myListingProposals']);
-    
+    Route::post('get-proposals', [App\Http\Controllers\API\ProposalController::class, 'getProposals']);
+    Route::post('get-listing-proposals', [App\Http\Controllers\API\ProposalController::class, 'getListingProposals']);
+    Route::post('get-proposal-details', [App\Http\Controllers\API\ProposalController::class, 'getProposalDetails']);
+
 
     //Visits
     Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);
-
+    Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
+    Route::post('get-visit-details', [App\Http\Controllers\API\VisitController::class, 'getVisitDetails']);
 
     //Upload Legal Document
     Route::post('upload-legal-document', [App\Http\Controllers\API\LegalDocumentsController::class, 'uploadLegalDocument']);
+    Route::post('get-legal-documents', [App\Http\Controllers\API\LegalDocumentsController::class, 'getLegalDocuments']);
     
-    
-    
+
+    //Contracts
+    Route::post('assign-contract', [App\Http\Controllers\API\ContractsController::class, 'assignContract']);
+    Route::post('get-contracts', [App\Http\Controllers\API\ContractsController::class, 'getContracts']);
 });

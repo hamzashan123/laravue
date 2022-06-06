@@ -21,9 +21,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Listing;
 use App\Models\ListingImages;
 use App\Models\LegalDocuments;
-
 use App\Http\Resources\ListingResource;
 use App\Http\Resources\LegalDocumentsResource;
+use App\Http\Resources\LegalResource;
 
 
 class LegalDocumentsController extends Controller
@@ -33,10 +33,11 @@ class LegalDocumentsController extends Controller
     public function uploadLegalDocument(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'listing_id'          => 'required',
-            'legal_document'          => 'required',            
-            'legal_document_date'          => 'required',
-            'user_type'          => 'required',
+            'listing_id'            => 'required',
+            'legal_document'        => 'required',            
+            'legal_document_date'   => 'required',
+            'user_type'             => 'required',
+            'document_type'         => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -64,6 +65,10 @@ class LegalDocumentsController extends Controller
         $input['legal_document_date'] = $input['legal_document_date'];
         $input['user_type'] = $input['user_type'];
         $input['status'] = 'active';
+        $input['document_type'] = $input['document_type'];
+        $input['notes'] = $input['notes'] ?? null;
+        $input['percentage'] = $input['percentage'] ?? 0;
+
 
         $files = $request->file('legal_document');
         foreach ($files as $file) {
@@ -77,12 +82,39 @@ class LegalDocumentsController extends Controller
             LegalDocuments::create($input);           
         }
 
-        $data = LegalDocuments::where('listing_id', $request->listing_id)->get();
+        $data = LegalDocuments::select('listing_id')->where('listing_id', $request->listing_id)
+        ->distinct()->get();
 
         $response_data = [
             'success' => true,
             'message' =>  'Upload Legal Documents successfully!',
-            'user' => LegalDocumentsResource::collection($data),
+            'user' => LegalResource::collection($data),
+        ];
+        return response()->json($response_data, $this->successStatus);       
+    }
+
+    public function getLegalDocuments(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'listing_id'            => 'required',           
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $data = LegalDocuments::select('listing_id')->where('listing_id', $request->listing_id)
+        ->distinct()->get();
+
+        $response_data = [
+            'success' => true,
+            'message' =>  'Legal Documents',
+            'user' => LegalResource::collection($data),
         ];
         return response()->json($response_data, $this->successStatus);
        

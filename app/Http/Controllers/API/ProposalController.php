@@ -57,6 +57,16 @@ class ProposalController extends Controller
             return response()->json($response_data);
         }
 
+        $proposal = Proposals::where('listing_id',$request->listing_id)->where('user_id', Auth::user()->id)->first();
+        if($proposal != null) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Proposal already send',
+            ];
+            return response()->json($response_data);
+        }
+
+
         $data = Listing::where('id',$request->listing_id)->where('status', 'publish')->first();
 
         if ($data != null) {
@@ -112,7 +122,7 @@ class ProposalController extends Controller
 
             $listing = Listing::where('id',$data->listing_id)->first();
             if($listing != null) {
-                $listing->status = 'approved';
+                $listing->status = 'waiting_assignment';
                 $listing->save();
             }
 
@@ -177,20 +187,29 @@ class ProposalController extends Controller
         }
     }
 
-    public function getProposal(Request $request)
+    public function getProposalDetails(Request $request)
     {
-        $data = null;
-        if($request->id != null) {
-            $data = Proposals::where('id',$request->id)->get();
-        } else {
-            $data = Proposals::get();
+        $validator = Validator::make($request->all(), [
+            'id'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
         }
 
-        if (count($data) > 0) {
+       
+        $data = Proposals::where('id',$request->id)->first();        
+
+        if ($data != null) {
             $response_data = [
                 'success' => true,
-                'message' => 'Proposal List',
-                'data' => ProposalsResource::collection($data),
+                'message' => 'Proposal Detail',
+                'data' => new ProposalsResource($data),
             ];
             return response()->json($response_data, $this->successStatus);
         }
@@ -226,14 +245,60 @@ class ProposalController extends Controller
     }
 
     public function getProposals(Request $request)
-    {       
-        $data = Listing::get();        
+    {
+
+        $data;
+        switch(Auth::user()->role_id) {
+            case 1:         //Client
+                $data = Listing::where('user_id',Auth::user()->id)->where('status', '!=','draft');
+                break;            
+            case 3:         //EB Staff
+                $data = Listing::where('status', '!=','draft');
+                break;
+        }
+
+        $data = $data->paginate(10);
+
 
         if (count($data) > 0) {
             $response_data = [
                 'success' => true,
                 'message' => 'Listing Proposals',
                 'data' => GetProposalResource::collection($data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function getListingProposals(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'listing_id'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+        
+        $data = Proposals::where('listing_id', $request->listing_id)->paginate(10);       
+
+        if (count($data) > 0) {
+            $response_data = [
+                'success' => true,
+                'message' => 'Listing Proposals',
+                'data' => ProposalsResource::collection($data),
             ];
             return response()->json($response_data, $this->successStatus);
         }
