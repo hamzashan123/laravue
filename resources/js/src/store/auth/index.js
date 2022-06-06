@@ -4,6 +4,7 @@ export default {
     namespaced: true,
     state: {
         user: {},
+        roleId: '',
         message: "",
         isLoading: false,
         error: "",
@@ -11,6 +12,7 @@ export default {
     },
     getters: {
         getMessage: (state) => state.message,
+        roleId: (state) => state.roleId,
         getUser: (state) => state.user,
         getError: (state) => state.error,
         isLoading: (state) => state.isLoading,
@@ -26,6 +28,9 @@ export default {
         },
         setUser(state, user) {
             state.user = user;
+        },
+        setRoleId(state, id) {
+            state.roleId = id;
         },
         setError(state, error) {
             state.error = error;
@@ -54,6 +59,8 @@ export default {
                         await commit("isLoggedIn", true);
 
                         await commit("setUser", user);
+                        await commit("setRoleId", resp.data.user.user_role.id);
+                        console.log(resp.data.user.user_role.id);
                         await commit("setError", "");
                         await commit("setMessage", resp.data.message);
                         await commit("setIsLoading", false);

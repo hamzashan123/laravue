@@ -148,13 +148,47 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/proposals/detail',
+        path: '/proposals/detail/:id',
         name: 'proposals.detail',
         component: () => import('@/views/proposals/DetailProposal.vue'),
         meta: {
             navActiveLink: 'proposals'
         },
     },
+    {
+        path: '/contracts',
+        name: 'contracts',
+        component: () => import('@/views/contracts/Contracts.vue'),
+    },
+    {
+        path: '/contracts/add/:id',
+        name: 'contracts.add',
+        component: () => import('@/views/contracts/AddContract.vue'),
+        meta: {
+            navActiveLink: 'contracts'
+        },
+    },
+    {
+        path: '/contracts/view/:id',
+        name: 'contracts.view',
+        component: () => import('@/views/contracts/ViewContract.vue'),
+        meta: {
+            navActiveLink: 'contracts'
+        },
+    },
+    {
+        path: '/contracts/detail/:id',
+        name: 'contracts.detail',
+        component: () => import('@/views/contracts/DetailContract.vue'),
+        meta: {
+            navActiveLink: 'contracts'
+        },
+    },
+    // {
+    //     path: '/chat',
+    //     name: 'chat',
+    //     component: () => import('@/views/chat/Chat.vue'),
+    // },
     {
       path: '/accounts',
       name: 'accounts',

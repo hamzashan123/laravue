@@ -15,7 +15,7 @@
             variant="secondary"
             :to="{ name: 'listings.view' }"
           >
-            Add More data
+            Back to listing
           </b-button>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"

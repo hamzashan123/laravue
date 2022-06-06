@@ -179,20 +179,7 @@
                         </div>
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <b-form-input
-                                    id="gmap-autocompelte"
-                                    placeholder="Search Address"
-                                    disabled
-                                />
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
-                                    width="100%"
-                                    height="300"
-                                    style="border: 0"
-                                    allowfullscreen=""
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                ></iframe>
+                                <div id="map" class="h-100 mt-2"></div>
                             </b-col>
                             <b-col lg="6">
                                 <b-form-group
@@ -323,6 +310,8 @@ export default {
             statuses_color,
             draftListingId: '',
             can,
+
+            latLng: { lat: 20.5937, lng: 78.9629 },
         };
     },
     methods: {
@@ -335,7 +324,7 @@ export default {
                 .then((response) => {
                             if (response.success) {
                                 console.log(response.data);
-                                this.draftListingId = response.data.id
+                                this.listing.status = response.data.status
                                 this.$toast({
                                     component: ToastificationContent,
                                     props: { title: response.message, icon: "EditIcon", variant: "success" },
@@ -356,6 +345,27 @@ export default {
                             });
                         });
         },
+
+        // Initialize map
+        initMap() {
+            let map = new google.maps.Map(document.getElementById("map"), {
+                center: this.latLng,
+                zoom: 12,
+            });
+
+            //  var geocoder = new google.maps.Geocoder();
+            // geocoder.geocode({ 'address': "Navale Bridge, Maharashtra," }, function (results, status) {
+            //     if (status == google.maps.GeocoderStatus.OK) {
+            //         map.setCenter(results[0].geometry.location);
+            //         var marker = new google.maps.Marker({
+            //             map: map,
+            //             position: results[0].geometry.location,
+            //         });
+            //     } else
+            //       alert("Problem with geolocation");
+
+            // });
+        }
     },
     computed: {
         ...mapGetters({ isLoading: "listing/getIsLoading" }),
@@ -363,7 +373,11 @@ export default {
     created() {
         this.id = this.$route.params.id;
 
-        this.loadListing({ id: this.id, role_id: 3 })
+        const getUser = JSON.parse(localStorage.getItem("userData")) || ''
+        const user_Role = getUser.user_role || '';
+        const userRoleID = user_Role.id || ''
+
+        this.loadListing({ id: this.id, role_id: userRoleID})
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];
@@ -389,6 +403,9 @@ export default {
                     },
                 });
             });
+    },
+    mounted() {
+        this.initMap()
     },
     directives: {
         Ripple,

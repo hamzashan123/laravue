@@ -41,13 +41,13 @@ export default {
         // Getting All
         loadListings({ commit }) {
             commit("setIsLoading", true);
-            let endpoint = ''
+            let endpoint = 'get-listing'
             if( can("create", "proposal") ){
                 endpoint = 'get-published-listings'
             } else if( can("create", "listing") ){
                 endpoint = 'my-listings'
-            } else {
-                endpoint = 'get-listings'
+            } else if( can("create", "visit") ){
+                endpoint = 'get-listing'
             }
             return new Promise((resolve, reject) => {
                 axios({ url: endpoint, method: "POST" })
