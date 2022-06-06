@@ -26,13 +26,15 @@ class LegalDocumentsResource extends JsonResource
 
         return [
             'id'=> $this->id,
-            'user'=> new UserResource($this->getUser),
-            'listing'=> new ListingResource($this->getListing),
+            'user'=> new UserResource($this->getUser),           
             'legal_document_name'=> $this->legal_document_name,
             'legal_document_path'=> $document,
             'legal_document_date'=> $this->legal_document_date,
             'user_type'=> $this->user_type,
-            'status'=> $this->status,            
+            'status'=> $this->status,
+            'document_type'=> $this->document_type,            
+            'notes'=> $this->notes,            
+            'percentage'=> $this->percentage, 
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
         ];

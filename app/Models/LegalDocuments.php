@@ -20,6 +20,9 @@ class LegalDocuments extends Model
         'legal_document_date',
         'user_type',
         'status',
+        'document_type',
+        'notes',
+        'percentage',
         'updated_at',
         'created_at'
     ];   
@@ -34,4 +37,27 @@ class LegalDocuments extends Model
             ->select('listing.*');
     }
 
+    public function getLegalClientDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','listing_id')
+            ->where('user_type','client')->where('document_type','legal')
+            ->select('listing_documents.*');
+    }
+
+    public function getLegalContractorDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','listing_id')
+            ->where('user_type','contractor')->where('document_type','legal')
+            ->select('listing_documents.*');
+    }
+
+    public function getFinanceClientDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','listing_id')
+            ->where('user_type','client')->where('document_type','finance')
+            ->select('listing_documents.*');
+    }
+
+    public function getFinanceContractorDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','listing_id')
+            ->where('user_type','contractor')->where('document_type','finance')
+            ->select('listing_documents.*');
+    }
 }
