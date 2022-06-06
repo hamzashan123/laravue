@@ -46,9 +46,13 @@
                                             placeholder="Select From Date"
                                             id="target_completion_datefrom"
                                             class="mb-1 p-0"
-                                            v-model="listing.target_completion_datefrom"
+                                            v-model="
+                                                listing.target_completion_datefrom
+                                            "
                                             name="target_completion_datefrom"
-                                            :state="errors.length > 0 ? false : null "
+                                            :state="
+                                                errors.length > 0 ? false : null
+                                            "
                                         />
                                         <small class="text-danger">{{
                                             errors[0]
@@ -144,15 +148,25 @@
                         <!-- Images -->
                         <b-col md="6" class="mb-2">
                             <div class="d-flex flex-wrap mb-2">
-                                <b-img
-                                    v-for="(
-                                        image, idx
-                                    ) in imagesShowWhileUpload"
+                                <div
+                                    class="imag w-25 position-relative"
+                                    v-for="(image, idx) in imagesShowWhileUpload"
                                     :key="idx"
-                                    thumbnail
-                                    class="w-25"
-                                    :src="image"
-                                />
+                                >
+                                    <b-button
+                                        @click="removeSelectedImage(idx)"
+                                        variant="gradient-danger"
+                                        class="btn-icon rounded-circle position-absolute z-index"
+                                        >
+                                        <feather-icon icon="XIcon" />
+                                    </b-button>
+                                    <b-img
+                                        thumbnail
+                                        class="w-100"
+                                        :src="image"
+                                    />
+
+                                </div>
                             </div>
                             <div class="d-flex align-items-end">
                                 <b-form-file
@@ -353,7 +367,7 @@ export default {
             // map
             gmapAutocompelte: "",
             autocomplete: null,
-            place: '',
+            place: "",
             latLng: { lat: 20.5937, lng: 78.9629 },
             // listing
             imagesShowWhileUpload: [],
@@ -412,6 +426,12 @@ export default {
             this.isFileUploaderFull = false;
         },
 
+        removeSelectedImage(index) {
+            this.imagesShowWhileUpload.splice(index, 1);
+            this.newImages.splice(index, 1);
+            this.imagesFileUploader.splice(index, 1);
+        },
+
         ...mapActions({
             saveListing: "listing/saveListing",
             publishLising: "listing/publishLising",
@@ -462,7 +482,7 @@ export default {
                                         variant: "success",
                                     },
                                 });
-                                this.$router.push({ name: 'listings' })
+                                this.$router.push({ name: "listings" });
                             } else {
                                 console.log(response);
                                 this.$toast({
@@ -493,7 +513,7 @@ export default {
         // publish listing
         publishListingTrigger() {
             let listingData = new FormData();
-            listingData.append( "id", this.draftListingId );
+            listingData.append("id", this.draftListingId);
             this.publishLising(listingData)
                 .then((response) => {
                     if (response.success) {
@@ -506,7 +526,7 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.$router.push({ name: 'listings' })
+                        this.$router.push({ name: "listings" });
                     } else {
                         console.log(response);
                         this.$toast({
@@ -542,7 +562,10 @@ export default {
                     types: ["address"],
                 }
             );
-            this.autocomplete.addListener("place_changed", this.getAddressOnChange);
+            this.autocomplete.addListener(
+                "place_changed",
+                this.getAddressOnChange
+            );
         },
         // Get address on change
         getAddressOnChange() {
@@ -551,35 +574,37 @@ export default {
             // let lat = place.geometry.location.lat()
             // let lng = place.geometry.location.lng()
 
-            this.latLng = { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() }
+            this.latLng = {
+                lat: this.place.geometry.location.lat(),
+                lng: this.place.geometry.location.lng(),
+            };
 
-            this.initMap()
+            this.initMap();
 
-
-             for (const component of this.place.address_components) {
+            for (const component of this.place.address_components) {
                 // @ts-ignore remove once typings fixed
                 const componentType = component.types[0];
 
                 switch (componentType) {
-                case "street_number": {
-                    this.listing.address_line1 = `${component.long_name} ${address1}`;
-                    break;
-                }
+                    case "street_number": {
+                        this.listing.address_line1 = `${component.long_name} ${address1}`;
+                        break;
+                    }
 
-                case "route": {
-                    this.listing.address_line1 = component.short_name;
-                    break;
-                }
-                case "locality":
-                    this.listing.district = component.long_name;
-                    break;
-                case "administrative_area_level_1": {
-                    this.listing.state = component.long_name;
-                    break;
-                }
-                case "country":
-                    this.listing.country = component.long_name;
-                    break;
+                    case "route": {
+                        this.listing.address_line1 = component.short_name;
+                        break;
+                    }
+                    case "locality":
+                        this.listing.district = component.long_name;
+                        break;
+                    case "administrative_area_level_1": {
+                        this.listing.state = component.long_name;
+                        break;
+                    }
+                    case "country":
+                        this.listing.country = component.long_name;
+                        break;
                 }
             }
         },
@@ -589,8 +614,7 @@ export default {
                 center: this.latLng,
                 zoom: 12,
             });
-        }
-
+        },
     },
     computed: {
         ...mapGetters({
@@ -599,7 +623,7 @@ export default {
         }),
     },
     mounted() {
-        this.initMap()
+        this.initMap();
     },
     directives: {
         Ripple,

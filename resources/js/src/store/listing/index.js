@@ -46,7 +46,7 @@ export default {
                 endpoint = 'get-published-listings'
             } else if( can("create", "listing") ){
                 endpoint = 'my-listings'
-            } else if( can("create", "visit") ){
+            } else if( can("create", "all-listing") ){
                 endpoint = 'get-listing'
             }
             return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ export default {
                     .then((response) => {
                         commit("setIsLoading", false);
                         commit("setListings", response.data.data);
-                        resolve(response.data);
+                        return resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -73,7 +73,7 @@ export default {
                     .then((response) => {
                         commit("setIsLoading", false);
                         commit("setListings", response.data.data);
-                        resolve(response.data);
+                        return resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -129,7 +129,7 @@ export default {
                     .then(( response ) => {
                         console.log(response);
                         commit("setIsLoading", false)
-                        resolve( response.data )
+                        return resolve( response.data )
                     })
                     .catch((error) => {
                         commit("setIsLoading", false)

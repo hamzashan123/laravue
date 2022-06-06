@@ -131,15 +131,25 @@
                         <!-- Images -->
                         <b-col md="6" class="mb-2">
                             <div class="d-flex flex-wrap mb-2">
-                                <b-img
-                                    v-for="(
-                                        image, idx
-                                    ) in imagesShowWhileUpload"
+                                <div
+                                    class="imag w-25 position-relative"
+                                    v-for="(image, idx) in imagesShowWhileUpload"
                                     :key="idx"
-                                    thumbnail
-                                    class="w-25"
-                                    :src="image"
-                                />
+                                >
+                                    <b-button
+                                        @click="removeSelectedImage(idx)"
+                                        variant="gradient-danger"
+                                        class="btn-icon rounded-circle position-absolute z-index"
+                                        >
+                                        <feather-icon icon="XIcon" />
+                                    </b-button>
+                                    <b-img
+                                        thumbnail
+                                        class="w-100"
+                                        :src="image.image"
+                                    />
+
+                                </div>
                             </div>
                             <div class="d-flex align-items-end">
                                 <b-form-file
@@ -407,6 +417,12 @@ export default {
             this.imagesShowWhileUpload = [];
             this.newImages = [];
             this.isFileUploaderFull = false;
+        },
+
+        removeSelectedImage(index) {
+            this.imagesShowWhileUpload.splice(index, 1);
+            this.newImages.splice(index, 1);
+            this.imagesFileUploader.splice(index, 1);
         },
 
         ...mapActions({

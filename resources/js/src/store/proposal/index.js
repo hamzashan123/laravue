@@ -1,12 +1,16 @@
 import axios from "axios";
 
+import { can } from '@/auth/authentication.js'
+
 export default {
     namespaced: true,
     state: {
         proposals: "",
+        listingProposals: '',
         message: "",
         error: "",
         isLoading: false,
+        isDataLoading: false,
         isCreated: false,
         isUpdated: false,
         isDeleted: false,
@@ -14,6 +18,7 @@ export default {
     getters: {
         getProposal: (state) => state.proposals,
         getIsLoading: (state) => state.isLoading,
+        getIsDataLoading: (state) => state.isDataLoading,
         getMessage: (state) => state.message,
         getError: (state) => state.error,
         getIsCreated: (state) => state.isCreated,
@@ -22,8 +27,14 @@ export default {
         setProposals(state, proposals) {
             state.proposals = proposals;
         },
+        setListingProposals(state, proposals) {
+            state.listingProposals = proposals;
+        },
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
+        },
+        setIsDataLoading(state, payload) {
+            state.isDataLoading = payload;
         },
         setMessage(state, message) {
             state.message = message;
@@ -38,62 +49,86 @@ export default {
     actions: {
         // Getting All
         loadProposals({ commit }) {
-            commit("setIsLoading", true);
+            commit("setIsDataLoading", true);
+            let endpoint = ''
+            if( can("create", "proposal") ){
+                endpoint = 'get-proposals'
+            } else if( can("create", "listing") ){
+                endpoint = 'my-listing-proposals'
+            } else if( can("create", "all-listing") ){
+                endpoint = 'get-proposals'
+            }
             return new Promise((resolve, reject) => {
-                axios({ url: "get-proposals", method: "POST" })
+                axios({ url: endpoint, method: "POST" })
                     .then((response) => {
-                        commit("setIsLoading", false);
+                        console.log(response);
+                        commit("setIsDataLoading", false);
                         commit("setProposals", response.data.data);
                         resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
-                        commit("setIsLoading", false);
+                        commit("setIsDataLoading", false);
                         commit("setError", error);
                         reject(error);
                     });
             });
         },
 
-        // Getting Single
-        loadProposal({ commit }, ids) {
-            commit("setIsLoading", true);
+        // Getting Single listing proposals
+        loadListingProposals({ commit }, ids) {
+            commit("setIsDataLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "getproposalbyid", data: ids, method: "POST" })
+                axios({ url: "get-listing-proposals", data: ids, method: "POST" })
                     .then((response) => {
-                        commit("setIsLoading", false);
-                        commit("setProposals", response.data.data);
+                        commit("setIsDataLoading", false);
+                        commit("setListingProposals", response.data.data);
                         resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
-                        commit("setIsLoading", false);
+                        commit("setIsDataLoading", false);
                         commit("setError", error);
                         reject(error);
                     });
             });
         },
 
-        // Saving
-        sendProposal({ commit }, proposalData) {
+        // Getting Single proposal detail
+        loadProposal({ commit }, id) {
+            commit("setIsDataLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "get-proposal-details", data: id, method: "POST" })
+                    .then((response) => {
+                        commit("setIsDataLoading", false);
+                        commit("setListingProposals", response.data.data);
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsDataLoading", false);
+                        commit("setError", error);
+                        reject(error);
+                    });
+            });
+        },
+
+        // approve propsoal
+        approveProposal({ commit }, proposalId) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({
-                    url: "send-proposal",
-                    data: proposalData,
+                    url: "approve-proposal",
+                    data: proposalId,
                     method: "post",
                 })
                     .then((response) => {
                         if (response.data.success) {
                             console.log(response);
 
-                            commit("setIsCreated", true);
-                            commit("setMessage", response.data.message);
                             commit("setIsLoading", false);
                             return resolve(response.data);
                         } else {
-                            commit("setIsCreated", false);
-                            commit("setError", response.data.message);
                             commit("setIsLoading", false);
                             return resolve(response.data);
                         }
@@ -107,23 +142,35 @@ export default {
             });
         },
 
-        // publish proposal
-        publishLising({commit}, draftProposalId) {
-            commit("setIsLoading", true)
+        // reject / deny propsoal
+        rejectProposal({ commit }, proposalId) {
+            commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: 'publish-proposal', data: draftProposalId, method: 'post' })
-                    .then(( response ) => {
-                        console.log(response);
-                        commit("setIsLoading", false)
-                        resolve( response.data )
+                axios({
+                    url: "deny-proposal",
+                    data: proposalId,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
                     })
                     .catch((error) => {
-                        commit("setIsLoading", false)
-                        console.log(error)
-                        reject(error)
-                     })
-            })
-        }
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        reject(error);
+                    });
+            });
+        },
+
 
         // Updating
 
