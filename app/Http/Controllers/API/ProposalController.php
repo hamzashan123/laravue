@@ -251,6 +251,9 @@ class ProposalController extends Controller
         switch(Auth::user()->role_id) {
             case 1:         //Client
                 $data = Listing::where('user_id',Auth::user()->id)->where('status', '!=','draft');
+                break;
+            case 2:         //Contractor
+                $data = Listing::where('user_id',Auth::user()->id)->where('status', '!=','draft');
                 break;            
             case 3:         //EB Staff
                 $data = Listing::where('status', '!=','draft');
