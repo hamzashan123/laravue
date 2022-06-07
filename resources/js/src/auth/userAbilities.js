@@ -13,13 +13,13 @@ export const userAbilities = {
         create: ["proposal", ],
         read: ["proposal"],
         delete: ["proposal"],
-        update: ["proposal", "visit"],
+        update: ["proposal"],
     },
     3: { // Eb Staff
-        create: ["listing", "proposal", "account", "user"],
-        read: ["listing", "proposal", "account", "user"],
-        delete: ["listing", "proposal", "account", "user"],
-        update: ["listing", "proposal", "account", "user"],
+        create: ["all-listing", "all-proposal", "visit", "account", "user"],
+        read: ["all-listing", "all-proposal",  "visit", "account", "user"],
+        delete: ["all-listing", "all-proposal", "visit", "account", "user"],
+        update: ["all-listing", "all-proposal", "visit", "account", "user"],
     },
 
 };

@@ -139,6 +139,15 @@ const router = new VueRouter({
             navActiveLink: 'proposals'
         },
     },
+
+    {
+        path: '/proposals/listing/:listingId',
+        name: 'proposals.listing',
+        component: () => import('@/views/proposals/ListingProposal.vue'),
+        meta: {
+            navActiveLink: 'proposals'
+        },
+    },
     {
         path: '/proposals/view/:proposalId',
         name: 'proposals.view',
@@ -147,14 +156,14 @@ const router = new VueRouter({
             navActiveLink: 'proposals'
         },
     },
-    {
-        path: '/proposals/detail/:id',
-        name: 'proposals.detail',
-        component: () => import('@/views/proposals/DetailProposal.vue'),
-        meta: {
-            navActiveLink: 'proposals'
-        },
-    },
+    // {
+    //     path: '/proposals/detail/:id',
+    //     name: 'proposals.detail',
+    //     component: () => import('@/views/proposals/DetailProposal.vue'),
+    //     meta: {
+    //         navActiveLink: 'proposals'
+    //     },
+    // },
     {
         path: '/contracts',
         name: 'contracts',

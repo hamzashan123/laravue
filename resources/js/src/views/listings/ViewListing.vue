@@ -57,7 +57,7 @@
                     <b-col lg="12" >
                         <div class="text-right">
                             <b-button
-                            v-if="can('update', 'listing')"
+                            v-if="can('update', 'listing') || can('update', 'all-listing')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
                             :to="{ name: 'listings.edit', params: { listingId: id } }"
@@ -142,8 +142,30 @@
                                 thumbnail
                                 class="w-25"
                                 :src="image.image"
+                                v-b-modal.modal-listing-images
                             />
                         </div>
+                            <div v-if="!listing.images">No images found</div>
+
+                        <!-- modal -->
+                            <b-modal
+                            id="modal-listing-images"
+                            ok-only
+                            ok-title="Close"
+                            centered
+                            size="xl"
+                            >
+                            <b-carousel
+                                id="carousel-example-generic"
+                                controls
+                                indicators
+                            >
+                                <b-carousel-slide
+                                v-for="(image, idx) in listing.images"
+                                :key="idx"
+                                :img-src="image.image" />
+                            </b-carousel>
+                            </b-modal>
                     </b-col>
                     <!-- Details Form -->
                     <b-col md="6" class="mb-2">
@@ -275,6 +297,9 @@ import {
     BEmbed,
     BOverlay,
     BBadge,
+    BModal,
+    BCarousel,
+    BCarouselSlide,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
@@ -302,6 +327,9 @@ export default {
         BEmbed,
         BOverlay,
         BBadge,
+        BModal,
+        BCarousel,
+        BCarouselSlide,
     },
     data() {
         return {

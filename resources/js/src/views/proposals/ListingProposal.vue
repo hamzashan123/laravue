@@ -3,32 +3,79 @@
         <!-- Header -->
         <b-row class="mb-4">
             <b-col md="8" sm="12">
-                <b-card-text> <h1>Project Proposals</h1> </b-card-text>
+                <b-card-text> <h1>Proposals on {{ ListingTitle }}</h1> </b-card-text>
+                <span class="text-small"
+                    >Location: {{ ListingAddress }}
+                </span>
             </b-col>
             <b-col md="4" sm="12">
-                <div>
-                    <b-form-group
-                        label="Filter by Proposal Status"
-                        label-size="md"
-                        label-cols-sm="0"
-                        label-for="sortByStatus"
-                        class="mr-1 mb-md-0"
+                <div class="text-right">
+                    <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="primary"
+                        :to="{ name: 'proposals' }"
                     >
-                        <b-input-group size="md">
-                            <b-form-select
-                                id="sortByStatus"
-                                v-model="sortBy"
-                                :options="statuses_color[0]"
-                            >
-                                <template #first>
-                                    <option value="">Select Status</option>
-                                </template>
-                            </b-form-select>
-                        </b-input-group>
-                    </b-form-group>
+                        Back to Proposals
+                    </b-button>
                 </div>
             </b-col>
         </b-row>
+
+        <!-- Date and amount Form -->
+        <b-card>
+            <b-overlay :show="isDataLoading" rounded="sm">
+                <b-row>
+                    <b-col md="6">
+                        <h4 class="mb-2 text-primary">
+                            <feather-icon
+                                icon="ChevronsUpIcon"
+                                size="18"
+                                class="mr-50"
+                            />
+                            Client Target Date
+                        </h4>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="Target Date"
+                                label-for="target-date"
+                                label-cols-md="3"
+                            >
+                                <b-form-input
+                                    id="target-date"
+                                    placeholder="Target Date"
+                                    value=" 2022-03-03 - 2022-03-03 "
+                                    disabled
+                                />
+                            </b-form-group>
+                        </b-col>
+                    </b-col>
+                    <b-col md="6">
+                        <h4 class="mb-2 text-primary">
+                            <feather-icon
+                                icon="ChevronsUpIcon"
+                                size="18"
+                                class="mr-50"
+                            />
+                            Contractor Target Budget
+                        </h4>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="Target Budget"
+                                label-for="target-budget"
+                                label-cols-md="3"
+                            >
+                                <b-form-input
+                                    id="target-budget"
+                                    placeholder="Target Budget"
+                                    value="50000 - 1500000"
+                                    disabled
+                                />
+                            </b-form-group>
+                        </b-col>
+                    </b-col>
+                </b-row>
+            </b-overlay>
+        </b-card>
         <!-- Table -->
         <b-card title="Latest Proposals" no-body>
             <b-overlay :show="isDataLoading" rounded="sm">
@@ -103,36 +150,6 @@
                                 />
                             </div>
                         </div>
-
-                        <!-- sorting  -->
-                        <!-- <b-form-group
-                            label="Sort"
-                            label-size="md"
-                            label-align-sm="left"
-                            label-cols-sm="2"
-                            label-for="sortBySelect"
-                            class="mr-1 mb-md-0"
-                        >
-                            <b-input-group size="md">
-                                <b-form-select
-                                    id="sortBySelect"
-                                    v-model="sortBy"
-                                    :options="sortOptions"
-                                >
-                                    <template #first>
-                                        <option value="">none</option>
-                                    </template>
-                                </b-form-select>
-                                <b-form-select
-                                    v-model="sortDesc"
-                                    size="md"
-                                    :disabled="!sortBy"
-                                >
-                                    <option :value="false">Asc</option>
-                                    <option :value="true">Desc</option>
-                                </b-form-select>
-                            </b-input-group>
-                        </b-form-group> -->
                     </div>
                 </b-card-body>
 
@@ -151,31 +168,52 @@
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
                 >
-                    <template #cell(images)="data">
-                        <b-avatar
-                            v-for="(image, idx) in data.item.images.slice(0, 1)"
-                            :key="idx"
-                            :src="image.image"
-                            class="mx-1"
-                        />
-                    </template>
-                    <template #cell(name)="data">
-                        <span class="text-nowrap">{{ data.value }}</span>
+
+                    <template #cell(title)="data">
+                        <b-media vertical-align="center">
+                            <template #aside>
+                                <b-avatar
+                                size="32"
+                                :src="data.item.contractor.avatar"
+                                :text="data.item.contractor.first_name"
+                                variant="parimary"
+                                />
+                            </template>
+                            <span class="font-weight-bold d-block text-nowrap">
+                                {{ data.item.contractor.first_name }}
+                            </span>
+                            </b-media>
                     </template>
                     <template #cell(status)="data">
                         <b-badge :variant="statuses_color[1][data.value]">
                             {{ statuses_color[0][data.value] }}
                         </b-badge>
                     </template>
+                    <template #cell(target_budget)="data">
+                        <div class="border border-primary p-1">
+                         {{ data.item.min_budget }} -
+                         {{ data.item.max_budget }}
+                        </div>
+                    </template>
                     <template #cell(location)="data">
                         {{
-                            data.item.addaddress_line1
-                                ? data.item.addaddress_line1
+                            data.item.listing.addaddress_line1
+                                ? data.item.listing.addaddress_line1
                                 : ""
                         }}
-                        {{ data.item.district ? data.item.district : "" }}
-                        {{ data.item.state ? data.item.state : "" }}
-                        {{ data.item.country ? data.item.country : "" }}
+                        {{ data.item.listing.district ? data.item.listing.district : "" }}
+                        {{ data.item.listing.state ? data.item.listing.state : "" }}
+                        {{ data.item.listing.country ? data.item.listing.country : "" }}
+                    </template>
+                    <template #cell(target_date)="data">
+                        <div class="border border-primary p-1">
+
+                        {{ data.item.target_startdate }} -
+                         {{ data.item.target_enddate }}
+                        </div>
+                    </template>
+                    <template #cell(proposal_date)="data">
+                         {{ data.item.listing.created_at }}
                     </template>
                     <template #cell(actions)="data">
                         <b-button
@@ -183,8 +221,8 @@
                             variant="primary"
                             :class="data.value"
                             :to="{
-                                name: 'proposals.listing',
-                                params: { listingId: data.item.id },
+                                name: 'proposals.view',
+                                params: { proposalId: data.item.id },
                             }"
                         >
                             See Details
@@ -264,7 +302,8 @@ import {
     BInputGroupAppend,
     BCardBody,
     BOverlay,
-  BFormDatepicker,
+    BFormDatepicker,
+    BMedia,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
@@ -290,7 +329,8 @@ export default {
         BInputGroupAppend,
         BCardBody,
         BOverlay,
-  BFormDatepicker,
+        BFormDatepicker,
+        BMedia,
     },
     data() {
         return {
@@ -305,23 +345,18 @@ export default {
             filterOn: [],
             fields: [
                 { key: "id", label: "Id" },
-                { key: "images", label: "" },
-                { key: "title", label: "Listing Title" },
-                {
-                    key: "status",
-                    label: "Contract Status",
-                    sortable: true,
-                },
+                { key: "title", label: "Contractor Name" },
+                { key: "status", label: "Contract Status", sortable: true },
+                { key: "target_budget", label: "Target Budget", sortable: true },
                 { key: "location", label: "Location", sortable: true },
-                {
-                    key: "target_completion_datefrom",
-                    label: "Listing Date",
-                    sortable: true,
-                },
-                { key: "proposals", label: "# of Proposals", sortable: true },
+                { key: "target_date", label: "Target Date", sortable: true, },
+                { key: "proposal_date", label: "Proposal Date", sortable: true },
                 "actions",
             ],
             items: [],
+            ListingTitle: '',
+            ListingAddress: '',
+            listingId: '',
             statuses_color,
         };
     },
@@ -332,18 +367,23 @@ export default {
                 .filter((f) => f.sortable)
                 .map((f) => ({ text: f.label, value: f.key }));
         },
-        ...mapGetters({
-            isLoading: "listing/getIsLoading",
-            isDataLoading: "proposal/getIsDataLoading"
-        }),
+        ...mapGetters({ isLoading: "proposal/getIsLoading", isDataLoading: "proposal/getIsDataLoading" }),
+
+
     },
     mounted() {
-        // getting proposal
-        this.loadProposals()
+        this.listingId = this.$route.params.listingId;
+        // getting proposals on listing
+        this.loadListingProposals({ listing_id: this.listingId})
             .then((response) => {
                 console.log(response);
                 if (response.success) {
                     this.items = response.data;
+
+
+                    this.ListingTitle = this.items[0].listing.title
+                    this.ListingAddress = this.items[0].listing.address_line1
+
                 } else {
                     this.$toast({
                         component: ToastificationContent,
@@ -367,18 +407,18 @@ export default {
                 });
             });
 
-
-                    // Set the initial number of items
-                    this.totalRows = this.items.length;
+        // Set the initial number of items
+        this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadProposals: "proposal/loadProposals" }),
+        ...mapActions({ loadListingProposals: "proposal/loadListingProposals" }),
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
+
     },
     directives: {
         Ripple,
@@ -387,4 +427,5 @@ export default {
 </script>
 
 <style></style>
+
 

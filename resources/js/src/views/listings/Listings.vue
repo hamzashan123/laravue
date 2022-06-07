@@ -10,7 +10,7 @@
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        v-if="can('create', 'listing')"
+                        v-if="can('create', 'listing') || can('create', 'all-listing')"
                         :to="{ name: 'listings.add' }"
                     >
                         Create New Listing

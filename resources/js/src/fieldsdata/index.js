@@ -7,6 +7,7 @@ export const statuses_color = [
         "contract_started": "Contract Started!",
         "contract_assigned": "Contract Assigned",
         "approved": "Approved",
+        "reject": "Rejected",
         "completed": "Completed",
     },
     {
@@ -17,6 +18,7 @@ export const statuses_color = [
         "contract_started": "blue",
         "contract_assigned": "green",
         "approved": "light-info",
+        "reject": "light-danger",
         "completed": "light-success",
     },
 ];
