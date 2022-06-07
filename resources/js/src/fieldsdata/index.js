@@ -1,25 +1,33 @@
 export const statuses_color = [
     {
+        // Listing
         "draft": "Draft",
         "publish": "Published",
+        // Proposal
         "pending": "Pending",
-        "wating_assign": "Waiting Assigned",
-        "contract_started": "Contract Started!",
-        "contract_assigned": "Contract Assigned",
         "approved": "Approved",
         "reject": "Rejected",
+        "waiting_assignment": "Waiting to Assign",
+        "pre_contract": "Pre Contract",
+        // Contract
+        "contract_assigned": "Contract Assigned",
+        "contract_started": "Contract Started!",
         "completed": "Completed",
     },
     {
+        // Listing
         "draft": "light-warning",
         "publish": "light-primary",
+        // Proposal
         "pending": "light-danger",
-        "wating_assign": "light-danger",
-        "contract_started": "blue",
-        "contract_assigned": "green",
-        "approved": "light-info",
+        "approved": "light-success",
         "reject": "light-danger",
-        "completed": "light-success",
+        "waiting_assignment": "light-warning",
+        "pre_contract": "light-info",
+        // Contract
+        "contract_assigned": "primary",
+        "contract_started": "info",
+        "completed": "success",
     },
 ];
 

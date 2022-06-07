@@ -170,7 +170,7 @@ const router = new VueRouter({
         component: () => import('@/views/contracts/Contracts.vue'),
     },
     {
-        path: '/contracts/add/:id',
+        path: '/contracts/add/:listingId',
         name: 'contracts.add',
         component: () => import('@/views/contracts/AddContract.vue'),
         meta: {
@@ -178,7 +178,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/contracts/view/:id',
+        path: '/contracts/view/:contractId',
         name: 'contracts.view',
         component: () => import('@/views/contracts/ViewContract.vue'),
         meta: {

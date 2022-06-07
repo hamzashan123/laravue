@@ -9,6 +9,7 @@ import auth from './auth'
 import listing from './listing'
 import setting from './setting'
 import proposal from './proposal'
+import contract from './contract'
 
 Vue.use(Vuex)
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     listing,
     setting,
     proposal,
+    contract,
   },
   strict: process.env.DEV,
 })

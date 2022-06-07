@@ -173,13 +173,12 @@
                         <b-media vertical-align="center">
                             <template #aside>
                                 <b-avatar
-                                size="32"
+                                size="40"
                                 :src="data.item.contractor.avatar"
-                                :text="data.item.contractor.first_name"
-                                variant="parimary"
+                                variant="light-primary"
                                 />
                             </template>
-                            <span class="font-weight-bold d-block text-nowrap">
+                            <span class="font-weight-bold d-block text-nowrap mt-1">
                                 {{ data.item.contractor.first_name }}
                             </span>
                             </b-media>
@@ -219,13 +218,23 @@
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
-                            :class="data.value"
+                            class="mb-1"
                             :to="{
                                 name: 'proposals.view',
                                 params: { proposalId: data.item.id },
                             }"
                         >
                             See Details
+                        </b-button>
+
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="success"
+                            :class="data.value"
+                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
+
+                        >
+                            Assign
                         </b-button>
                     </template>
                 </b-table>
@@ -380,7 +389,6 @@ export default {
                 if (response.success) {
                     this.items = response.data;
 
-
                     this.ListingTitle = this.items[0].listing.title
                     this.ListingAddress = this.items[0].listing.address_line1
 
@@ -411,7 +419,52 @@ export default {
         this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadListingProposals: "proposal/loadListingProposals" }),
+        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract' }),
+
+        assignContractTrigger(listingId, contractortId) {
+            console.log(listingId, contractortId);
+            let assignData = new FormData();
+            assignData.append( "listing_id", listingId );
+            assignData.append( "contractor_id",  contractortId);
+
+            this.assignContract(assignData)
+                .then((response) => {
+                    if (response.success) {
+                        console.log(response.data);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                        this.$router.push({ name: 'proposals' })
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While sending!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+
+        },
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
