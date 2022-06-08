@@ -31,7 +31,7 @@
         </b-row>
         <!-- Table -->
         <b-card title="Latest Proposals" no-body>
-            <b-overlay :show="isDataLoading" rounded="sm">
+            <b-overlay :show="isDataLoading"  spinner-variant="primary">
                 <b-card-body>
                     <div class="d-flex justify-content-between flex-wrap">
                         <!-- filter -->

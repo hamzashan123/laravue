@@ -22,7 +22,7 @@
 
         <!-- Date and amount Form -->
         <b-card>
-            <b-overlay :show="isLoading" rounded="sm">
+            <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-row>
                     <b-col md="6">
                         <h4 class="mb-2 text-primary">
@@ -145,7 +145,7 @@
 
         <!-- Images and Detail -->
         <b-card>
-            <b-overlay :show="isLoading" rounded="sm">
+            <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-row>
                     <!-- Images -->
                     <b-col md="6" class="mb-2">

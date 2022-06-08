@@ -23,7 +23,7 @@
                     </b-button>
 
                     <b-button
-                        v-if="listing.status === 'publish' && can('create', 'proposal') "
+                        v-if="listing.status === 'publish' && can('create', 'proposal') || can('create', 'all-proposal') "
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'proposals.add', params: { listingId: id } }"
@@ -35,15 +35,15 @@
                         v-if="can('update', 'visit')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
-                        :to="{ name: 'listings.add-more' }"
+                        :to="{ name: 'listings.add-visits', params:{ listingId: id } }"
                     >
-                        Add Visits data
+                        Add Visits
                     </b-button>
                     <b-button
                         v-if="can('read', 'listing')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        :to="{ name: 'listings.detail' }"
+                        :to="{ name: 'listings.detail', params:{ listingId: id } }"
                     >
                         See Latest Details
                     </b-button>
@@ -52,7 +52,7 @@
         </b-row>
 
         <b-card>
-            <b-overlay :show="isLoading" rounded="sm">
+            <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-row>
                     <b-col lg="12" >
                         <div class="text-right">
@@ -131,7 +131,7 @@
 
         <!-- Images and Detail -->
         <b-card>
-            <b-overlay :show="isLoading" rounded="sm">
+            <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-row>
                     <!-- Images -->
                     <b-col md="6" class="mb-2">
@@ -151,20 +151,34 @@
                             <b-modal
                             id="modal-listing-images"
                             ok-only
-                            ok-title="Close"
                             centered
                             size="lg"
                             >
-                            <b-carousel
-                                id="carousel-example-generic"
-                                controls
-                                indicators
+                            <swiper
+                                class="swiper-navigations"
+                                :options="swiperOptions"
+                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                             >
-                                <b-carousel-slide
-                                v-for="(image, idx) in listing.images"
-                                :key="idx"
-                                :img-src="image.image" />
-                            </b-carousel>
+                                <swiper-slide
+                                v-for="(data,index) in listing.images"
+                                :key="index"
+                                >
+                                <b-img
+                                    :src="data.image"
+                                    fluid
+                                />
+                                </swiper-slide>
+
+                                <!-- Add Arrows -->
+                                <div
+                                slot="button-next"
+                                class="swiper-button-next"
+                                />
+                                <div
+                                slot="button-prev"
+                                class="swiper-button-prev"
+                                />
+                            </swiper>
                             </b-modal>
                     </b-col>
                     <!-- Details Form -->
@@ -298,14 +312,14 @@ import {
     BOverlay,
     BBadge,
     BModal,
-    BCarousel,
-    BCarouselSlide,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { can } from '@/auth/authentication.js'
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 
 export default {
     components: {
@@ -328,8 +342,7 @@ export default {
         BOverlay,
         BBadge,
         BModal,
-        BCarousel,
-        BCarouselSlide,
+        Swiper, SwiperSlide,
     },
     data() {
         return {
@@ -340,6 +353,12 @@ export default {
             can,
 
             latLng: { lat: 20.5937, lng: 78.9629 },
+            swiperOptions: {
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+                },
+            },
         };
     },
     methods: {
@@ -350,28 +369,29 @@ export default {
             listingData.append("id", this.id );
             this.publishLising( listingData )
                 .then((response) => {
-                            if (response.success) {
-                                console.log(response.data);
-                                this.listing.status = response.data.status
-                                this.$toast({
-                                    component: ToastificationContent,
-                                    props: { title: response.message, icon: "EditIcon", variant: "success" },
-                                });
-                            } else {
-                                console.log(response);
-                                this.$toast({
-                                    component: ToastificationContent,
-                                    props: { title: response.message,icon: "EditIcon",variant: "danger" },
-                                });
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            this.$toast({
-                                component: ToastificationContent,
-                                props: { title: "Error While Adding!", icon: "EditIcon", variant: "danger" },
-                            });
+                    if (response.success) {
+                        this.listing.status = response.data.status
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: { title: response.message, icon: "EditIcon", variant: "success" },
                         });
+
+                        this.$router.push({ name: 'proposals' })
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: { title: response.message,icon: "EditIcon",variant: "danger" },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: { title: "Error While Adding!", icon: "EditIcon", variant: "danger" },
+                    });
+                });
         },
 
         // Initialize map
@@ -399,7 +419,7 @@ export default {
         ...mapGetters({ isLoading: "listing/getIsLoading" }),
     },
     created() {
-        this.id = this.$route.params.id;
+        this.id = this.$route.params.listingId;
 
         const getUser = JSON.parse(localStorage.getItem("userData")) || ''
         const user_Role = getUser.user_role || '';

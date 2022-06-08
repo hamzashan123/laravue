@@ -176,6 +176,43 @@ export default {
             });
         },
 
+        // upload visits of lsiting
+        uploadVisit({ commit }, visitData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "upload-listing-visit",
+                    data: visitData,
+                    method: "post",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-type": "multipart/form-data charset=utf-8; boundary=" + Math.random().toString().substr(2),
+                    },
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+
+                            commit("setIsCreated", true);
+                            commit("setMessage", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsCreated", false);
+                            commit("setError", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        reject(error);
+                    });
+            });
+        },
+
         // Deleting
     },
 };

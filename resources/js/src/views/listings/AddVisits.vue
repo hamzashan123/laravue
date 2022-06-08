@@ -3,7 +3,13 @@
         <!-- Header -->
         <b-row class="mb-4">
             <b-col md="6" sm="12">
-                <b-card-text> <h1>Update Listing</h1> </b-card-text>
+                <b-card-text>
+                    <h1>Add Visit Details on {{ listing.title }}</h1>
+
+                    <b-badge :variant="statuses_color[1][listing.status]">
+                        {{ statuses_color[0][listing.status] }}
+                    </b-badge>
+                </b-card-text>
             </b-col>
         </b-row>
 
@@ -33,9 +39,14 @@
                                             placeholder="Select From Date"
                                             id="target_completion_datefrom"
                                             class="mb-1 p-0"
-                                            v-model="listing.target_completion_datefrom"
+                                            v-model="
+                                                listing.target_completion_datefrom
+                                            "
                                             name="target_completion_datefrom"
-                                            :state="errors.length > 0 ? false : null "
+                                            :state="
+                                                errors.length > 0 ? false : null
+                                            "
+                                            disabled
                                         />
                                         <small class="text-danger">{{
                                             errors[0]
@@ -62,6 +73,7 @@
                                             :state="
                                                 errors.length > 0 ? false : null
                                             "
+                                            disabled
                                         />
                                         <small class="text-danger">{{
                                             errors[0]
@@ -93,6 +105,7 @@
                                             :state="
                                                 errors.length > 0 ? false : null
                                             "
+                                            disabled
                                         />
                                         <small class="text-danger">{{
                                             errors[0]
@@ -112,6 +125,7 @@
                                             :state="
                                                 errors.length > 0 ? false : null
                                             "
+                                            disabled
                                         />
                                         <small class="text-danger">{{
                                             errors[0]
@@ -128,9 +142,95 @@
                 <!-- Images and Detail -->
                 <b-card>
                     <b-row>
-                        <!-- Images -->
+                        <!-- Visting detail -->
                         <b-col md="6" class="mb-2">
-                            <div class="d-flex flex-wrap mb-2">
+                            <h4 class="mb-2 text-primary">
+                                <feather-icon
+                                    icon="ChevronsUpIcon"
+                                    size="18"
+                                    class="mr-50"
+                                />
+                                Add Visit Detail
+                            </h4>
+                            <div class="mt-2">
+                                <b-row>
+                                    <b-col md="12">
+                                        <b-form-group
+                                            label="Visit Summary"
+                                            label-for="visit_summary"
+                                        >
+                                            <b-form-input
+                                                id="visit_summary"
+                                                v-model="
+                                                    listingVisit.visit_summary
+                                                "
+                                                placeholder="Add Visit Summary"
+                                            />
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="12">
+                                        <b-form-group
+                                            label="Visit Detail"
+                                            label-for="visit_detail"
+                                        >
+                                            <b-form-textarea
+                                                id="visit_detail"
+                                                v-model="
+                                                    listingVisit.visit_detail
+                                                "
+                                                placeholder="Add Visit Detail"
+                                            />
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+
+                                <b-row>
+                                    <b-col md="6">
+                                        <b-form-group
+                                            label="Percetange"
+                                            label-for="Percetange"
+                                        >
+                                            <b-form-input
+                                                v-model="
+                                                    listingVisit.percentage
+                                                "
+                                                id="Percetange"
+                                                placeholder="Add project status"
+                                            />
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                        <b-form-group
+                                            label="Visit Date"
+                                            label-for="visit_date"
+                                        >
+                                            <b-form-datepicker
+                                                v-model="
+                                                    listingVisit.visit_date
+                                                "
+                                                placeholder="Select Visit Date"
+                                                id="visit_date"
+                                                class="mb-1 p-0"
+                                                name="visit_date"
+                                            />
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                            </div>
+
+                            <hr>
+
+                            <h4 class="mb-2 text-primary">
+                                <feather-icon
+                                    icon="ChevronsUpIcon"
+                                    size="18"
+                                    class="mr-50"
+                                />
+                                Add Media
+                            </h4>
+                            <div class="mt-2 mb-3">
+
+                                <div class="d-flex flex-wrap mb-2">
                                 <div
                                     class="imag w-25 position-relative"
                                     v-for="(image, idx) in imagesShowWhileUpload"
@@ -171,6 +271,20 @@
                                     Clear
                                 </b-button>
                             </div>
+                            </div>
+                            <b-col class="text-right">
+                                <b-button
+                                    v-ripple.400="
+                                        'rgba(255, 255, 255, 0.15)'
+                                    "
+                                    type="submit"
+                                    variant="primary"
+                                    @click="uploadVisitTrigger"
+                                >
+                                    Save Visit
+                                    <b-spinner small v-if="isLoading" />
+                                </b-button>
+                            </b-col>
                         </b-col>
                         <!-- Details Form -->
                         <b-col md="6" class="mb-2">
@@ -180,8 +294,7 @@
                                     size="18"
                                     class="mr-50"
                                 />
-                                Listing Details ( Please enter as mush as
-                                possible )
+                                Listing Details
                             </h4>
                             <validation-provider
                                 #default="{ errors }"
@@ -196,6 +309,7 @@
                                         id="listingname"
                                         v-model="listing.title"
                                         placeholder="Name"
+                                        disabled
                                     />
                                 </b-form-group>
                                 <small class="text-danger">{{
@@ -210,16 +324,11 @@
                                     v-model="listing.description"
                                     placeholder="Listing Details"
                                     rows="3"
+                                    disabled
                                 />
                             </div>
                             <b-row>
                                 <b-col lg="6" class="mb-2">
-                                    <b-form-input
-                                        v-model="gmapAutocompelte"
-                                        id="gmap-autocompelte"
-                                        placeholder="Search Address"
-                                        @focus="setGmapOnFocus"
-                                    />
                                     <div id="map" class="h-100 mt-2"></div>
                                 </b-col>
                                 <b-col lg="6">
@@ -232,6 +341,7 @@
                                             id="address-line-1"
                                             placeholder="Address Line 1"
                                             required
+                                            disabled
                                         />
                                     </b-form-group>
                                     <b-form-group
@@ -242,6 +352,7 @@
                                             v-model="listing.address_line2"
                                             id="address-line-2"
                                             placeholder="Address Line 2"
+                                            disabled
                                         />
                                     </b-form-group>
                                     <b-form-group
@@ -253,6 +364,7 @@
                                             placeholder="Country"
                                             required
                                             v-model="listing.country"
+                                            disabled
                                         />
                                     </b-form-group>
                                     <b-form-group
@@ -263,6 +375,7 @@
                                             v-model="listing.state"
                                             placeholder="State"
                                             id="state"
+                                            disabled
                                         />
                                     </b-form-group>
                                     <b-form-group
@@ -273,12 +386,13 @@
                                             v-model="listing.district"
                                             placeholder="District"
                                             id="district"
+                                            disabled
                                         />
                                     </b-form-group>
                                 </b-col>
                             </b-row>
                             <!-- Update -->
-                            <b-col class="text-right">
+                            <!-- <b-col class="text-right">
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                     type="submit"
@@ -288,7 +402,7 @@
                                     Update Details
                                     <b-spinner small v-if="isLoading" />
                                 </b-button>
-                            </b-col>
+                            </b-col> -->
                         </b-col>
                     </b-row>
                 </b-card>
@@ -317,11 +431,13 @@ import {
     BFormTextarea,
     BEmbed,
     BSpinner,
+    BBadge,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { required } from "@validations";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { statuses_color } from "@/fieldsdata/index.js";
 
 export default {
     components: {
@@ -344,35 +460,27 @@ export default {
         BFormTextarea,
         BEmbed,
         BSpinner,
+        BBadge,
     },
     data() {
         return {
             // map
             gmapAutocompelte: "",
             autocomplete: null,
-            place: '',
+            place: "",
             latLng: { lat: 20.5937, lng: 78.9629 },
             // listing
             imagesShowWhileUpload: [],
             imagesFileUploader: [],
             newImages: [],
             isFileUploaderFull: false,
-            id: '',
-            listing: {
-                name: "",
-                target_completion_datefrom: "",
-                target_completion_dateto: "",
-                minimum_budget: null,
-                maximum_budget: null,
-                detail: "",
-                address_line1: "",
-                address_line2: "",
-                country: "",
-                state: null,
-                district: null,
-            },
+            id: "",
+            listing: {},
+            listingVisit: {},
             //   Validation
             required,
+
+            statuses_color
         };
     },
     methods: {
@@ -417,47 +525,27 @@ export default {
         },
 
         ...mapActions({
-            updateListing: "listing/updateListing",
+            uploadVisit: "listing/uploadVisit",
             loadListing: "listing/loadListing",
         }),
 
-        async updateListingTrigger() {
-            this.$refs.validationRules.validate().then(async (success) => {
+        uploadVisitTrigger() {
+            this.$refs.validationRules.validate().then((success) => {
                 if (success) {
-                    let listingData = new FormData();
-                    listingData.append("id", this.id);
-                    listingData.append("title", this.listing.title);
-                    listingData.append(
-                        "target_completion_datefrom",
-                        this.listing.target_completion_datefrom
-                    );
-                    listingData.append(
-                        "target_completion_dateto",
-                        this.listing.target_completion_dateto
-                    );
-                    listingData.append("min_budget", this.listing.min_budget);
-                    listingData.append("max_budget", this.listing.max_budget);
-                    listingData.append("description", this.listing.description);
-                    listingData.append(
-                        "address_line1",
-                        this.listing.address_line1
-                    );
-                    listingData.append(
-                        "address_line2",
-                        this.listing.address_line2
-                    );
-                    listingData.append("country", this.listing.country);
-                    listingData.append("state", this.listing.state);
-                    listingData.append("district", this.listing.district);
+                    let visitData = new FormData();
+                    visitData.append("listing_id", this.id)
+                    visitData.append("visit_date", this.listingVisit.visit_date)
+                    visitData.append("percentage", this.listingVisit.percentage)
+                    visitData.append("visit_summary", this.listingVisit.visit_summary)
+                    visitData.append("visit_detail", this.listingVisit.visit_detail)
 
                     this.newImages.forEach((newImage) => {
-                        listingData.append("images[]", newImage);
+                        visitData.append("images[]", newImage);
                     });
 
-                    await this.updateListing(listingData)
+                    this.uploadVisit(visitData)
                         .then((response) => {
                             if (response.success) {
-
                                 this.$toast({
                                     component: ToastificationContent,
                                     props: {
@@ -467,7 +555,10 @@ export default {
                                     },
                                 });
 
-                                this.$router.push({ name: 'listings.view', params: { id: this.id} })
+                                this.$router.push({
+                                    name: "listings.view",
+                                    params: { id: this.id },
+                                });
                             } else {
                                 console.log(response);
                                 this.$toast({
@@ -506,7 +597,10 @@ export default {
                 }
             );
             // console.log("autocomplete", this.autocomplete);
-            this.autocomplete.addListener("place_changed", this.getAddressOnChange);
+            this.autocomplete.addListener(
+                "place_changed",
+                this.getAddressOnChange
+            );
         },
         // Get address on change
         getAddressOnChange() {
@@ -515,35 +609,37 @@ export default {
             // let lat = place.geometry.location.lat()
             // let lng = place.geometry.location.lng()
 
-            this.latLng = { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() }
+            this.latLng = {
+                lat: this.place.geometry.location.lat(),
+                lng: this.place.geometry.location.lng(),
+            };
 
-            this.initMap()
+            this.initMap();
 
-
-             for (const component of this.place.address_components) {
+            for (const component of this.place.address_components) {
                 // @ts-ignore remove once typings fixed
                 const componentType = component.types[0];
 
                 switch (componentType) {
-                case "street_number": {
-                    this.listing.address_line1 = `${component.long_name} ${address1}`;
-                    break;
-                }
+                    case "street_number": {
+                        this.listing.address_line1 = `${component.long_name} ${address1}`;
+                        break;
+                    }
 
-                case "route": {
-                    this.listing.address_line1 += component.short_name;
-                    break;
-                }
-                case "locality":
-                    this.listing.district = component.long_name;
-                    break;
-                case "administrative_area_level_1": {
-                    this.listing.state = component.long_name;
-                    break;
-                }
-                case "country":
-                    this.listing.country = component.long_name;
-                    break;
+                    case "route": {
+                        this.listing.address_line1 += component.short_name;
+                        break;
+                    }
+                    case "locality":
+                        this.listing.district = component.long_name;
+                        break;
+                    case "administrative_area_level_1": {
+                        this.listing.state = component.long_name;
+                        break;
+                    }
+                    case "country":
+                        this.listing.country = component.long_name;
+                        break;
                 }
             }
         },
@@ -553,31 +649,28 @@ export default {
                 center: this.latLng,
                 zoom: 12,
             });
-        }
-
+        },
     },
     computed: {
         ...mapGetters({
             isLoading: "listing/getIsLoading",
             isCreated: "listing/getIsCreated",
-
         }),
     },
     mounted() {
-        this.initMap()
+        this.initMap();
 
         this.id = this.$route.params.listingId;
 
-        const getUser = JSON.parse(localStorage.getItem("userData")) || ''
-        const user_Role = getUser.user_role || '';
-        const userRoleID = user_Role.id || ''
+        const getUser = JSON.parse(localStorage.getItem("userData")) || "";
+        const user_Role = getUser.user_role || "";
+        const userRoleID = user_Role.id || "";
 
         this.loadListing({ id: this.id, role_id: userRoleID })
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];
                     console.log(response.data[0].images);
-                    this.imagesShowWhileUpload = response.data[0].images
                 } else {
                     this.$toast({
                         component: ToastificationContent,

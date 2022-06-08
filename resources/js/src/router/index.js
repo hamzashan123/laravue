@@ -95,7 +95,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/listings/edit/:id',
+        path: '/listings/edit/:listingId',
         name: 'listings.edit',
         component: () => import('@/views/listings/EditListing.vue'),
         meta: {
@@ -103,7 +103,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/listings/view/:id',
+        path: '/listings/view/:listingId',
         name: 'listings.view',
         component: () => import('@/views/listings/ViewListing.vue'),
         meta: {
@@ -111,7 +111,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/listings/detail',
+        path: '/listings/detail/:listingId',
         name: 'listings.detail',
         component: () => import('@/views/listings/DetailListing.vue'),
         meta: {
@@ -119,9 +119,9 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/listings/detail/add-details',
-        name: 'listings.add-more',
-        component: () => import('@/views/listings/AddMoreDetails.vue'),
+        path: '/listings/:listingId/add-visits',
+        name: 'listings.add-visits',
+        component: () => import('@/views/listings/AddVisits.vue'),
         meta: {
             navActiveLink: 'listings'
         },
