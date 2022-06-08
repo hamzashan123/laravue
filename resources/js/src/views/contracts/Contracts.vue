@@ -3,12 +3,12 @@
         <!-- Header -->
         <b-row class="mb-4">
             <b-col md="8" sm="12">
-                <b-card-text> <h1>Project Proposals</h1> </b-card-text>
+                <b-card-text> <h1>Project Contracts</h1> </b-card-text>
             </b-col>
             <b-col md="4" sm="12">
                 <div>
                     <b-form-group
-                        label="Filter by Proposal Status"
+                        label="Filter by Contract Status"
                         label-size="md"
                         label-cols-sm="0"
                         label-for="sortByStatus"
@@ -29,9 +29,10 @@
                 </div>
             </b-col>
         </b-row>
+
         <!-- Table -->
-        <b-card title="Latest Proposals" no-body>
-            <b-overlay :show="isLoading" rounded="sm">
+        <b-card title="Latest Contracts" no-body>
+            <b-overlay :show="isDataLoading" rounded="sm">
                 <b-card-body>
                     <div class="d-flex justify-content-between flex-wrap">
                         <!-- filter -->
@@ -48,7 +49,7 @@
                                     id="filterInput"
                                     v-model="filter"
                                     type="search"
-                                    placeholder="Search Proposals"
+                                    placeholder="Search Contracts"
                                 />
                                 <b-input-group-append>
                                     <b-button
@@ -103,36 +104,6 @@
                                 />
                             </div>
                         </div>
-
-                        <!-- sorting  -->
-                        <!-- <b-form-group
-                            label="Sort"
-                            label-size="md"
-                            label-align-sm="left"
-                            label-cols-sm="2"
-                            label-for="sortBySelect"
-                            class="mr-1 mb-md-0"
-                        >
-                            <b-input-group size="md">
-                                <b-form-select
-                                    id="sortBySelect"
-                                    v-model="sortBy"
-                                    :options="sortOptions"
-                                >
-                                    <template #first>
-                                        <option value="">none</option>
-                                    </template>
-                                </b-form-select>
-                                <b-form-select
-                                    v-model="sortDesc"
-                                    size="md"
-                                    :disabled="!sortBy"
-                                >
-                                    <option :value="false">Asc</option>
-                                    <option :value="true">Desc</option>
-                                </b-form-select>
-                            </b-input-group>
-                        </b-form-group> -->
                     </div>
                 </b-card-body>
 
@@ -151,16 +122,22 @@
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
                 >
-                    <template #cell(images)="data">
-                        <b-avatar
-                            v-for="(image, idx) in data.item.images.slice(0, 1)"
-                            :key="idx"
-                            :src="image.image"
-                            class="mx-1"
-                        />
-                    </template>
-                    <template #cell(name)="data">
-                        <span class="text-nowrap">{{ data.value }}</span>
+
+                    <template #cell(title)="data">
+                        <b-media vertical-align="center">
+                            <template #aside>
+                                <b-avatar
+                                size="40"
+                                v-for="(image, idx) in data.item.listing.images.slice(0, 1)"
+                                :key="idx"
+                                :src="image.image"
+                                variant="light-primary"
+                                />
+                            </template>
+                            <span class="font-weight-bold d-block text-nowrap mt-1">
+                                {{ data.item.listing.title }}
+                            </span>
+                            </b-media>
                     </template>
                     <template #cell(status)="data">
                         <b-badge :variant="statuses_color[1][data.value]">
@@ -168,23 +145,36 @@
                         </b-badge>
                     </template>
                     <template #cell(location)="data">
-                        {{
-                            data.item.addaddress_line1
-                                ? data.item.addaddress_line1
-                                : ""
-                        }}
-                        {{ data.item.district ? data.item.district : "" }}
-                        {{ data.item.state ? data.item.state : "" }}
-                        {{ data.item.country ? data.item.country : "" }}
+                        {{  data.item.listing.addaddress_line1 ? data.item.listing.addaddress_line1 + ", " : "" }}
+                        {{ data.item.listing.district ? data.item.listing.district + ", " : "" }}
+                        {{ data.item.listing.state ? data.item.listing.state + ", " : "" }}
+                        {{ data.item.listing.country ? data.item.listing.country : "" }}
+                    </template>
+                    <template #cell(listing_date)="data">
+                        {{ new Date(data.item.listing.created_at).toDateString() }}
+                    </template>
+                    <template #cell(target_start_date)="data">
+                         {{ data.item.listing.target_completion_datefrom }}
                     </template>
                     <template #cell(actions)="data">
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
-                            :class="data.value"
+                            class="mb-1"
                             :to="{
-                                name: 'proposals.view',
-                                params: { proposalId: data.item.id },
+                                name: 'contracts.add',
+                                params: { listingId: data.item.listing.id },
+                            }"
+                        >
+                            Add Docs
+                        </b-button>
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="success"
+                            class="mb-1"
+                            :to="{
+                                name: 'contracts.view',
+                                params: { contractId: data.item.listing.id },
                             }"
                         >
                             See Details
@@ -264,7 +254,8 @@ import {
     BInputGroupAppend,
     BCardBody,
     BOverlay,
-  BFormDatepicker,
+    BFormDatepicker,
+    BMedia,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
@@ -290,7 +281,8 @@ export default {
         BInputGroupAppend,
         BCardBody,
         BOverlay,
-  BFormDatepicker,
+        BFormDatepicker,
+        BMedia,
     },
     data() {
         return {
@@ -305,20 +297,11 @@ export default {
             filterOn: [],
             fields: [
                 { key: "id", label: "Id" },
-                { key: "images", label: "" },
-                { key: "title", label: "Listing Title" },
-                {
-                    key: "status",
-                    label: "Contract Status",
-                    sortable: true,
-                },
+                { key: "title", label: "Contractor Name" },
+                { key: "status", label: "Contract Status", sortable: true },
                 { key: "location", label: "Location", sortable: true },
-                {
-                    key: "target_completion_datefrom",
-                    label: "Listing Date",
-                    sortable: true,
-                },
-                { key: "proposals", label: "# of Proposals", sortable: true },
+                { key: "listing_date", label: "Listing Date", sortable: true, },
+                { key: "target_start_date", label: "Target Start Date", sortable: true },
                 "actions",
             ],
             items: [],
@@ -332,19 +315,18 @@ export default {
                 .filter((f) => f.sortable)
                 .map((f) => ({ text: f.label, value: f.key }));
         },
-        ...mapGetters({
-            isLoading: "listing/getIsLoading",
-            getMessage: "listing/getMessage",
-            getError: "listing/getError",
-        }),
+        ...mapGetters({ isLoading: "contract/getIsLoading", isDataLoading: "contract/getIsDataLoading" }),
+
+
     },
     mounted() {
-        // getting proposal
-        this.loadProposals()
+        // getting contracts on listing
+        this.loadContracts()
             .then((response) => {
+                console.log(response);
                 if (response.success) {
                     this.items = response.data;
-                    console.log(this.items);
+
                 } else {
                     this.$toast({
                         component: ToastificationContent,
@@ -368,18 +350,19 @@ export default {
                 });
             });
 
-
-                    // Set the initial number of items
-                    this.totalRows = this.items.length;
+        // Set the initial number of items
+        this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadProposals: "proposal/loadProposals" }),
+        ...mapActions({ loadContracts: "contract/loadContracts",  }),
+
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
+
     },
     directives: {
         Ripple,
@@ -388,4 +371,5 @@ export default {
 </script>
 
 <style></style>
+
 

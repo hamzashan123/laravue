@@ -70,7 +70,7 @@ export default {
                         console.log(error);
                         commit("setIsDataLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -89,7 +89,7 @@ export default {
                         console.log(error);
                         commit("setIsDataLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -108,7 +108,36 @@ export default {
                         console.log(error);
                         commit("setIsDataLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
+                    });
+            });
+        },
+
+         // Saving/ Send proposal
+         sendProposal({ commit }, proposalData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "send-proposal",
+                    data: proposalData,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
                     });
             });
         },
@@ -137,7 +166,7 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -166,7 +195,35 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
+                    });
+            });
+        },
+
+        // assign contract
+        assignContract({ commit }, assignData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "assign-contract",
+                    data: assignData,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
                     });
             });
         },

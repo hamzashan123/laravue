@@ -153,7 +153,7 @@
                             ok-only
                             ok-title="Close"
                             centered
-                            size="xl"
+                            size="lg"
                             >
                             <b-carousel
                                 id="carousel-example-generic"
