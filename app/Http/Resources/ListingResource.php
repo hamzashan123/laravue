@@ -7,6 +7,7 @@ use URL;
 use Auth;
 use App\Http\Resources\ListingImagesResource;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class ListingResource extends JsonResource
 {
@@ -18,6 +19,20 @@ class ListingResource extends JsonResource
      */
     public function toArray($request)
     {        
+        $ImageArray = [];
+        $rownumber = 1;
+        foreach ($this->getImages as $image) {         
+
+            $imageurl = '';
+            if (($image->image == 'placeholder.png')  || ($image->image == null)){
+                $imageurl = URL::to('/') . Storage::disk('local')->url('public/users/placeholder.png');
+            } else {
+                $imageurl = URL::to('/') . Storage::disk('local')->url('public/Listing/' .$image->listing_id  . '/images/' . $image->image);
+            }
+
+            $ImageArray["image" . $rownumber] = $imageurl;
+            $rownumber = ($rownumber + 1);
+        }
 
         return [
             'id'=> $this->id,
@@ -37,7 +52,8 @@ class ListingResource extends JsonResource
             'status'=> $this->status,
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
-            'images'=> ListingImagesResource::collection($this->getImages),
+            //'images'=> ListingImagesResource::collection($this->getImages),
+            'images'=> $ImageArray,
         ];
     }
 }
