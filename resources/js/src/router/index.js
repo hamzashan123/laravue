@@ -178,7 +178,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/contracts/view/:contractId',
+        path: '/contracts/view/:listingId',
         name: 'contracts.view',
         component: () => import('@/views/contracts/ViewContract.vue'),
         meta: {

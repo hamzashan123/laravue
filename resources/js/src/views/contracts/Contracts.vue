@@ -174,7 +174,7 @@
                             class="mb-1"
                             :to="{
                                 name: 'contracts.view',
-                                params: { contractId: data.item.listing.id },
+                                params: { listingId: data.item.listing.id },
                             }"
                         >
                             See Details
