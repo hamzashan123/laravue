@@ -7,6 +7,7 @@ use URL;
 use Auth;
 use App\Http\Resources\ListingImagesResource;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class GetProposalResource extends JsonResource
 {
@@ -18,6 +19,27 @@ class GetProposalResource extends JsonResource
      */
     public function toArray($request)
     {
+        $ImageArray = [];
+        $rownumber = 1;
+        foreach ($this->getImages as $image) {
+
+            $imageurl = '';
+            if (($image->image == 'placeholder.png')  || ($image->image == null)){
+                $imageurl = URL::to('/') . Storage::disk('local')->url('public/users/placeholder.png');
+            } else {
+                $imageurl = URL::to('/') . Storage::disk('local')->url('public/Listing/' .$image->listing_id  . '/images/' . $image->image);
+            }
+
+            $ImageArray["image" . $rownumber] = $imageurl;
+            $rownumber = ($rownumber + 1);
+        }
+
+        if(Auth::user()->role_id == 2) {
+            $proposalCount = $this->getListingProposals->where('user_id', Auth::user()->id)->count();
+        } else {
+            $proposalCount = $this->getListingProposals->count();
+        }
+
         return [
             'id'=> $this->id,
             'user'=> new UserResource($this->getUser),
@@ -36,8 +58,9 @@ class GetProposalResource extends JsonResource
             'status'=> $this->status,
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
-            'images'=> ListingImagesResource::collection($this->getImages),
-            'proposals'=> $this->getListingProposals->count(),
+            //'images'=> ListingImagesResource::collection($this->getImages),
+            'images'=> $ImageArray,
+            'proposals'=> $proposalCount,
         ];
     }
 }

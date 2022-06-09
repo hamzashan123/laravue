@@ -17,7 +17,8 @@ class ProposalsResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {
+    {       
+
         return [
             'id'=> $this->id,
             'listing'=> new ListingResource($this->getListing),

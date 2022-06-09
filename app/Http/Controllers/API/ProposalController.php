@@ -250,13 +250,12 @@ class ProposalController extends Controller
         $data;
         switch(Auth::user()->role_id) {
             case 1:         //Client
-                $data = Listing::where('user_id',Auth::user()->id)->where('status', '!=','draft');
+                $data = Listing::where('user_id', Auth::user()->id)->whereNotIn('status', ['draft','publish']);
                 break;
             case 2:         //Contractor
-                $data = Listing::where('user_id',Auth::user()->id)->where('status', '!=','draft');
-                break;            
+                $data = Listing::whereNotIn('status', ['draft','publish']);                        
             case 3:         //EB Staff
-                $data = Listing::where('status', '!=','draft');
+                $data = Listing::whereNotIn('status', ['draft','publish']);
                 break;
         }
 

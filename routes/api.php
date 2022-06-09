@@ -64,4 +64,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     //Contracts
     Route::post('assign-contract', [App\Http\Controllers\API\ContractsController::class, 'assignContract']);
     Route::post('get-contracts', [App\Http\Controllers\API\ContractsController::class, 'getContracts']);
+
+    //Dashboard
+    Route::post('get-dashboard', [App\Http\Controllers\API\UserController::class, 'getDashboard']);
 });

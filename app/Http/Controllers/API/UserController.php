@@ -18,6 +18,7 @@ use Validator;
 use Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Listing;
 
 
 class UserController extends Controller
@@ -242,6 +243,31 @@ class UserController extends Controller
             ];
             return response()->json($response_data,  $this->successStatus);
         }
+    }
+
+    public function getDashboard() {
+        
+        $totalListingCount = Listing::count();
+        $users = User::where('status', 'active')->get();
+        $totalClients = $users->where('role_id','1')->count();
+        $totalContractors = $users->where('role_id','2')->count();
+        $totalEBStaff = $users->where('role_id','3')->count();    
+         
+        
+        $data = [
+            'totallistings' => $totalListingCount,
+            'totalclients' => $totalClients,
+            'totalcontractors' => $totalContractors,
+            'totalstaff' => $totalEBStaff,
+            'totalusers' => $users->count(),
+        ];
+
+        $response_data = [
+            'data' => $data,
+        ];
+
+        return response()->json($response_data,  $this->successStatus);
+
     }
 }
 
