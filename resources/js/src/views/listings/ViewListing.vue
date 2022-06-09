@@ -343,7 +343,8 @@ export default {
         BOverlay,
         BBadge,
         BModal,
-        Swiper, SwiperSlide,
+        Swiper,
+        SwiperSlide,
     },
     data() {
         return {
