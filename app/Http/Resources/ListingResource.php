@@ -30,7 +30,7 @@ class ListingResource extends JsonResource
                 $imageurl = URL::to('/') . Storage::disk('local')->url('public/Listing/' .$image->listing_id  . '/images/' . $image->image);
             }
 
-            $ImageArray["image" . $rownumber] = $imageurl;
+            $ImageArray[] = $imageurl;
             $rownumber = ($rownumber + 1);
         }
 
