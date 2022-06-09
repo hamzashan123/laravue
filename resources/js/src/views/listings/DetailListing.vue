@@ -4,7 +4,7 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Details of {{ listing.title }}</h1>
+                    <h1>Updates on {{ listing.title }}</h1>
 
                     <b-badge :variant="statuses_color[1][listing.status]">
                         {{ statuses_color[0][listing.status] }}
@@ -466,7 +466,7 @@ export default {
             listingVisit: {},
             //   Validation
             required,
-
+            activeVisitData: false,
             statuses_color,
         };
     },
@@ -474,6 +474,7 @@ export default {
         ...mapActions({ loadListingVisits: "listing/loadListingVisits" }),
 
         changeVisitData( index ) {
+            this.activeVisitData = true
             this.listing.images = this.listingVisit[index].images
             this.listing.description = this.listingVisit[index].visit_detail
         },

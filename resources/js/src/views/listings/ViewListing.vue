@@ -40,12 +40,12 @@
                         Add Visits
                     </b-button>
                     <b-button
-                        v-if="can('read', 'listing')"
+                        v-if="can('read', 'listing') || can('read', 'all-listing')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'listings.detail', params:{ listingId: id } }"
                     >
-                        See Latest Details
+                        See Latest Updates
                     </b-button>
                 </div>
             </b-col>
