@@ -139,9 +139,10 @@
                             <b-img
                                 v-for="(image, idx) in listing.images"
                                 :key="idx"
+                                fluid
                                 thumbnail
-                                class="w-25"
-                                :src="image.image"
+                                class="w-50"
+                                :src="image"
                                 v-b-modal.modal-listing-images
                             />
                         </div>
@@ -160,11 +161,11 @@
                                 :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                             >
                                 <swiper-slide
-                                v-for="(data,index) in listing.images"
+                                v-for="(image, index) in listing.images"
                                 :key="index"
                                 >
                                 <b-img
-                                    :src="data.image"
+                                    :src="image"
                                     fluid
                                 />
                                 </swiper-slide>

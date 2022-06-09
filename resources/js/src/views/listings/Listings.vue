@@ -122,7 +122,7 @@
                     @filtered="onFiltered"
                 >
                     <template #cell(images)="data">
-                        <b-avatar v-for="(image, idx) in data.item.images.slice(0, 1)" :key="idx"  :src="image.image" class="mx-1" />
+                        <b-avatar v-for="(image, idx) in data.item.images.slice(0, 1)" :key="idx"  :src="image" class="mx-1" />
                     </template>
                     <template #cell(name)="data">
                         <span class="text-nowrap">{{ data.value }}</span>

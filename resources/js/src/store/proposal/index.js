@@ -64,7 +64,7 @@ export default {
                         console.log(response);
                         commit("setIsDataLoading", false);
                         commit("setProposals", response.data.data);
-                        resolve(response.data);
+                        return resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -83,7 +83,7 @@ export default {
                     .then((response) => {
                         commit("setIsDataLoading", false);
                         commit("setListingProposals", response.data.data);
-                        resolve(response.data);
+                        return resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -102,7 +102,7 @@ export default {
                     .then((response) => {
                         commit("setIsDataLoading", false);
                         commit("setListingProposals", response.data.data);
-                        resolve(response.data);
+                        return resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
