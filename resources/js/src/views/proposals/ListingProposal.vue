@@ -23,7 +23,7 @@
 
         <!-- Date and amount Form -->
         <b-card>
-            <b-overlay :show="isDataLoading" rounded="sm">
+            <b-overlay :show="isDataLoading"  spinner-variant="primary">
                 <b-row>
                     <b-col md="6">
                         <h4 class="mb-2 text-primary">
@@ -78,7 +78,7 @@
         </b-card>
         <!-- Table -->
         <b-card title="Latest Proposals" no-body>
-            <b-overlay :show="isDataLoading" rounded="sm">
+            <b-overlay :show="isDataLoading"  spinner-variant="primary">
                 <b-card-body>
                     <div class="d-flex justify-content-between flex-wrap">
                         <!-- filter -->
@@ -194,7 +194,7 @@
                          {{ data.item.max_budget }}
                         </div>
                     </template>
-                    <template #cell(location)="data">
+                    <!-- <template #cell(location)="data">
                         {{
                             data.item.listing.addaddress_line1
                                 ? data.item.listing.addaddress_line1
@@ -203,7 +203,7 @@
                         {{ data.item.listing.district ? data.item.listing.district : "" }}
                         {{ data.item.listing.state ? data.item.listing.state : "" }}
                         {{ data.item.listing.country ? data.item.listing.country : "" }}
-                    </template>
+                    </template> -->
                     <template #cell(target_date)="data">
                         <div class="border border-primary p-1">
 
@@ -212,7 +212,7 @@
                         </div>
                     </template>
                     <template #cell(proposal_date)="data">
-                         {{ data.item.listing.created_at }}
+                         {{ new Date(data.item.listing.created_at).toDateString() }}
                     </template>
                     <template #cell(actions)="data">
                         <b-button
@@ -230,9 +230,8 @@
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="success"
-                            :class="data.value"
+                            class="mb-1"
                             @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
-
                         >
                             Assign
                         </b-button>
@@ -357,7 +356,7 @@ export default {
                 { key: "title", label: "Contractor Name" },
                 { key: "status", label: "Contract Status", sortable: true },
                 { key: "target_budget", label: "Target Budget", sortable: true },
-                { key: "location", label: "Location", sortable: true },
+                // { key: "location", label: "Location", sortable: true },
                 { key: "target_date", label: "Target Date", sortable: true, },
                 { key: "proposal_date", label: "Proposal Date", sortable: true },
                 "actions",

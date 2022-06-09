@@ -20,7 +20,7 @@
         </b-row>
         <!-- Table -->
         <b-card title="Latest Listings" no-body>
-            <b-overlay :show="isLoading" rounded="sm">
+            <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-card-body>
                     <div class="d-flex justify-content-between flex-wrap">
                         <!-- filter -->
@@ -148,7 +148,7 @@
                             :class="data.value"
                             :to="{
                                 name: 'listings.view',
-                                params: { id: data.item.id },
+                                params: { listingId: data.item.id },
                             }"
                         >
                             See Details

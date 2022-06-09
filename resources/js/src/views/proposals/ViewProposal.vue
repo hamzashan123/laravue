@@ -15,7 +15,7 @@
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
-                        :to="{ name: 'proposals' }"
+                        :to="{ name: 'proposals.listing', params: { listingId: listing.id } }"
                     >
                         Back to Proposals
                     </b-button>
@@ -25,7 +25,7 @@
 
         <!-- Date and amount Form -->
         <b-card>
-            <b-overlay :show="isDataLoading" rounded="sm">
+            <b-overlay :show="isDataLoading"  spinner-variant="primary">
                 <b-row>
                     <b-col md="6">
                         <h4 class="mb-2 text-primary">
@@ -96,6 +96,7 @@
                                     class="mb-1 p-0 mr-1"
                                     v-model="proposal.target_startdate"
                                     name="target_startdate"
+                                    disabled
                                 />
                                 <b-form-datepicker
                                     placeholder="Select End Date"
@@ -104,6 +105,7 @@
                                     v-model="proposal.target_enddate"
                                     :min="proposal.target_startdate"
                                     name="target_enddate"
+                                    disabled
                                 />
                             </div>
                             </b-form-group>
@@ -120,11 +122,13 @@
                                     v-model="proposal.min_budget"
                                     class="mb-1 mr-1"
                                     placeholder="Minimum Budget"
+                                    disabled
                                 />
                                 <b-form-input
                                     v-model="proposal.max_budget"
                                     class="mb-1"
                                     placeholder="Maximum Budget"
+                                    disabled
                                 />
                             </div>
                             </b-form-group>
@@ -158,7 +162,7 @@
 
         <!-- Images and Detail -->
         <b-card>
-            <b-overlay :show="isDataLoading" rounded="sm">
+            <b-overlay :show="isDataLoading"  spinner-variant="primary">
                 <b-row>
                     <!-- Images -->
                     <b-col md="6" class="mb-2">
