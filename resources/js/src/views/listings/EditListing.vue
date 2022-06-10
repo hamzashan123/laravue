@@ -132,10 +132,11 @@
                         <b-col md="6" class="mb-2">
                             <div class="d-flex flex-wrap mb-2">
                                 <div
-                                    class="imag w-25 position-relative"
+                                    class="imag w-50 position-relative"
                                     v-for="(image, idx) in imagesShowWhileUpload"
                                     :key="idx"
                                 >
+                                {{ idx }}
                                     <b-button
                                         @click="removeSelectedImage(idx)"
                                         variant="gradient-danger"
@@ -144,9 +145,10 @@
                                         <feather-icon icon="XIcon" />
                                     </b-button>
                                     <b-img
+                                        fluid
                                         thumbnail
                                         class="w-100"
-                                        :src="image.image"
+                                        :src="image"
                                     />
 
                                 </div>
@@ -160,6 +162,7 @@
                                     multiple
                                     accept=".jpg, .png,"
                                     :disabled="isFileUploaderFull"
+                                    :file-name-formatter="formatNames"
                                 />
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
@@ -380,7 +383,6 @@ export default {
             let getImages = e.target.files;
 
             let maxImg = this.imagesShowWhileUpload.length;
-            console.log(maxImg);
 
             if (maxImg < 5) {
                 getImages.forEach((getImage) => {
@@ -390,9 +392,12 @@ export default {
                         this.imagesShowWhileUpload.push(e.target.result);
                     };
                     this.newImages.push(getImage);
+
+                    console.log(this.newImages);
                 });
             } else {
                 this.isFileUploaderFull = true;
+                this.imagesFileUploader = null;
                 this.$toast({
                     component: ToastificationContent,
                     props: {
@@ -403,6 +408,11 @@ export default {
                 });
             }
         },
+
+        formatNames(files) {
+            return this.newImages.length === 1 ? files[0].name : `${this.newImages.length} files selected`
+        },
+
         clearFiles() {
             this.imagesFileUploader = null;
             this.imagesShowWhileUpload = [];
@@ -414,6 +424,7 @@ export default {
             this.imagesShowWhileUpload.splice(index, 1);
             this.newImages.splice(index, 1);
             this.imagesFileUploader.splice(index, 1);
+            console.log(index);
         },
 
         ...mapActions({
@@ -576,8 +587,8 @@ export default {
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];
-                    console.log(response.data[0].images);
                     this.imagesShowWhileUpload = response.data[0].images
+                    console.log(this.imagesShowWhileUpload);
                 } else {
                     this.$toast({
                         component: ToastificationContent,

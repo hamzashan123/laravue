@@ -4,31 +4,28 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Published Listing ( Bahdurgarh Peeragarhi )</h1>
+                    <h1>Contract updates on {{ listing.title }}</h1>
+
+                    <b-badge :variant="statuses_color[1][listing.status]">
+                        {{ statuses_color[0][listing.status] }}
+                    </b-badge>
                 </b-card-text>
             </b-col>
-            <b-col md="6" sm="12" >
+            <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="secondary"
-                        :to="{ name: 'listings.view' }"
-                    >
-                        Back to listing
-                    </b-button>
-                    <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        :to="{ name: 'listings.detail' }"
+                        :to="{ name: 'contracts' }"
                     >
-                        See Latest Details
+                        See All Contracts
                     </b-button>
                 </div>
             </b-col>
         </b-row>
 
-        <!-- Date and amount Form -->
-        <b-row>
+        <!-- Summary -->
+<b-row>
             <b-col md="4" >
                 <b-card class="bg-primary bg-lighten-5">
                     <b-row>
@@ -103,12 +100,137 @@
             </b-col>
         </b-row>
 
-        <!-- Images and Detail -->
-        <b-card>
-            <b-form @submit.prevent>
-                <b-row>
-                    <!-- Tabs -->
-                    <b-col md="6" class="mb-2">
+        <!-- Date and amount Form -->
+        <b-form @submit.prevent enctype="multipart/form-data">
+            <validation-observer ref="validationRules">
+                <b-card>
+                    <b-row>
+                        <b-col md="6">
+                            <h4 class="mb-2 text-primary">
+                                <feather-icon
+                                    icon="ChevronsUpIcon"
+                                    size="18"
+                                    class="mr-50"
+                                />
+                                Target Compilation date Range
+                            </h4>
+
+                            <div class="form-row">
+                                <div class="col">
+                                    <validation-provider
+                                        #default="{ errors }"
+                                        name="From Date"
+                                        rules="required"
+                                    >
+                                        <b-form-datepicker
+                                            placeholder="Select From Date"
+                                            id="target_completion_datefrom"
+                                            class="mb-1 p-0"
+                                            v-model="
+                                                listing.target_completion_datefrom
+                                            "
+                                            name="target_completion_datefrom"
+                                            :state="
+                                                errors.length > 0 ? false : null
+                                            "
+                                            disabled
+                                        />
+                                        <small class="text-danger">{{
+                                            errors[0]
+                                        }}</small>
+                                    </validation-provider>
+                                </div>
+                                <div class="col">
+                                    <validation-provider
+                                        #default="{ errors }"
+                                        name="To Date"
+                                        rules="required"
+                                    >
+                                        <b-form-datepicker
+                                            placeholder="Select To Date"
+                                            id="target_completion_dateto"
+                                            v-model="
+                                                listing.target_completion_dateto
+                                            "
+                                            :min="
+                                                listing.target_completion_datefrom
+                                            "
+                                            name="target_completion_dateto"
+                                            class="mb-1 p-0"
+                                            :state="
+                                                errors.length > 0 ? false : null
+                                            "
+                                            disabled
+                                        />
+                                        <small class="text-danger">{{
+                                            errors[0]
+                                        }}</small>
+                                    </validation-provider>
+                                </div>
+                            </div>
+                        </b-col>
+                        <b-col md="6">
+                            <h4 class="mb-2 text-primary">
+                                <feather-icon
+                                    icon="ChevronsUpIcon"
+                                    size="18"
+                                    class="mr-50"
+                                />
+                                Target Budget - Min and Max
+                            </h4>
+                            <div class="form-row">
+                                <div class="col">
+                                    <validation-provider
+                                        #default="{ errors }"
+                                        name="Minimum budget"
+                                        rules="required"
+                                    >
+                                        <b-form-input
+                                            v-model="listing.min_budget"
+                                            class="mb-1"
+                                            placeholder="Minimum Budget"
+                                            :state="
+                                                errors.length > 0 ? false : null
+                                            "
+                                            disabled
+                                        />
+                                        <small class="text-danger">{{
+                                            errors[0]
+                                        }}</small>
+                                    </validation-provider>
+                                </div>
+                                <div class="col">
+                                    <validation-provider
+                                        #default="{ errors }"
+                                        name="Maximum budget"
+                                        rules="required"
+                                    >
+                                        <b-form-input
+                                            v-model="listing.max_budget"
+                                            placeholder="Maximum Budget"
+                                            class="mb-1"
+                                            :state="
+                                                errors.length > 0 ? false : null
+                                            "
+                                            disabled
+                                        />
+                                        <small class="text-danger">{{
+                                            errors[0]
+                                        }}</small>
+                                    </validation-provider>
+                                </div>
+                            </div>
+
+                            <!-- </b-form> -->
+                        </b-col>
+                    </b-row>
+                </b-card>
+
+                <!-- Images and Detail -->
+                <b-card>
+                    <b-row>
+                        <!-- Visting detail -->
+                        <b-col md="6" class="mb-2">
                         <b-tabs>
                             <b-tab active>
                                 <template #title>
@@ -124,7 +246,7 @@
                                                 size="18"
                                                 class="mr-50"
                                             />
-                                            Updates About Project
+                                            Legal Updates
                                         </h4>
 
                                         <app-timeline>
@@ -311,7 +433,7 @@
                                                 size="18"
                                                 class="mr-50"
                                             />
-                                            Updates About Project
+                                            Payment Updates
                                         </h4>
 
                                         <app-timeline>
@@ -485,120 +607,187 @@
                             </b-tab>
                         </b-tabs>
                     </b-col>
-                    <!-- Details Form -->
-                    <b-col md="6" class="mb-2">
-                        <h4 class="mb-2">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Listing Details
-                        </h4>
-                        <b-form-group
-                            label="Name your listing"
-                            label-for="listingTitle"
-                        >
-                            <b-form-input
-                                id="listingTitle"
-                                placeholder="Name"
-                            />
-                        </b-form-group>
-                        <div class="mb-2">
-                            <label for="listingDetails">Details</label>
-                            <b-form-textarea
-                                id="listingDetails"
-                                placeholder="Listing Details"
-                                rows="3"
-                            />
-                        </div>
-                        <b-row>
-                            <b-col lg="6" class="mb-2">
-                                <!-- <b-embed type="iframe" aspect="16by9" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen/> -->
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
-                                    width="100%"
-                                    height="300"
-                                    style="border: 0"
-                                    allowfullscreen=""
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                ></iframe>
-                            </b-col>
-                            <b-col lg="6">
-                                <b-form-group
-                                    label="Address Line 1 *"
-                                    label-for="address-line-1"
-                                >
-                                    <b-form-input
-                                        id="address-line-1"
-                                        placeholder="Address Line 1 *"
-                                        required
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Address Line 2 *"
-                                    label-for="address-line-2"
-                                >
-                                    <b-form-input
-                                        id="address-line-2"
-                                        placeholder="Address Line 2 *"
-                                        required
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Country"
-                                    label-for="country"
-                                >
-                                    <b-form-input
-                                        id="country"
-                                        placeholder="Country"
-                                        required
-                                    />
-                                </b-form-group>
-                                <b-form-group label="State" label-for="state">
-                                    <b-form-select
-                                        v-model="stateVal"
-                                        :options="state"
-                                        id="state"
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="District"
-                                    label-for="district"
-                                >
-                                    <b-form-select
-                                        v-model="districtVal"
-                                        :options="district"
-                                        id="district"
-                                    />
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <!-- Save -->
-                        <b-col class="text-right">
-                            <b-button
-                                v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                                type="submit"
-                                variant="primary"
+                        <!-- Details Form -->
+                        <b-col md="6" class="mb-2">
+                            <h4 class="mb-2">
+                                <feather-icon
+                                    icon="ChevronsUpIcon"
+                                    size="18"
+                                    class="mr-50"
+                                />
+                                Listing Details
+                            </h4>
+                            <validation-provider
+                                #default="{ errors }"
+                                name="Name"
+                                rules="required"
                             >
-                                Save Details
-                            </b-button>
+                                <b-form-group
+                                    label="Name your listing"
+                                    label-for="listingname"
+                                >
+                                    <b-form-input
+                                        id="listingname"
+                                        v-model="listing.title"
+                                        placeholder="Name"
+                                        disabled
+                                    />
+                                </b-form-group>
+                                <small class="text-danger">{{
+                                    errors[0]
+                                }}</small>
+                            </validation-provider>
+
+                            <div class="mb-2">
+                                <label for="listingDetails">Details</label>
+                                <b-form-textarea
+                                    id="listingDetails"
+                                    v-model="listing.description"
+                                    placeholder="Listing Details"
+                                    rows="3"
+                                    disabled
+                                />
+                            </div>
+
+                            <!-- images -->
+                            <div class="d-flex flex-wrap mb-2">
+                            <b-img
+                                v-for="(image, idx) in listing.images"
+                                :key="idx"
+                                fluid
+                                thumbnail
+                                class="w-25"
+                                :src="image"
+                                v-b-modal.modal-listing-images
+                            />
+                            <div v-if="!listing.images">No images found</div>
+                        </div>
+                        <!-- modal -->
+                            <b-modal
+                            id="modal-listing-images"
+                            ok-only
+                            centered
+                            size="lg"
+                            >
+                            <swiper
+                                class="swiper-navigations"
+                                :options="swiperOptions"
+                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                            >
+                                <swiper-slide
+                                v-for="(image, index) in listing.images"
+                                :key="index"
+                                >
+                                <b-img
+                                    :src="image"
+                                    fluid
+                                />
+                                </swiper-slide>
+
+                                <!-- Add Arrows -->
+                                <div
+                                slot="button-next"
+                                class="swiper-button-next"
+                                />
+                                <div
+                                slot="button-prev"
+                                class="swiper-button-prev"
+                                />
+                            </swiper>
+                            </b-modal>
+
+                            <b-row>
+                                <b-col lg="6" class="mb-2">
+                                    <div id="map" class="h-100 mt-2"></div>
+                                </b-col>
+                                <b-col lg="6">
+                                    <b-form-group
+                                        label="Address Line 1"
+                                        label-for="address-line-1"
+                                    >
+                                        <b-form-input
+                                            v-model="listing.address_line1"
+                                            id="address-line-1"
+                                            placeholder="Address Line 1"
+                                            required
+                                            disabled
+                                        />
+                                    </b-form-group>
+                                    <b-form-group
+                                        label="Address Line 2"
+                                        label-for="address-line-2"
+                                    >
+                                        <b-form-input
+                                            v-model="listing.address_line2"
+                                            id="address-line-2"
+                                            placeholder="Address Line 2"
+                                            disabled
+                                        />
+                                    </b-form-group>
+                                    <b-form-group
+                                        label="Country"
+                                        label-for="country"
+                                    >
+                                        <b-form-input
+                                            id="country"
+                                            placeholder="Country"
+                                            required
+                                            v-model="listing.country"
+                                            disabled
+                                        />
+                                    </b-form-group>
+                                    <b-form-group
+                                        label="State"
+                                        label-for="state"
+                                    >
+                                        <b-form-input
+                                            v-model="listing.state"
+                                            placeholder="State"
+                                            id="state"
+                                            disabled
+                                        />
+                                    </b-form-group>
+                                    <b-form-group
+                                        label="District"
+                                        label-for="district"
+                                    >
+                                        <b-form-input
+                                            v-model="listing.district"
+                                            placeholder="District"
+                                            id="district"
+                                            disabled
+                                        />
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <!-- Update -->
+                            <!-- <b-col class="text-right">
+                                <b-button
+                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                    type="submit"
+                                    variant="primary"
+                                    @click.prevent="updateListingTrigger"
+                                >
+                                    Update Details
+                                    <b-spinner small v-if="isLoading" />
+                                </b-button>
+                            </b-col> -->
                         </b-col>
-                    </b-col>
-                </b-row>
-            </b-form>
-        </b-card>
+                    </b-row>
+                </b-card>
+            </validation-observer>
+        </b-form>
     </div>
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 import {
     BCard,
-    BCardTitle,
     BRow,
     BCol,
     BButton,
+    BCardTitle,
     BCardText,
     BLink,
     BFormGroup,
@@ -611,86 +800,32 @@ import {
     BFormFile,
     BFormTextarea,
     BEmbed,
+    BSpinner,
+    BBadge,
+    VBTooltip,
+    BProgress,
     BTabs,
     BTab,
-    BFormRadioGroup,
-    BAvatar,
-    BMedia,
-    VBToggle,
-    BProgress,
-    BListGroup,
-    BListGroupItem,
-    BAvatarGroup,
-    BBadge,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import AppTimeline from "@core/components/app-timeline/AppTimeline.vue";
 import AppTimelineItem from "@core/components/app-timeline/AppTimelineItem.vue";
+import { mapActions, mapGetters } from "vuex";
+import { required } from "@validations";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { statuses_color } from "@/fieldsdata/index.js";
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 
 export default {
-    data() {
-        return {
-            document_type_options: [
-                { text: "Legal Document", value: "1" },
-                { text: "Payment Document", value: "2" },
-            ],
-            minBudgetVal: null,
-            maxBudgetVal: null,
-            stateVal: null,
-            districtVal: null,
-            minBudget: [
-                { value: null, text: "Budget Minimum *" },
-                { value: "100000", text: "1000,00" },
-                { value: "1000000", text: "1000,000" },
-            ],
-            maxBudget: [
-                { value: null, text: "Budget Maximum *" },
-                { value: "100500", text: "1000,500" },
-                { value: "10000400", text: "10000,1400" },
-            ],
-            state: [
-                { value: null, text: "Select State" },
-                { value: "state", text: "state 1" },
-                { value: "state", text: "state 1" },
-            ],
-            district: [
-                { value: null, text: "Select District" },
-                { value: "state", text: "state 1" },
-            ],
-            listingImages: [
-                {
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-                },
-                {
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-                },
-                {
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-                },
-                {
-                    imageUrl:
-                        "https://media.istockphoto.com/photos/london-symbols-with-big-ben-double-decker-buses-and-red-phone-booth-picture-id1294454411?b=1&k=20&m=1294454411&s=170667a&w=0&h=UOVuoyqF8H9J3Q5u-HxrWQFRQVQnGgcoF_L8SVbhxQQ=",
-                },
-                {
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-                },
-                {
-                    imageUrl:
-                        "https://media.istockphoto.com/photos/skyscrapers-in-city-of-london-picture-id844050350?k=20&m=844050350&s=612x612&w=0&h=g9is0uhRESMFnHLfgICPpInOQd65YNF68OoFpbNuwUc=",
-                },
-            ],
-        };
-    },
     components: {
+        ValidationProvider,
+        ValidationObserver,
         BRow,
         BCol,
         BCard,
-        BCardTitle,
         BButton,
+        BCardTitle,
         BCardText,
         BLink,
         BFormGroup,
@@ -703,19 +838,90 @@ export default {
         BFormFile,
         BFormTextarea,
         BEmbed,
-        BTabs,
-        BTab,
-        BFormRadioGroup,
-        VBToggle,
-        BProgress,
-        BListGroup,
-        BListGroupItem,
-        BAvatarGroup,
+        BSpinner,
         BBadge,
-        BAvatar,
-        BMedia,
+        VBTooltip,
+        BProgress,
         AppTimeline,
         AppTimelineItem,
+        Swiper,
+        SwiperSlide,
+        BTabs,
+        BTab,
+    },
+    data() {
+        return {
+            progressValue: "40%",
+            // map
+            latLng: { lat: 20.5937, lng: 78.9629 },
+
+            swiperOptions: {
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            },
+            // listing
+            imagesShowWhileUpload: [],
+            id: "",
+            listing: {},
+            listingVisit: {},
+            //   Validation
+            required,
+            activeVisitData: false,
+            statuses_color,
+        };
+    },
+    methods: {
+        ...mapActions({ loadLegalDocument: "contract/loadLegalDocument" }),
+
+
+        // Initialize map
+        initMap() {
+            let map = new google.maps.Map(document.getElementById("map"), {
+                center: this.latLng,
+                zoom: 12,
+            });
+        },
+    },
+    computed: {
+        ...mapGetters({
+            isLoading: "contract/getIsLoading",
+        }),
+    },
+    mounted() {
+        this.initMap();
+
+        this.id = this.$route.params.listingId;
+
+        this.loadLegalDocument({ listing_id: this.id })
+            .then((response) => {
+                if (response.success) {
+                    this.listing = response.user[0].listing;
+                    this.listingVisit = response.user;
+                    console.log(response.user);
+                } else {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
     },
     directives: {
         Ripple,
@@ -723,5 +929,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

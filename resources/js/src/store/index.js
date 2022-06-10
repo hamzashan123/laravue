@@ -10,6 +10,7 @@ import listing from './listing'
 import setting from './setting'
 import proposal from './proposal'
 import contract from './contract'
+import dashboard from './dashboard'
 
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     setting,
     proposal,
     contract,
+    dashboard,
   },
   strict: process.env.DEV,
 })

@@ -149,7 +149,7 @@
                         <b-col md="6" class="mb-2">
                             <div class="d-flex flex-wrap mb-2">
                                 <div
-                                    class="imag w-25 position-relative"
+                                    class="imag w-50 position-relative"
                                     v-for="(image, idx) in imagesShowWhileUpload"
                                     :key="idx"
                                 >
@@ -161,6 +161,7 @@
                                         <feather-icon icon="XIcon" />
                                     </b-button>
                                     <b-img
+                                        fluid
                                         thumbnail
                                         class="w-100"
                                         :src="image"
@@ -177,6 +178,7 @@
                                     multiple
                                     accept=".jpg, .png,"
                                     :disabled="isFileUploaderFull"
+                                    :file-name-formatter="formatNames"
                                 />
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
@@ -248,7 +250,6 @@
                                             v-model="listing.address_line1"
                                             id="address-line-1"
                                             placeholder="Address Line 1"
-                                            required
                                         />
                                     </b-form-group>
                                     <b-form-group
@@ -268,7 +269,6 @@
                                         <b-form-input
                                             id="country"
                                             placeholder="Country"
-                                            required
                                             v-model="listing.country"
                                         />
                                     </b-form-group>
@@ -399,6 +399,7 @@ export default {
             let maxImg = this.imagesShowWhileUpload.length;
 
             if (maxImg < 5) {
+
                 getImages.forEach((getImage) => {
                     let reader = new FileReader();
                     reader.readAsDataURL(getImage);
@@ -407,6 +408,7 @@ export default {
                     };
                     this.newImages.push(getImage);
                 });
+
             } else {
                 this.isFileUploaderFull = true;
                 this.$toast({
@@ -419,6 +421,11 @@ export default {
                 });
             }
         },
+
+        formatNames(files) {
+            return this.newImages.length === 1 ? files[0].name : `${this.newImages.length} files selected`
+        },
+
         clearFiles() {
             this.imagesFileUploader = null;
             this.imagesShowWhileUpload = [];

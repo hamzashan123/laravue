@@ -865,8 +865,9 @@ export default {
         this.loadLegalDocument({ listing_id: this.listingId })
             .then((response) => {
                 if (response.success) {
+                    console.log(response);
                     this.legalDocuments = response.data[0];
-                    console.log(this.legalDocuments);
+
                     this.listing = this.legalDocuments.listing;
                     this.finance_client_documents = this.legalDocuments.finance_client_documents;
                     this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;

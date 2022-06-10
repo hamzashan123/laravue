@@ -75,13 +75,13 @@ export default {
                     .then((response) => {
                         commit("setIsDataLoading", false);
                         commit("setLegalDocuments", response.data.data);
-                        resolve(response.data);
+                        return resolve(response.data);
                     })
                     .catch((error) => {
                         console.log(error);
                         commit("setIsDataLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },

@@ -40,12 +40,12 @@
                         Add Visits
                     </b-button>
                     <b-button
-                        v-if="can('read', 'listing')"
+                        v-if="can('read', 'listing') || can('read', 'all-listing')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'listings.detail', params:{ listingId: id } }"
                     >
-                        See Latest Details
+                        See Latest Updates
                     </b-button>
                 </div>
             </b-col>
@@ -139,9 +139,10 @@
                             <b-img
                                 v-for="(image, idx) in listing.images"
                                 :key="idx"
+                                fluid
                                 thumbnail
-                                class="w-25"
-                                :src="image.image"
+                                class="w-50"
+                                :src="image"
                                 v-b-modal.modal-listing-images
                             />
                         </div>
@@ -160,11 +161,11 @@
                                 :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                             >
                                 <swiper-slide
-                                v-for="(data,index) in listing.images"
+                                v-for="(image, index) in listing.images"
                                 :key="index"
                                 >
                                 <b-img
-                                    :src="data.image"
+                                    :src="image"
                                     fluid
                                 />
                                 </swiper-slide>
@@ -342,7 +343,8 @@ export default {
         BOverlay,
         BBadge,
         BModal,
-        Swiper, SwiperSlide,
+        Swiper,
+        SwiperSlide,
     },
     data() {
         return {

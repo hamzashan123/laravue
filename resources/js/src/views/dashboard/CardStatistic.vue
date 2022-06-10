@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Miscellaneous Charts -->
-    <b-row class="match-height">
+    <!-- <b-row class="match-height">
       <b-col
         lg="2"
         cols="6"
@@ -20,87 +20,72 @@
       >
         <card-statistics-group />
       </b-col>
-    </b-row>
+    </b-row> -->
     <!--/ Miscellaneous Charts -->
 
     <!-- Stats Card Vertical -->
     <b-row class="match-height">
       <b-col
-        xl="2"
+        xl="3"
         md="4"
         sm="6"
       >
         <statistic-card-vertical
-          icon="EyeIcon"
-          statistic="25"
-          statistic-title="Customer"
+          icon="LockIcon"
+          :statistic="dashboard.totallistings"
+          statistic-title="Listings"
           color="info"
         />
       </b-col>
       <b-col
-        xl="2"
+        xl="3"
         md="4"
         sm="6"
       >
         <statistic-card-vertical
           color="warning"
-          icon="MessageSquareIcon"
-          statistic="12"
-          statistic-title="Contractors"
+          icon="UsersIcon"
+          :statistic="dashboard.totalclients"
+          statistic-title="Clients"
         />
       </b-col>
       <b-col
-        xl="2"
+        xl="3"
         md="4"
         sm="6"
       >
         <statistic-card-vertical
           color="danger"
-          icon="ShoppingBagIcon"
-          statistic="235"
-          statistic-title="Listings"
+          icon="BriefcaseIcon"
+          :statistic="dashboard.totalcontractors"
+          statistic-title="Contractors"
         />
       </b-col>
       <b-col
-        xl="2"
+        xl="3"
         md="4"
         sm="6"
       >
         <statistic-card-vertical
           color="primary"
           icon="HeartIcon"
-          statistic="5"
+          :statistic="dashboard.totalstaff"
           statistic-title="Eb Staff"
         />
       </b-col>
       <b-col
-        xl="2"
+        xl="3"
         md="4"
         sm="6"
       >
         <statistic-card-vertical
-          color="success"
-          icon="AwardIcon"
-          statistic="689"
-          statistic-title="Projects Completed"
-        />
-      </b-col>
-      <b-col
-        xl="2"
-        md="4"
-        sm="6"
-      >
-        <statistic-card-vertical
-          hide-chart
-          color="danger"
-          icon="TruckIcon"
-          statistic="2"
-          statistic-title="Rejected Proejcts"
+          color="primary"
+          icon="UsersIcon"
+          :statistic="dashboard.totalusers"
+          statistic-title="Users"
         />
       </b-col>
     </b-row>
-
-
   </div>
 </template>
 
@@ -114,6 +99,9 @@ import { kFormatter } from '@core/utils/filter'
 import CardStatisticOrderChart from './CardStatisticOrderChart.vue'
 import CardStatisticProfitChart from './CardStatisticProfitChart.vue'
 import CardStatisticsGroup from './CardStatisticsGroup.vue'
+
+import { mapGetters, mapActions } from "vuex";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
 export default {
   components: {
@@ -135,43 +123,52 @@ export default {
       quarterlySales: {},
       ordersRecevied: {},
 
-      // Line Charts
-      siteTraffic: {},
-      activeUsers: {},
-      newsletter: {},
+      dashboard: {},
+
     }
   },
+  computed: {
+        ...mapGetters({
+            isLoading: "listing/getIsLoading",
+            isDataLoading: "proposal/getIsDataLoading"
+        }),
+    },
   created() {
-    // Subscribers gained
-    this.$http.get('/card/card-statistics/subscribers')
-      .then(response => { this.subscribersGained = response.data })
 
-    // Revenue Generated
-    this.$http.get('/card/card-statistics/revenue')
-      .then(response => { this.revenueGenerated = response.data })
+       // getting dashboard
+        this.getDashboard()
+            .then((response) => {
+                if (response) {
+                    this.dashboard = response.data;
+                    console.log(this.dashboard);
+                } else {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
 
-    // Sales
-    this.$http.get('/card/card-statistics/sales')
-      .then(response => { this.quarterlySales = response.data })
-
-    // Orders
-    this.$http.get('/card/card-statistics/orders')
-      .then(response => { this.ordersRecevied = response.data })
-
-    // Site Traffic gained
-    this.$http.get('/card/card-statistics/site-traffic')
-      .then(response => { this.siteTraffic = response.data })
-
-    // Active Users
-    this.$http.get('/card/card-statistics/active-users')
-      .then(response => { this.activeUsers = response.data })
-
-    // Newsletter
-    this.$http.get('/card/card-statistics/newsletter')
-      .then(response => { this.newsletter = response.data })
   },
   methods: {
     kFormatter,
+
+    ...mapActions({ getDashboard: "dashboard/getDashboard" }),
   },
 }
 </script>

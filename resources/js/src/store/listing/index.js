@@ -213,6 +213,24 @@ export default {
             });
         },
 
+        // Get listing visits
+        loadListingVisits({ commit }, listingId) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "get-listing-visit", data: listingId, method: "POST" })
+                    .then((response) => {
+                        commit("setIsLoading", false);
+                        return resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsLoading", false);
+                        commit("setError", error);
+                        reject(error);
+                    });
+            });
+        },
+
         // Deleting
     },
 };
