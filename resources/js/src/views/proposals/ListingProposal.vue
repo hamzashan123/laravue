@@ -4,9 +4,12 @@
         <b-row class="mb-4">
             <b-col md="8" sm="12">
                 <b-card-text> <h1>Proposals on {{ ListingTitle }}</h1> </b-card-text>
-                <span class="text-small"
+                <span class="text-small d-block"
                     >Location: {{ ListingAddress }}
                 </span>
+                <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
+                    {{ statuses_color[0][listing.status] }}
+                </b-badge>
             </b-col>
             <b-col md="4" sm="12">
                 <div class="text-right">
@@ -43,7 +46,7 @@
                                 <b-form-input
                                     id="target-date"
                                     placeholder="Target Date"
-                                    value=" 2022-03-03 - 2022-03-03 "
+                                    :value="listing.target_completion_datefrom + ' - ' + listing.target_completion_dateto"
                                     disabled
                                 />
                             </b-form-group>
@@ -56,7 +59,7 @@
                                 size="18"
                                 class="mr-50"
                             />
-                            Contractor Target Budget
+                            Client Target Budget
                         </h4>
                         <b-col cols="12">
                             <b-form-group
@@ -67,7 +70,7 @@
                                 <b-form-input
                                     id="target-budget"
                                     placeholder="Target Budget"
-                                    value="50000 - 1500000"
+                                    :value="listing.min_budget + ' - ' + listing.max_budget"
                                     disabled
                                 />
                             </b-form-group>
@@ -228,6 +231,7 @@
                         </b-button>
 
                         <b-button
+                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') ) "
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="success"
                             class="mb-1"
@@ -317,6 +321,7 @@ import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { can } from '@/auth/authentication.js'
 
 export default {
     components: {
@@ -362,10 +367,13 @@ export default {
                 "actions",
             ],
             items: [],
+            listing: {},
             ListingTitle: '',
             ListingAddress: '',
             listingId: '',
             statuses_color,
+
+            can,
         };
     },
     computed: {
@@ -387,7 +395,7 @@ export default {
                 console.log(response);
                 if (response.success) {
                     this.items = response.data;
-
+                    this.listing = this.items[0].listing
                     this.ListingTitle = this.items[0].listing.title
                     this.ListingAddress = this.items[0].listing.address_line1
 

@@ -121,6 +121,7 @@
                     :filter="filter"
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
+                    show-empty
                 >
 
                     <template #cell(title)="data">
@@ -158,6 +159,7 @@
                     </template>
                     <template #cell(actions)="data">
                         <b-button
+                            v-if=" can('create', 'all-contract') "
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
                             class="mb-1"
@@ -261,6 +263,7 @@ import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { can } from '@/auth/authentication.js'
 
 export default {
     components: {
@@ -306,6 +309,8 @@ export default {
             ],
             items: [],
             statuses_color,
+
+             can,
         };
     },
     computed: {

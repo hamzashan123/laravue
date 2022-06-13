@@ -60,7 +60,7 @@ export default {
                         console.log(error);
                         commit("setIsLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -79,7 +79,7 @@ export default {
                         console.log(error);
                         commit("setIsLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -99,7 +99,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsCreated", true);
                             commit("setMessage", response.data.message);
@@ -116,7 +115,7 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -127,14 +126,13 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({ url: 'publish-listing', data: draftListingId, method: 'post' })
                     .then(( response ) => {
-                        console.log(response);
                         commit("setIsLoading", false)
                         return resolve( response.data )
                     })
                     .catch((error) => {
                         commit("setIsLoading", false)
                         console.log(error)
-                        reject(error)
+                        return reject(error)
                      })
             })
         },
@@ -154,7 +152,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsCreated", true);
                             commit("setMessage", response.data.message);
@@ -171,7 +168,7 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -191,7 +188,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsCreated", true);
                             commit("setMessage", response.data.message);
@@ -208,7 +204,7 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -226,7 +222,7 @@ export default {
                         console.log(error);
                         commit("setIsLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },

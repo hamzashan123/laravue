@@ -120,6 +120,7 @@
                     :filter="filter"
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
+                    show-empty
                 >
                     <template #cell(images)="data">
                         <b-avatar v-for="(image, idx) in data.item.images.slice(0, 1)" :key="idx"  :src="image" class="mx-1" />
@@ -257,6 +258,7 @@ export default {
     },
     data() {
         return {
+            noData: false,
             perPage: 25,
             pageOptions: [10, 25, 50],
             totalRows: 1,
@@ -305,11 +307,12 @@ export default {
             .then((response) => {
                 if( response.success ) {
                     this.items = response.data
-                    console.log(response.data.length);
+                    // console.log(response.data.length);
                     // Set the initial number of items
                     this.totalRows = response.data.length;
 
                 } else {
+                    this.noData = true,
                     this.$toast({
                     component: ToastificationContent,
                     props: {

@@ -6,9 +6,9 @@
             <b-col md="6" sm="12">
                 <b-card-text>
                     <h1>Add documents on {{ listing.title }}</h1>
-                     <b-badge :variant="statuses_color[1][listing.status]">
+                    <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
-                     </b-badge>
+                    </b-badge>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
@@ -23,7 +23,10 @@
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        :to="{ name: 'contracts.view', params: { contractId: 1 } }"
+                        :to="{
+                            name: 'contracts.view',
+                            params: { contractId: 1 },
+                        }"
                     >
                         See Details
                     </b-button>
@@ -33,211 +36,236 @@
         <!-- </b-card> -->
 
         <!-- LEgal and Payment Status -->
-        <b-card>
-                <b-row>
-                    <b-col md="6">
-                        <h4 class="mb-2 text-primary">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Client's Legal
-                        </h4>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Status  </h5>
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    value="25%"
-                                    id="target_completion_dateto"
-                                    placeholder="Date To"
-                                    class="mb-2"
-                                    disabled
-                                />
-                            </div>
+        <b-card v-if="!noData">
+            <b-row>
+                <b-col md="6">
+                    <h4 class="mb-2 text-primary">
+                        <feather-icon
+                            icon="ChevronsUpIcon"
+                            size="18"
+                            class="mr-50"
+                        />
+                        Client's Legal
+                    </h4>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Status</h5>
                         </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Documents  </h5>
-                            </div>
-                            <div class="col">
-                                <div v-for="(lcd, idx) in legal_client_documents" :key="idx">
-
-                                    <b-avatar
+                        <div class="col">
+                            <b-form-input
+                                value="25%"
+                                id="target_completion_dateto"
+                                placeholder="Date To"
+                                class="mb-2"
+                                disabled
+                            />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Documents</h5>
+                        </div>
+                        <div class="col">
+                            <div
+                                v-for="(lcd, idx) in legal_client_documents"
+                                :key="idx"
+                            >
+                                <b-avatar
                                     variant="light-dark"
                                     square
-                                    :text="lcd.legal_document_path.substr(lcd.legal_document_path.length - 3)"
+                                    :text="
+                                        lcd.legal_document_path.substr(
+                                            lcd.legal_document_path.length - 3
+                                        )
+                                    "
                                     size="md"
-                                    />
-                                    <b-button
+                                />
+                                <b-button
                                     v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                     variant="outline-dark"
                                     size="sm"
                                     :href="lcd.legal_document_path"
-                                    >
+                                    target="_blank"
+                                >
                                     {{ lcd.legal_document_name }}
-                                    </b-button>
-                                </div>
-
+                                </b-button>
                             </div>
                         </div>
-                    </b-col>
-                    <b-col md="6">
-                        <h4 class="mb-2 text-primary">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
+                    </div>
+                </b-col>
+                <b-col md="6">
+                    <h4 class="mb-2 text-primary">
+                        <feather-icon
+                            icon="ChevronsUpIcon"
+                            size="18"
+                            class="mr-50"
+                        />
+                        Contractor's Legal
+                    </h4>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Status</h5>
+                        </div>
+                        <div class="col">
+                            <b-form-input
+                                value="25%"
+                                id="target_completion_dateto"
+                                placeholder="Date To"
+                                class="mb-2"
+                                disabled
                             />
-                            Contractor's Legal
-                        </h4>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Status  </h5>
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    value="25%"
-                                    id="target_completion_dateto"
-                                    placeholder="Date To"
-                                    class="mb-2"
-                                    disabled
-                                />
-                            </div>
                         </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Documents  </h5>
-                            </div>
-                            <div class="col">
-                                <div v-for="(lcd, idx) in legal_contractor_documents" :key="idx">
-
-                                    <b-avatar
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Documents</h5>
+                        </div>
+                        <div class="col">
+                            <div
+                                v-for="(lcd, idx) in legal_contractor_documents"
+                                :key="idx"
+                            >
+                                <b-avatar
                                     variant="light-dark"
                                     square
-                                    :text="lcd.legal_document_path.substr(lcd.legal_document_path.length - 3)"
+                                    :text="
+                                        lcd.legal_document_path.substr(
+                                            lcd.legal_document_path.length - 3
+                                        )
+                                    "
                                     size="md"
-                                    />
-                                    <b-button
+                                />
+                                <b-button
                                     v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                     variant="outline-dark"
                                     size="sm"
                                     :href="lcd.legal_document_path"
-                                    >
+                                    target="_blank"
+                                >
                                     {{ lcd.legal_document_name }}
-                                    </b-button>
-                                </div>
-
+                                </b-button>
                             </div>
                         </div>
-                    </b-col>
-                </b-row>
+                    </div>
+                </b-col>
+            </b-row>
         </b-card>
 
-        <b-card>
-                <b-row>
-                    <b-col md="6">
-                        <h4 class="mb-2 text-primary">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Client's Payment
-                        </h4>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Status  </h5>
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    value="25%"
-                                    id="target_completion_dateto"
-                                    placeholder="Date To"
-                                    class="mb-2"
-                                    disabled
-                                />
-                            </div>
+        <b-card v-if="!noData">
+            <b-row>
+                <b-col md="6">
+                    <h4 class="mb-2 text-primary">
+                        <feather-icon
+                            icon="ChevronsUpIcon"
+                            size="18"
+                            class="mr-50"
+                        />
+                        Client's Payment
+                    </h4>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Status</h5>
                         </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Documents  </h5>
-                            </div>
-                            <div class="col">
-                                <div v-for="(lcd, idx) in finance_client_documents" :key="idx">
-
-                                    <b-avatar
+                        <div class="col">
+                            <b-form-input
+                                value="25%"
+                                id="target_completion_dateto"
+                                placeholder="Date To"
+                                class="mb-2"
+                                disabled
+                            />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Documents</h5>
+                        </div>
+                        <div class="col">
+                            <div
+                                v-for="(lcd, idx) in finance_client_documents"
+                                :key="idx"
+                            >
+                                <b-avatar
                                     variant="light-dark"
                                     square
-                                    :text="lcd.legal_document_path.substr(lcd.legal_document_path.length - 3)"
+                                    :text="
+                                        lcd.legal_document_path.substr(
+                                            lcd.legal_document_path.length - 3
+                                        )
+                                    "
                                     size="md"
-                                    />
-                                    <b-button
+                                />
+                                <b-button
                                     v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                     variant="outline-dark"
                                     size="sm"
                                     :href="lcd.legal_document_path"
-                                    >
+                                    target="_blank"
+                                >
                                     {{ lcd.legal_document_name }}
-                                    </b-button>
-                                </div>
-
+                                </b-button>
                             </div>
                         </div>
-                    </b-col>
-                    <b-col md="6">
-                        <h4 class="mb-2 text-primary">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
+                    </div>
+                </b-col>
+                <b-col md="6">
+                    <h4 class="mb-2 text-primary">
+                        <feather-icon
+                            icon="ChevronsUpIcon"
+                            size="18"
+                            class="mr-50"
+                        />
+                        Contractor's Payment
+                    </h4>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Status</h5>
+                        </div>
+                        <div class="col">
+                            <b-form-input
+                                value="25%"
+                                id="target_completion_dateto"
+                                placeholder="Date To"
+                                class="mb-2"
+                                disabled
                             />
-                            Contractor's Payment
-                        </h4>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Status  </h5>
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    value="25%"
-                                    id="target_completion_dateto"
-                                    placeholder="Date To"
-                                    class="mb-2"
-                                    disabled
-                                />
-                            </div>
                         </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <h5 class="mb-2">  Documents  </h5>
-                            </div>
-                            <div class="col">
-                                <div v-for="(lcd, idx) in finance_contractor_documents" :key="idx">
-
-                                    <b-avatar
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h5 class="mb-2">Documents</h5>
+                        </div>
+                        <div class="col">
+                            <div
+                                v-for="(
+                                    lcd, idx
+                                ) in finance_contractor_documents"
+                                :key="idx"
+                            >
+                                <b-avatar
                                     variant="light-dark"
                                     square
-                                    :text="lcd.legal_document_path.substr(lcd.legal_document_path.length - 3)"
+                                    :text="
+                                        lcd.legal_document_path.substr(
+                                            lcd.legal_document_path.length - 3
+                                        )
+                                    "
                                     size="md"
-                                    />
-                                    <b-button
+                                />
+                                <b-button
                                     v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                     variant="outline-dark"
                                     size="sm"
                                     target="_blank"
                                     :href="lcd.legal_document_path"
-                                    >
+                                >
                                     {{ lcd.legal_document_name }}
-                                    </b-button>
-                                </div>
-
+                                </b-button>
                             </div>
                         </div>
-                    </b-col>
-                </b-row>
+                    </div>
+                </b-col>
+            </b-row>
         </b-card>
 
         <!-- Images and Detail -->
@@ -259,7 +287,9 @@
                                         label-for="document-type"
                                     >
                                         <b-form-radio-group
-                                            v-model="client_documents.document_type"
+                                            v-model="
+                                                client_documents.document_type
+                                            "
                                             :options="document_type_options"
                                             class=""
                                             name="document-type"
@@ -275,7 +305,9 @@
                                             >
                                                 <b-form-input
                                                     id="Note"
-                                                    v-model="client_documents.notes"
+                                                    v-model="
+                                                        client_documents.notes
+                                                    "
                                                     placeholder="Add note for document"
                                                 />
                                             </b-form-group>
@@ -286,7 +318,9 @@
                                                 label-for="Percetange"
                                             >
                                                 <b-form-input
-                                                    v-model="client_documents.percentage"
+                                                    v-model="
+                                                        client_documents.percentage
+                                                    "
                                                     id="Percetange"
                                                     placeholder="Add number only"
                                                 />
@@ -301,7 +335,9 @@
                                                 label-for="doc"
                                             >
                                                 <b-form-file
-                                                    v-model="client_documents.legal_documents"
+                                                    v-model="
+                                                        client_documents.legal_documents
+                                                    "
                                                     placeholder="Upload Document"
                                                     drop-placeholder="Drop file here..."
                                                     multiple
@@ -315,7 +351,9 @@
                                                 label-for="doc"
                                             >
                                                 <b-form-datepicker
-                                                    v-model="client_documents.legal_document_date"
+                                                    v-model="
+                                                        client_documents.legal_document_date
+                                                    "
                                                     placeholder="Select From Date"
                                                     id="target_completion_datefrom"
                                                     class="mb-1 p-0"
@@ -327,7 +365,9 @@
 
                                     <b-col class="text-right">
                                         <b-button
-                                            v-ripple.400="'rgba(255, 255, 255, 0.15)' "
+                                            v-ripple.400="
+                                                'rgba(255, 255, 255, 0.15)'
+                                            "
                                             type="submit"
                                             variant="primary"
                                             @click="uploadClientDocTrigger"
@@ -350,7 +390,9 @@
                                         label-for="document-type"
                                     >
                                         <b-form-radio-group
-                                            v-model="contractor_documents.document_type"
+                                            v-model="
+                                                contractor_documents.document_type
+                                            "
                                             :options="document_type_options"
                                             class=""
                                             name="document-type"
@@ -366,7 +408,9 @@
                                             >
                                                 <b-form-input
                                                     id="Note"
-                                                    v-model="contractor_documents.notes"
+                                                    v-model="
+                                                        contractor_documents.notes
+                                                    "
                                                     placeholder="Add note for document"
                                                 />
                                             </b-form-group>
@@ -377,7 +421,9 @@
                                                 label-for="Percetange"
                                             >
                                                 <b-form-input
-                                                    v-model="contractor_documents.percentage"
+                                                    v-model="
+                                                        contractor_documents.percentage
+                                                    "
                                                     id="Percetange"
                                                     placeholder="Add number only"
                                                 />
@@ -392,7 +438,9 @@
                                                 label-for="doc"
                                             >
                                                 <b-form-file
-                                                    v-model="contractor_documents.legal_documents"
+                                                    v-model="
+                                                        contractor_documents.legal_documents
+                                                    "
                                                     placeholder="Upload Document"
                                                     drop-placeholder="Drop file here..."
                                                     multiple
@@ -406,7 +454,9 @@
                                                 label-for="doc"
                                             >
                                                 <b-form-datepicker
-                                                    v-model="contractor_documents.legal_document_date"
+                                                    v-model="
+                                                        contractor_documents.legal_document_date
+                                                    "
                                                     placeholder="Select From Date"
                                                     id="target_completion_datefrom"
                                                     class="mb-1 p-0"
@@ -439,117 +489,74 @@
                                 <div class="mb-2">
                                     <b-form-group
                                         label="Add your Comment"
-                                        label-for="Percetange"
+                                        label-for="comment"
+                                        class="p-1"
                                     >
                                         <b-form-textarea
-                                            id="listingDetails"
+                                            v-model="comment"
+                                            id="comment"
                                             placeholder="Comment"
                                             rows="3"
                                         />
                                     </b-form-group>
-                                    <b-col class="text-right">
+                                    <b-col class="text-right p-1">
                                         <b-button
                                             v-ripple.400="
                                                 'rgba(255, 255, 255, 0.15)'
                                             "
                                             type="submit"
                                             variant="primary"
+                                            @click="addCommentTrigger"
                                         >
                                             Add Comment
+                                            <b-spinner small v-if="isLoading" />
                                         </b-button>
                                     </b-col>
-                                        <vue-perfect-scrollbar
-                                            :settings="perfectScrollbarSettings"
-                                            class="user-chats scroll-area border m-1 p-1"
+                                    <vue-perfect-scrollbar
+                                        :settings="perfectScrollbarSettings"
+                                        class="user-chats scroll-area p-1 mb-4"
+                                    >
+                                        <div
+                                            class="comments position-relative"
+                                            style="height: 60vh"
+                                        >
+                                            <div
+                                                class="d-flex align-item-center mb-1 mt-1 pb-1"
+                                                v-for="comment in comments"
+                                                :key="comment.id"
                                             >
-                                    <div class="comments position-relative" style="height: 60vh">
-                                            <div class="d-flex align-item-center mb-1 mt-1">
                                                 <b-avatar
-                                                    size="40"
+                                                    size="32"
                                                     variant="light-primary"
-                                                    class="mr-1"
+                                                    class="mr-1 "
                                                     src=""
                                                 />
-                                                <div class="chat-info flex-grow-1">
-                                                    <h5 class="mb-0">Ameen</h5>
-                                                    <p class="card-text ">
-                                                        Here is my message
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-item-center mb-1 mt-1">
-                                                <b-avatar
-                                                    size="40"
-                                                    variant="light-primary"
-                                                    class="mr-1"
-                                                    src=""
-                                                />
-                                                <div class="chat-info flex-grow-1">
-                                                    <h5 class="mb-0">Hamza</h5>
-                                                    <p class="card-text ">
-                                                        Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-item-center mb-1 mt-1">
-                                                <b-avatar
-                                                    size="40"
-                                                    variant="light-primary"
-                                                    class="mr-1"
-                                                    src=""
-                                                />
-                                                <div class="chat-info flex-grow-1">
-                                                    <h5 class="mb-0">Hamza</h5>
-                                                    <p class="card-text">
-                                                        Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-item-center mb-1 mt-1">
-                                                <b-avatar
-                                                    size="40"
-                                                    variant="light-primary"
-                                                    class="mr-1"
-                                                    src=""
-                                                />
-                                                <div class="chat-info flex-grow-1">
-                                                    <h5 class="mb-0">Hamza</h5>
-                                                    <p class="card-text ">
-                                                        Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-item-center mb-1 mt-1">
-                                                <b-avatar
-                                                    size="40"
-                                                    variant="light-primary"
-                                                    class="mr-1"
-                                                    src=""
-                                                />
-                                                <div class="chat-info flex-grow-1">
-                                                    <h5 class="mb-0">Hamza</h5>
-                                                    <p class="card-text ">
-                                                        Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message. Here is some anther message.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-item-center mb-1 mt-1">
-                                                <b-avatar
-                                                    size="40"
-                                                    variant="light-primary"
-                                                    class="mr-1"
-                                                    src=""
-                                                />
-                                                <div class="chat-info flex-grow-1">
-                                                    <h5 class="mb-0">Touqeer    </h5>
-                                                    <p class="card-text ">
-                                                        Here is my message
-                                                    </p>
-                                                </div>
-                                            </div>
+                                                <div
+                                                    class="chat-info col shadow p-1 bg-white rounded text-white "
+                                                    :class=" comment.user_role == 'Contractor' ? 'bg-primary ' : '' || comment.user_role == 'EB Staff' ? 'bg-warning ' : '' || comment.user_role == 'Client' ? 'bg-info' : '' "
 
-                                    </div>
-                                        </vue-perfect-scrollbar>
+                                                >
+                                                    <div class="d-flex align-item-center">
+
+                                                        <h5 class="mb-0 p-0 mr-2 d-inline text-white" >
+                                                            {{ comment.user_name }}
+                                                        </h5>
+                                                        <small>
+                                                            {{new Date(comment.created_at).toDateString() }}
+                                                        </small>
+
+                                                        <small class="ml-auth">
+                                                            UserType: <span class="font-weight-bold">  ( {{ comment.user_role }} ) </span>
+                                                        </small>
+                                                    </div>
+
+                                                    <p class="card-text h4 text-white">
+                                                        {{ comment.message }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </vue-perfect-scrollbar>
                                 </div>
                             </b-tab>
                         </b-tabs>
@@ -588,20 +595,7 @@
                         </div>
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <b-form-input
-                                    id="gmap-autocompelte"
-                                    placeholder="Search Address"
-                                    disabled
-                                />
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
-                                    width="100%"
-                                    height="300"
-                                    style="border: 0"
-                                    allowfullscreen=""
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                ></iframe>
+                                <div id="map" class="h-100 mt-2"></div>
                             </b-col>
                             <b-col lg="6">
                                 <b-form-group
@@ -658,6 +652,18 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+                        <!-- Save -->
+                        <!-- <b-col class="text-right">
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            type="submit"
+                            variant="primary"
+                            @click.prevent="saveListingTrigger"
+                        >
+                            Save Details
+                            <b-spinner small v-if="isLoading" />
+                        </b-button>
+                    </b-col> -->
                     </b-col>
                 </b-row>
             </b-form>
@@ -691,17 +697,18 @@ import {
     BBadge,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
-import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import { can } from '@/auth/authentication.js'
+import { can } from "@/auth/authentication.js";
 
 export default {
     data() {
         return {
+            noData: false,
             legalDocuments: {},
-            listingId: '',
+            listingId: "",
             listing: {},
             client_documents: {},
             contractor_documents: {},
@@ -710,19 +717,20 @@ export default {
             finance_client_documents: {},
             finance_contractor_documents: {},
 
+            comment: "",
+
             statuses_color,
 
             can,
 
             perfectScrollbarSettings: {
                 maxScrollbarLength: 60,
-                height: 10
+                height: 10,
             },
             document_type_options: [
                 { text: "Legal Document", value: "legal" },
                 { text: "Payment Document", value: "finance" },
             ],
-
         };
     },
     components: {
@@ -748,29 +756,54 @@ export default {
         BAvatar,
         BSpinner,
         BBadge,
-        VuePerfectScrollbar
+        VuePerfectScrollbar,
     },
     methods: {
-        ...mapActions({ loadLegalDocument: "contract/loadLegalDocument", uploadClientDoc: 'contract/uploadClientDoc',  uploadContractorDoc: 'contract/uploadContractorDoc' }),
+        ...mapActions({
+            loadLegalDocument: "contract/loadLegalDocument",
+            uploadClientDoc: "contract/uploadClientDoc",
+            uploadContractorDoc: "contract/uploadContractorDoc",
+            loadComments: "contract/loadComments",
+            addComment: "contract/addComment",
+        }),
 
         // upload contractor legal or payment documents
         uploadClientDocTrigger() {
             let clientData = new FormData();
-            clientData.append( "listing_id", this.listingId );
-            clientData.append( "legal_document_date", this.client_documents.legal_document_date );
-            clientData.append( "user_type", "client" );
-            clientData.append( "document_type", this.client_documents.document_type  );
-            clientData.append( "notes", this.client_documents.notes );
-            clientData.append( "percentage", this.client_documents.percentage );
+            clientData.append("listing_id", this.listingId);
+            clientData.append(
+                "legal_document_date",
+                this.client_documents.legal_document_date
+            );
+            clientData.append("user_type", "client");
+            clientData.append(
+                "document_type",
+                this.client_documents.document_type
+            );
+            clientData.append("notes", this.client_documents.notes);
+            clientData.append("percentage", this.client_documents.percentage);
 
-            (this.client_documents.legal_documents) ? this.client_documents.legal_documents.forEach((legal_document) => {
-                clientData.append("legal_document[]", legal_document);
-            }): '';
+            this.client_documents.legal_documents
+                ? this.client_documents.legal_documents.forEach(
+                      (legal_document) => {
+                          clientData.append("legal_document[]", legal_document);
+                      }
+                  )
+                : "";
 
             this.uploadClientDoc(clientData)
                 .then((response) => {
                     if (response.success) {
                         console.log(response.data);
+
+                        this.legalDocuments = response.data[0];
+
+                        this.finance_client_documents = this.legalDocuments.finance_client_documents;
+                        this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
+                        this.legal_client_documents = this.legalDocuments.legal_client_documents;
+                        this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
+
+
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -779,7 +812,10 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.$router.push({ name: 'contracts.add', params: {listingId: this.listingId} })
+                        // this.$router.push({
+                        //     name: "contracts.add",
+                        //     params: { listingId: this.listingId },
+                        // });
                     } else {
                         console.log(response);
                         this.$toast({
@@ -807,21 +843,40 @@ export default {
         // upload contractor legal or payment documents
         uploadContractorDocTrigger() {
             let contractorData = new FormData();
-            contractorData.append( "listing_id", this.listingId );
-            contractorData.append( "legal_document_date", this.contractor_documents.legal_document_date );
-            contractorData.append( "user_type", "contractor" );
-            contractorData.append( "document_type", this.contractor_documents.document_type  );
-            contractorData.append( "notes", this.contractor_documents.notes );
-            contractorData.append( "percentage", this.contractor_documents.percentage );
-            this.contractor_documents.legal_documents.forEach((legal_document) => {
-                contractorData.append("legal_document[]", legal_document);
-            });
-
+            contractorData.append("listing_id", this.listingId);
+            contractorData.append(
+                "legal_document_date",
+                this.contractor_documents.legal_document_date
+            );
+            contractorData.append("user_type", "contractor");
+            contractorData.append(
+                "document_type",
+                this.contractor_documents.document_type
+            );
+            contractorData.append("notes", this.contractor_documents.notes);
+            contractorData.append(
+                "percentage",
+                this.contractor_documents.percentage
+            );
+            this.contractor_documents.legal_documents.forEach(
+                (legal_document) => {
+                    contractorData.append("legal_document[]", legal_document);
+                }
+            );
 
             this.uploadContractorDoc(contractorData)
                 .then((response) => {
                     if (response.success) {
+
                         console.log(response.data);
+
+                        this.legalDocuments = response.data[0];
+
+                        this.finance_client_documents = this.legalDocuments.finance_client_documents;
+                        this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
+                        this.legal_client_documents = this.legalDocuments.legal_client_documents;
+                        this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
+
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -830,7 +885,61 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.$router.push({ name: 'contracts.add', params: {listingId: this.listingId}  })
+                        // this.$router.push({
+                        //     name: "contracts.add",
+                        //     params: { listingId: this.listingId },
+                        // });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While sending!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        },
+
+        initMap() {
+            let map = new google.maps.Map(document.getElementById("map"), {
+                center: this.latLng,
+                zoom: 12,
+            });
+        },
+
+        // Add commments
+        addCommentTrigger() {
+            let commentData = new FormData();
+            commentData.append("listing_id", this.listingId);
+            commentData.append("message", this.comment);
+
+            this.addComment(commentData)
+                .then((response) => {
+                    if (response.success) {
+                        console.log(response.data);
+                        this.comment = "";
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
                     } else {
                         console.log(response);
                         this.$toast({
@@ -857,7 +966,11 @@ export default {
         },
     },
     computed: {
-        ...mapGetters({ isLoading: "contract/getIsLoading", isDataLoading: "contract/getIsDataLoading" }),
+        ...mapGetters({
+            isLoading: "contract/getIsLoading",
+            isDataLoading: "contract/getIsDataLoading",
+            comments: "contract/getComments",
+        }),
     },
     created() {
         this.listingId = this.$route.params.listingId;
@@ -865,15 +978,26 @@ export default {
         this.loadLegalDocument({ listing_id: this.listingId })
             .then((response) => {
                 if (response.success) {
-                    console.log(response);
-                    this.legalDocuments = response.data[0];
 
-                    this.listing = this.legalDocuments.listing;
-                    this.finance_client_documents = this.legalDocuments.finance_client_documents;
-                    this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
-                    this.legal_client_documents = this.legalDocuments.legal_client_documents;
-                    this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
+                    if(response.data.length == 0) {
+                    this.noData = true
+                    console.log("noData");
+
+                    } else {
+
+                        console.log(response);
+                        this.legalDocuments = response.data[0];
+
+                        this.listing = this.legalDocuments.listing;
+                        this.finance_client_documents = this.legalDocuments.finance_client_documents;
+                        this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
+                        this.legal_client_documents = this.legalDocuments.legal_client_documents;
+                        this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
+                    }
+
                 } else {
+                    console.log("else");
+
                     this.$toast({
                         component: ToastificationContent,
                         props: {
@@ -895,6 +1019,11 @@ export default {
                     },
                 });
             });
+
+        this.loadComments();
+    },
+    mounted() {
+        this.initMap()
     },
     directives: {
         Ripple,
@@ -902,5 +1031,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

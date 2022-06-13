@@ -88,7 +88,7 @@ class LegalDocumentsController extends Controller
         $response_data = [
             'success' => true,
             'message' =>  'Upload Legal Documents successfully!',
-            'user' => LegalResource::collection($data),
+            'data' => LegalResource::collection($data),
         ];
         return response()->json($response_data, $this->successStatus);
     }

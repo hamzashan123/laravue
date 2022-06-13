@@ -123,7 +123,13 @@ export default {
       quarterlySales: {},
       ordersRecevied: {},
 
-      dashboard: {},
+      dashboard: {
+        totalclients: '',
+        totalcontractors: '',
+        totallistings: '',
+        totalstaff: '',
+        totalusers: '',
+      },
 
     }
   },
@@ -133,14 +139,14 @@ export default {
             isDataLoading: "proposal/getIsDataLoading"
         }),
     },
-  created() {
+  mounted() {
 
        // getting dashboard
         this.getDashboard()
             .then((response) => {
                 if (response) {
                     this.dashboard = response.data;
-                    console.log(this.dashboard);
+                    // console.log(this.dashboard);
                 } else {
                     this.$toast({
                         component: ToastificationContent,

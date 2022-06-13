@@ -5,7 +5,7 @@
             <b-col md="6" sm="12">
                 <b-card-text>
                     <h1> {{ listing.title }} </h1>
-                    <b-badge :variant="statuses_color[1][listing.status]">
+                    <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
                      </b-badge>
                 </b-card-text>
@@ -23,7 +23,7 @@
                     </b-button>
 
                     <b-button
-                        v-if="listing.status === 'publish' && can('create', 'proposal') || can('create', 'all-proposal') "
+                        v-if=" ( listing.status === 'publish' && can('create', 'proposal') ) || (listing.status === 'publish' && can('create', 'all-proposal') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'proposals.add', params: { listingId: id } }"
@@ -32,7 +32,7 @@
                     </b-button>
 
                     <b-button
-                        v-if="can('update', 'visit')"
+                        v-if="can('update', 'all-visit')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
                         :to="{ name: 'listings.add-visits', params:{ listingId: id } }"
@@ -40,7 +40,7 @@
                         Add Visits
                     </b-button>
                     <b-button
-                        v-if="can('read', 'listing') || can('read', 'all-listing')"
+                        v-if="( listing.status === 'pre_contract' && can('create', 'listing') ) || (listing.status === 'pre_contract' && can('create', 'all-listing') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'listings.detail', params:{ listingId: id } }"
@@ -378,7 +378,7 @@ export default {
                             props: { title: response.message, icon: "EditIcon", variant: "success" },
                         });
 
-                        this.$router.push({ name: 'proposals' })
+                        this.$router.push({ name: 'listings' })
                     } else {
                         console.log(response);
                         this.$toast({
