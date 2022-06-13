@@ -15,6 +15,7 @@ use App\Http\Helpers\Helper;
 use Notification;
 use App\Notifications\EmailVerification;
 use URL;
+use DB;
 use Validator;
 use Mail;
 use Carbon\Carbon;
@@ -246,21 +247,23 @@ class ProposalController extends Controller
 
     public function getProposals(Request $request)
     {
+        $data;      
+        if(Auth::user()->role_id == 1) {
+            //Client
+            $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
+                $query->where(['status'=> 'approved']);
+            })->where('user_id', Auth::user()->id)->whereNotIn('status', ['draft','publish']);
+        } else if (Auth::user()->role_id == 2) {
+            //Contractor
+            $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
+                $query->where(['user_id'=> Auth::user()->id]);
+            });
+        } else {
+            //EB Staff
+            $data = Listing::whereNotIn('status', ['draft','publish']);
+        }            
 
-        $data;
-        switch(Auth::user()->role_id) {
-            case 1:         //Client
-                $data = Listing::where('user_id', Auth::user()->id)->whereNotIn('status', ['draft','publish']);
-                break;
-            case 2:         //Contractor
-                $data = Listing::whereNotIn('status', ['draft','publish']);                        
-            case 3:         //EB Staff
-                $data = Listing::whereNotIn('status', ['draft','publish']);
-                break;
-        }
-
-        $data = $data->paginate(10);
-
+        $data = $data->paginate(10);    
 
         if (count($data) > 0) {
             $response_data = [

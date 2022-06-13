@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ListingImages;
 use App\Models\Proposals;
+//use App\Models\Auth;
+use Illuminate\Support\Facades\Auth;
 
 class Listing extends Model
 {
@@ -44,10 +46,9 @@ class Listing extends Model
         return $this->hasOne(User::class,'id','published_by')
             ->select('users.*');
     }
-
+    
     public function getListingProposals() {
         return $this->hasMany(Proposals::class,'listing_id','id')
             ->select('proposals.*');
     }
-
 }

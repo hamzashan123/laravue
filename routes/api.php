@@ -65,6 +65,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('assign-contract', [App\Http\Controllers\API\ContractsController::class, 'assignContract']);
     Route::post('get-contracts', [App\Http\Controllers\API\ContractsController::class, 'getContracts']);
 
+    //Chat
+    Route::post('post-comment', [App\Http\Controllers\API\ChatController::class, 'postComment']);
+    Route::post('get-comments', [App\Http\Controllers\API\ChatController::class, 'getComments']);
+
+    Route::post('send-message', [App\Http\Controllers\API\ChatController::class, 'sendMessage']);
+    Route::post('get-messages', [App\Http\Controllers\API\ChatController::class, 'getMessages']);
+
     //Dashboard
     Route::post('get-dashboard', [App\Http\Controllers\API\UserController::class, 'getDashboard']);
 });
