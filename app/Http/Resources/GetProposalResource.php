@@ -30,12 +30,14 @@ class GetProposalResource extends JsonResource
                 $imageurl = URL::to('/') . Storage::disk('local')->url('public/Listing/' .$image->listing_id  . '/images/' . $image->image);
             }
 
-            $ImageArray["image" . $rownumber] = $imageurl;
+            $ImageArray[] = $imageurl;
             $rownumber = ($rownumber + 1);
         }
 
-        if(Auth::user()->role_id == 2) {
-            $proposalCount = $this->getListingProposals->where('user_id', Auth::user()->id)->count();
+        if(Auth::user()->role_id == 1) {
+            $proposalCount = $this->getListingProposals->where('status', 'approved')->count();
+        } else if(Auth::user()->role_id == 2) { 
+            $proposalCount = $this->getListingProposals->where('user_id', Auth::user()->id)->count();           
         } else {
             $proposalCount = $this->getListingProposals->count();
         }

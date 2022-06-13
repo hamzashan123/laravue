@@ -112,7 +112,7 @@ class UserController extends Controller
         $randomstring = Helper::generateRandomString($input['first_name'], $input['last_name'], $input['email']);
 
         $input['first_name']  = $input['first_name'];
-        $input['user_name']  = $input['user_name'] ?? '';
+        $input['user_name']  = $input['first_name'] . ' ' . $input['last_name'];
         $input['last_name']  = $input['last_name'];
         $input['password'] = bcrypt($input['password']);
         $input['country']  = $input['country'];
