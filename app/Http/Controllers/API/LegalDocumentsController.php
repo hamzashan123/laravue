@@ -34,7 +34,7 @@ class LegalDocumentsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'listing_id'            => 'required',
-            'legal_document'        => 'required',            
+            'legal_document'        => 'required',
             'legal_document_date'   => 'required',
             'user_type'             => 'required',
             'document_type'         => 'required',
@@ -57,7 +57,7 @@ class LegalDocumentsController extends Controller
                 'errors' => $validator->errors()
             ];
             return response()->json($response_data);
-        }        
+        }
 
         $input = $request->all();
         $input['user_id'] = Auth::user()->id;
@@ -72,14 +72,14 @@ class LegalDocumentsController extends Controller
 
         $files = $request->file('legal_document');
         foreach ($files as $file) {
-            $extension = $file->getClientOriginalExtension();            
+            $extension = $file->getClientOriginalExtension();
 
             $filename = Str::random(20) . $extension;
             Storage::disk('local')->put('/public/ListingDocuments/' . $request->listing_id . '/' . $request->user_type . '/' . $filename, File::get($file));
-            
+
             $input['legal_document_name'] = $file->getClientOriginalName();
             $input['legal_document_path'] = $filename;
-            LegalDocuments::create($input);           
+            LegalDocuments::create($input);
         }
 
         $data = LegalDocuments::select('listing_id')->where('listing_id', $request->listing_id)
@@ -90,13 +90,13 @@ class LegalDocumentsController extends Controller
             'message' =>  'Upload Legal Documents successfully!',
             'user' => LegalResource::collection($data),
         ];
-        return response()->json($response_data, $this->successStatus);       
+        return response()->json($response_data, $this->successStatus);
     }
 
     public function getLegalDocuments(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'listing_id'            => 'required',           
+            'listing_id'            => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -114,10 +114,10 @@ class LegalDocumentsController extends Controller
         $response_data = [
             'success' => true,
             'message' =>  'Legal Documents',
-            'user' => LegalResource::collection($data),
+            'data' => LegalResource::collection($data),
         ];
         return response()->json($response_data, $this->successStatus);
-       
+
     }
 
 }
