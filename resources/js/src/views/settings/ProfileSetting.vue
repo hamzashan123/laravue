@@ -136,11 +136,13 @@
                                     label="Date of Birth"
                                     label-for="dateofbirth"
                                 >
-                                    <b-form-input
-                                        v-model="user.date_of_birth"
-                                        name="dateofbirth"
-                                        placeholder="Date of Birth"
-                                    />
+                                    <b-form-datepicker
+                                            placeholder="Date of Birth"
+                                            id="target_completion_dateto"
+                                            v-model="user.date_of_birth"
+                                            name="dateofbirth"
+                                            class="mb-1 p-0"
+                                        />
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6">
@@ -245,6 +247,7 @@ import {
     BFormSelect,
     BSpinner,
     BAvatar,
+    BFormDatepicker,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import SettingTabButton from "./SettingTabButton.vue";
@@ -272,6 +275,7 @@ export default {
         SettingTabButton,
         BSpinner,
         BAvatar,
+        BFormDatepicker,
     },
     directives: {
         Ripple,
