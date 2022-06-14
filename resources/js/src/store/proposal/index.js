@@ -61,7 +61,6 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({ url: endpoint, method: "POST" })
                     .then((response) => {
-                        console.log(response);
                         commit("setIsDataLoading", false);
                         commit("setProposals", response.data.data);
                         return resolve(response.data);
@@ -124,7 +123,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsLoading", false);
                             return resolve(response.data);
@@ -153,7 +151,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsLoading", false);
                             return resolve(response.data);
@@ -182,7 +179,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsLoading", false);
                             return resolve(response.data);
@@ -211,7 +207,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
                             commit("setIsLoading", false);
                             return resolve(response.data);
                         } else {

@@ -50,9 +50,9 @@ class ChatController extends Controller
         $input['to_user_id']  = 0;
         $input['listing_id']  = $input['listing_id'];
         $input['message']  = $input['message'];
-        $input['status']  = 'active';        
+        $input['status']  = 'active';
         $comments = Comments::create($input);
-        
+
         $comments_data = Comments::find($comments->id);
 
         $response_data = [
@@ -65,16 +65,17 @@ class ChatController extends Controller
 
     public function getComments(Request $request)
     {
-        $comments_data = Comments::orderBy('created_at','desc')->paginate(20);
+        $comments_data = Comments::orderBy('created_at','desc');
 
-        if(count($comments_data) > 0)
+        if($comments_data)
         {
             $response_data = [
                 'success' => true,
                 'message' => 'Comments List',
-                'data' => CommentsResource::collection($comments_data),
+                'data' => CommentsResource::collection($comments_data->get()),
+
             ];
-            return response()->json($response_data, $this->successStatus);      
+            return response()->json($response_data, $this->successStatus);
         } else {
             $response_data = [
                 'success' => false,
@@ -105,7 +106,7 @@ class ChatController extends Controller
         if($to_user == null) {
             $response_data = [
                 'success' => false,
-                'message' => 'Provided user not found!'                
+                'message' => 'Provided user not found!'
             ];
             return response()->json($response_data);
         }
@@ -113,7 +114,7 @@ class ChatController extends Controller
         if(!(Auth::user()->role_id == 3 || $to_user->role_id == 3)) {
             $response_data = [
                 'success' => false,
-                'message' => 'Message sender or receiver must be eb staff'                
+                'message' => 'Message sender or receiver must be eb staff'
             ];
             return response()->json($response_data);
         }
@@ -122,8 +123,8 @@ class ChatController extends Controller
         $input['from_user_id']  = Auth::user()->id;
         $input['to_user_id']  = $request->to_user_id;
         $input['message']  = $input['message'];
-        $input['status']  = 'active';        
-        $message = Messages::create($input);        
+        $input['status']  = 'active';
+        $message = Messages::create($input);
         $message_data = Messages::find($message->id);
 
         $response_data = [
@@ -133,9 +134,9 @@ class ChatController extends Controller
         ];
         return response()->json($response_data, $this->successStatus);
     }
-    
+
     public function getMessages(Request $request)
-    {       
+    {
         $messages = Messages::where('from_user_id', Auth::user()->id)->orWhere('to_user_id', Auth::user()->id)
         ->orderBy('created_at','desc')->paginate(20);
 
@@ -152,7 +153,7 @@ class ChatController extends Controller
                 'message' => 'Data Not Found',
             ];
             return response()->json($response_data, $this->successStatus);
-        }        
+        }
     }
 }
 

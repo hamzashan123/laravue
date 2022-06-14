@@ -174,6 +174,7 @@ import {
   BInputGroupAppend,
   BButton,
   BCardBody,
+  BCardText,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 
@@ -193,6 +194,7 @@ export default {
     BInputGroupAppend,
     BButton,
     BCardBody,
+    BCardText,
   },
   data() {
     return {

@@ -60,7 +60,7 @@ export default {
 
                         await commit("setUser", user);
                         await commit("setRoleId", resp.data.user.user_role.id);
-                        console.log(resp.data.user.user_role.id);
+                        // console.log(resp.data.user.user_role.id);
                         await commit("setError", "");
                         await commit("setMessage", resp.data.message);
                         await commit("setIsLoading", false);
@@ -102,7 +102,7 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },

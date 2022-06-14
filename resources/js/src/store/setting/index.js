@@ -62,7 +62,7 @@ export default {
                     .catch((error) => {
                         console.log(error, "in axios error");
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -84,7 +84,7 @@ export default {
                     .catch((error) => {
                         console.log(error, "in axios error");
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },

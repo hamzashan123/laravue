@@ -150,12 +150,13 @@
                     :filter="filter"
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
+                    show-empty
                 >
                     <template #cell(images)="data">
                         <b-avatar
                             v-for="(image, idx) in data.item.images.slice(0, 1)"
                             :key="idx"
-                            :src="image.image"
+                            :src="image"
                             class="mx-1"
                         />
                     </template>

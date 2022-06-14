@@ -4,7 +4,7 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Send your proposal - {{ listing.title }}</h1>
+                    <h1>Send your proposal to {{ listing.title }}</h1>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
@@ -153,12 +153,48 @@
                             <b-img
                                 v-for="(image, idx) in listing.images"
                                 :key="idx"
+                                fluid
                                 thumbnail
-                                class="w-25"
-                                :src="image.image"
+                                class="w-50"
+                                :src="image"
+                                v-b-modal.modal-listing-images
                             />
-                            <div v-if="!listing.images">No images found</div>
                         </div>
+                            <div v-if="!listing.images">No images found</div>
+
+                        <!-- modal -->
+                            <b-modal
+                            id="modal-listing-images"
+                            ok-only
+                            centered
+                            size="lg"
+                            >
+                            <swiper
+                                class="swiper-navigations"
+                                :options="swiperOptions"
+                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                            >
+                                <swiper-slide
+                                v-for="(image, index) in listing.images"
+                                :key="index"
+                                >
+                                <b-img
+                                    :src="image"
+                                    fluid
+                                />
+                                </swiper-slide>
+
+                                <!-- Add Arrows -->
+                                <div
+                                slot="button-next"
+                                class="swiper-button-next"
+                                />
+                                <div
+                                slot="button-prev"
+                                class="swiper-button-prev"
+                                />
+                            </swiper>
+                            </b-modal>
                     </b-col>
                     <!-- Details Form -->
                     <b-col md="6" class="mb-2">
@@ -168,7 +204,7 @@
                                 size="18"
                                 class="mr-50"
                             />
-                            Listing Details ( by Client )
+                            Listing Details by Client
                         </h4>
                         <b-form-group
                             label="Name your listing"
@@ -194,20 +230,7 @@
                         </div>
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <b-form-input
-                                    id="gmap-autocompelte"
-                                    placeholder="Search Address"
-                                    disabled
-                                />
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6999.66461408364!2d76.92634623988648!3d28.69466251428776!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d096a6dcc31c7%3A0xbbcc18016f20e440!2sModicare%20Store!5e0!3m2!1sen!2s!4v1652653238809!5m2!1sen!2s"
-                                    width="100%"
-                                    height="300"
-                                    style="border: 0"
-                                    allowfullscreen=""
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                ></iframe>
+                                <div id="map" class="h-100 mt-2"></div>
                             </b-col>
                             <b-col lg="6">
                                 <b-form-group
@@ -264,6 +287,18 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+                        <!-- Save -->
+                        <!-- <b-col class="text-right">
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            type="submit"
+                            variant="primary"
+                            @click.prevent="saveListingTrigger"
+                        >
+                            Save Details
+                            <b-spinner small v-if="isLoading" />
+                        </b-button>
+                    </b-col> -->
                     </b-col>
                 </b-row>
             </b-overlay>
@@ -299,6 +334,8 @@ import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 
 export default {
     components: {
@@ -323,6 +360,8 @@ export default {
         BInputGroup,
         BInputGroupPrepend,
         BSpinner,
+        Swiper,
+        SwiperSlide
     },
     data() {
         return {
@@ -330,6 +369,13 @@ export default {
             listing: {},
             proposal: {},
             statuses_color,
+
+            swiperOptions: {
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+                },
+            },
         };
     },
     methods: {
@@ -347,7 +393,6 @@ export default {
             this.sendProposal(proposalData)
                 .then((response) => {
                     if (response.success) {
-                        console.log(response.data);
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -381,6 +426,15 @@ export default {
                     });
                 });
         },
+
+        // Initialize map
+        initMap() {
+            let map = new google.maps.Map(document.getElementById("map"), {
+                center: this.latLng,
+                zoom: 12,
+            });
+        }
+
     },
     computed: {
         ...mapGetters({ isLoading: "listing/getIsLoading"  }),
@@ -419,6 +473,9 @@ export default {
                     },
                 });
             });
+    },
+    mounted() {
+        this.initMap()
     },
     directives: {
         Ripple,

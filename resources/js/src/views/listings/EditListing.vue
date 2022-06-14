@@ -136,7 +136,6 @@
                                     v-for="(image, idx) in imagesShowWhileUpload"
                                     :key="idx"
                                 >
-                                {{ idx }}
                                     <b-button
                                         @click="removeSelectedImage(idx)"
                                         variant="gradient-danger"
@@ -392,8 +391,6 @@ export default {
                         this.imagesShowWhileUpload.push(e.target.result);
                     };
                     this.newImages.push(getImage);
-
-                    console.log(this.newImages);
                 });
             } else {
                 this.isFileUploaderFull = true;
@@ -424,7 +421,6 @@ export default {
             this.imagesShowWhileUpload.splice(index, 1);
             this.newImages.splice(index, 1);
             this.imagesFileUploader.splice(index, 1);
-            console.log(index);
         },
 
         ...mapActions({
@@ -588,7 +584,6 @@ export default {
                 if (response.success) {
                     this.listing = response.data[0];
                     this.imagesShowWhileUpload = response.data[0].images
-                    console.log(this.imagesShowWhileUpload);
                 } else {
                     this.$toast({
                         component: ToastificationContent,

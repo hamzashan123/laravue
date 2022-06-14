@@ -14,6 +14,8 @@ export default {
         isCreated: false,
         isUpdated: false,
         isDeleted: false,
+        comments: {},
+        comment: '',
     },
     getters: {
         getContract: (state) => state.contracts,
@@ -22,6 +24,7 @@ export default {
         getMessage: (state) => state.message,
         getError: (state) => state.error,
         getIsCreated: (state) => state.isCreated,
+        getComments: (state) => state.comments,
     },
     mutations: {
         setContracts(state, contracts) {
@@ -45,6 +48,9 @@ export default {
         setIsCreated(state, isCreated) {
             state.isCreated = isCreated;
         },
+        setComments(state, comments) {
+            state.comments = comments;
+        },
     },
     actions: {
         // Getting All
@@ -62,7 +68,7 @@ export default {
                         console.log(error);
                         commit("setIsDataLoading", false);
                         commit("setError", error);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -110,7 +116,7 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
                     });
             });
         },
@@ -139,7 +145,56 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
-                        reject(error);
+                        return reject(error);
+                    });
+            });
+        },
+
+        // getting all comments
+        loadComments({ commit }) {
+            commit("setIsDataLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "get-comments", method: "POST" })
+                    .then((response) => {
+                        commit("setIsDataLoading", false);
+                        commit("setComments", response.data.data);
+                        return resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsDataLoading", false);
+                        commit("setError", error);
+                        return reject(error);
+                    });
+            });
+        },
+
+        // adding comment
+        addComment({ commit, dispatch }, commentData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "post-comment",
+                    data: commentData,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            console.log(response);
+                            // state.comments.unshift(response.data.data)
+                            dispatch('loadComments')
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return  reject(error);
                     });
             });
         },

@@ -232,7 +232,7 @@
 
                                 <div class="d-flex flex-wrap mb-2">
                                 <div
-                                    class="imag w-25 position-relative"
+                                    class="imag w-50 position-relative"
                                     v-for="(image, idx) in imagesShowWhileUpload"
                                     :key="idx"
                                 >
@@ -244,9 +244,10 @@
                                         <feather-icon icon="XIcon" />
                                     </b-button>
                                     <b-img
+                                        fluid
                                         thumbnail
                                         class="w-100"
-                                        :src="image.image"
+                                        :src="image"
                                     />
 
                                 </div>
@@ -260,6 +261,7 @@
                                     multiple
                                     accept=".jpg, .png,"
                                     :disabled="isFileUploaderFull"
+                                    :file-name-formatter="formatNames"
                                 />
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
@@ -272,7 +274,7 @@
                                 </b-button>
                             </div>
                             </div>
-                            <b-col class="text-right">
+                            <b-col class="text-right p-0">
                                 <b-button
                                     v-ripple.400="
                                         'rgba(255, 255, 255, 0.15)'
@@ -511,6 +513,11 @@ export default {
                 });
             }
         },
+
+        formatNames(files) {
+            return this.newImages.length === 1 ? files[0].name : `${this.newImages.length} files selected`
+        },
+
         clearFiles() {
             this.imagesFileUploader = null;
             this.imagesShowWhileUpload = [];

@@ -193,11 +193,11 @@ const router = new VueRouter({
             navActiveLink: 'contracts'
         },
     },
-    // {
-    //     path: '/chat',
-    //     name: 'chat',
-    //     component: () => import('@/views/chat/Chat.vue'),
-    // },
+    {
+        path: '/chat',
+        name: 'chat',
+        component: () => import('@/views/chat/Chat.vue'),
+    },
     {
       path: '/accounts',
       name: 'accounts',
