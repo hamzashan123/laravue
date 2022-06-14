@@ -54,7 +54,7 @@ export default {
             if( can("create", "proposal") ){
                 endpoint = 'get-proposals'
             } else if( can("create", "listing") ){
-                endpoint = 'my-listing-proposals'
+                endpoint = 'get-proposals'
             } else if( can("create", "all-listing") ){
                 endpoint = 'get-proposals'
             }
