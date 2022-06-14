@@ -32,70 +32,10 @@
               switch
               inline
             >
-              <span>Push Notification</span>
+              <span>Message</span>
             </b-form-checkbox>
           </b-col>
-          <b-col cols="12" class="mb-2">
-            <b-form-checkbox
-              id="accountSwitch3"
-              :checked="notification.followMe"
-              name="check-button"
-              switch
-              inline
-            >
-              <span>Text Message</span>
-            </b-form-checkbox>
           </b-col>
-          <b-col cols="12" class="mb-2">
-            <b-form-checkbox
-              id="accountSwitch3"
-              :checked="notification.followMe"
-              name="check-button"
-              switch
-              inline
-            >
-              <span>Calls</span>
-            </b-form-checkbox>
-          </b-col>
-        </b-col>
-        <b-col cols="4">
-          <!-- application switch -->
-          <h6 class="section-label mx-1 mt-2">Message</h6>
-          <b-col cols="12" class="mt-1 mb-2">
-            <b-form-checkbox
-              id="accountSwitch4"
-              :checked="notification.newAnnouncements"
-              name="check-button"
-              switch
-              inline
-            >
-              <span>Emails</span>
-            </b-form-checkbox>
-          </b-col>
-          <b-col cols="12" class="mb-2">
-            <b-form-checkbox
-              id="accountSwitch5"
-              :checked="notification.productUpdates"
-              name="check-button"
-              switch
-              inline
-            >
-              <span>Weekly product updates</span>
-            </b-form-checkbox>
-          </b-col>
-          <b-col cols="12" class="mb-2">
-            <b-form-checkbox
-              id="accountSwitch6"
-              :checked="notification.blogDigest"
-              name="check-button"
-              switch
-              inline
-            >
-              <span>Weekly blog digest</span>
-            </b-form-checkbox>
-          </b-col>
-          <!--/ application switch -->
-        </b-col>
 
         <!-- buttons -->
         <b-col cols="12">
