@@ -260,7 +260,7 @@ class ProposalController extends Controller
             });
         } else if (Auth::user()->role_id == 3) {
             //EB Staff
-            $data = Listing::whereIn('status', ['draft','publish']);
+            $data = Listing::whereNotIn('status', ['draft']);
         }            
 
         $data = $data->paginate(10);    
