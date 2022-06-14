@@ -165,7 +165,7 @@
                                 params: { listingId: data.item.id },
                             }"
                         >
-                            <feather-icon icon="EditIcon" />
+                            <feather-icon icon="EditIcon" size="15" />
                         </b-button>
                     </template>
                 </b-table>
