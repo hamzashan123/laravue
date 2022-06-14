@@ -54,8 +54,8 @@
         <b-card>
             <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-row>
-                    <b-col lg="12" >
-                        <div class="text-right">
+                    <!-- <b-col lg="12" > -->
+                        <!-- <div class="text-right">
                             <b-button
                             v-if="can('update', 'listing') || can('update', 'all-listing')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
@@ -64,8 +64,8 @@
                         >
                             Edit
                             </b-button>
-                        </div>
-                    </b-col>
+                        </div> -->
+                    <!-- </b-col> -->
                     <b-col md="6">
                         <h4 class="mb-2 text-primary">
                             <feather-icon

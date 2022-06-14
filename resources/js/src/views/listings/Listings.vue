@@ -154,6 +154,19 @@
                         >
                             See Details
                         </b-button>
+
+                        <b-button
+                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="primary"
+                            :class="data.value"
+                            :to="{
+                                name: 'listings.edit',
+                                params: { listingId: data.item.id },
+                            }"
+                        >
+                            <feather-icon icon="EditIcon" />
+                        </b-button>
                     </template>
                 </b-table>
 
