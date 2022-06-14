@@ -538,7 +538,7 @@ export default {
                 }
 
                 case "route": {
-                    this.listing.address_line1 += component.short_name;
+                    this.listing.address_line1 = component.short_name;
                     break;
                 }
                 case "locality":
