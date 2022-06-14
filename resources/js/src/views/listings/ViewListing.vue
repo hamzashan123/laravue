@@ -45,7 +45,7 @@
                         variant="primary"
                         :to="{ name: 'listings.detail', params:{ listingId: id } }"
                     >
-                        See Latest Updates
+                        Visits Updates
                     </b-button>
                 </div>
             </b-col>

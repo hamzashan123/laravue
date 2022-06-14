@@ -14,11 +14,27 @@
             <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
+                        v-if="can('create', 'all-contract')"
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="success"
+
+                    >
+                        Start Contract
+                    </b-button>
+                    <b-button
+                        v-if="can('create', 'all-contract')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
+                        :to="{ name: 'contracts.add', params: { listingID: id } }"
+                    >
+                        Upload Docs
+                    </b-button>
+                    <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="secondary"
                         :to="{ name: 'contracts' }"
                     >
-                        See All Contracts
+                        Back
                     </b-button>
                 </div>
             </b-col>
@@ -816,6 +832,7 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import { statuses_color } from "@/fieldsdata/index.js";
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
+import { can } from "@/auth/authentication.js";
 
 export default {
     components: {
@@ -870,6 +887,8 @@ export default {
             required,
             activeVisitData: false,
             statuses_color,
+
+            can
         };
     },
     methods: {

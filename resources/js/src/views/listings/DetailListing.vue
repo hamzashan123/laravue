@@ -4,9 +4,9 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Updates on {{ listing.title }}</h1>
+                    <h1>Visits on {{ listing.title }}</h1>
 
-                    <b-badge :variant="statuses_color[1][listing.status]">
+                    <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
                     </b-badge>
                 </b-card-text>
@@ -15,7 +15,7 @@
                 <div class="text-right">
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="primary"
+                        variant="secondary"
                         :to="{ name: 'listings.view' }"
                     >
                         Back to Listing
@@ -25,7 +25,7 @@
                         variant="primary"
                         :to="{ name: 'listings' }"
                     >
-                        See All Listings
+                        All Listings
                     </b-button>
                 </div>
             </b-col>
@@ -300,7 +300,7 @@
                             </swiper>
                             </b-modal>
 
-                            <b-row>
+                            <!-- <b-row>
                                 <b-col lg="6" class="mb-2">
                                     <div id="map" class="h-100 mt-2"></div>
                                 </b-col>
@@ -363,19 +363,7 @@
                                         />
                                     </b-form-group>
                                 </b-col>
-                            </b-row>
-                            <!-- Update -->
-                            <!-- <b-col class="text-right">
-                                <b-button
-                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                                    type="submit"
-                                    variant="primary"
-                                    @click.prevent="updateListingTrigger"
-                                >
-                                    Update Details
-                                    <b-spinner small v-if="isLoading" />
-                                </b-button>
-                            </b-col> -->
+                            </b-row> -->
                         </b-col>
                     </b-row>
                 </b-card>
@@ -480,12 +468,12 @@ export default {
         },
 
         // Initialize map
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
-        },
+        // initMap() {
+        //     let map = new google.maps.Map(document.getElementById("map"), {
+        //         center: this.latLng,
+        //         zoom: 12,
+        //     });
+        // },
     },
     computed: {
         ...mapGetters({
@@ -493,7 +481,7 @@ export default {
         }),
     },
     mounted() {
-        this.initMap();
+        // this.initMap();
 
         this.id = this.$route.params.listingId;
 
