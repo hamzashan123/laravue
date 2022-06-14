@@ -489,7 +489,7 @@ export default {
                                         variant: "success",
                                     },
                                 });
-                                this.$router.push({ name: "listings.view", params: { listingId: this.draftListingId } });
+                                this.$router.push({ name: "listings" });
                             } else {
                                 console.log(response);
                                 this.$toast({

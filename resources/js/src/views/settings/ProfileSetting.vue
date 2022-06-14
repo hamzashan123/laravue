@@ -166,7 +166,6 @@
                                         id="country"
                                         v-model="user.country"
                                         placeholder="Country"
-                                        required
                                     />
                                 </b-form-group>
                             </b-col>
@@ -176,7 +175,6 @@
                                         id="state"
                                         v-model="user.state"
                                         placeholder="State"
-                                        required
                                     />
                                 </b-form-group>
                             </b-col>
