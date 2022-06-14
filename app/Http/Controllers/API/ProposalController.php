@@ -258,9 +258,9 @@ class ProposalController extends Controller
             $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
                 $query->where(['user_id'=> Auth::user()->id]);
             });
-        } else {
+        } else if (Auth::user()->role_id == 3) {
             //EB Staff
-            $data = Listing::whereNotIn('status', ['draft','publish']);
+            $data = Listing::whereIn('status', ['draft','publish']);
         }            
 
         $data = $data->paginate(10);    
