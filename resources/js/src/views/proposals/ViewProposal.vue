@@ -252,7 +252,7 @@
                         </div>
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <div id="map" class="h-100 mt-2"></div>
+                                <show-map lat=20.5937 lng=78.9629 />
                             </b-col>
                             <b-col lg="6">
                                 <b-form-group
@@ -359,6 +359,7 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import { can } from '@/auth/authentication.js'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
+import ShowMap from '@/components/ShowMap.vue'
 
 export default {
     components: {
@@ -384,7 +385,8 @@ export default {
         BInputGroupPrepend,
         BSpinner,
         Swiper,
-        SwiperSlide
+        SwiperSlide,
+        ShowMap,
     },
     data() {
         return {
@@ -490,13 +492,7 @@ export default {
                 });
         },
 
-        // Initialize map
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
-        }
+
     },
     computed: {
         ...mapGetters({ isLoading: "proposal/getIsLoading", isDataLoading: "proposal/getIsDataLoading", isRejectLoading: "proposal/getIsRejectLoading", }),
@@ -532,9 +528,6 @@ export default {
                     },
                 });
             });
-    },
-    mounted() {
-        this.initMap()
     },
     directives: {
         Ripple,
