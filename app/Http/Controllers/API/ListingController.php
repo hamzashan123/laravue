@@ -288,7 +288,7 @@ class ListingController extends Controller
 
     public function getPublishedListings(Request $request)
     {
-        $data = Listing::where('status', 'publish')->orderBy('id','asc')->paginate(10);
+        $data = Listing::whereNotIn('status', ['draft'])->orderBy('id','asc')->paginate(10);
 
         if(count($data) > 0)
         {
@@ -330,7 +330,7 @@ class ListingController extends Controller
                 $data = Listing::where('id', $request->id)->orderBy('id','asc');
                 break;
             case 2:
-                $data = Listing::where('status', 'publish')->where('id', $request->id)->orderBy('id','asc');
+                $data = Listing::whereNotIn('status', ['draft'])->where('id', $request->id)->orderBy('id','asc');
                 break;
             default:
                 break;

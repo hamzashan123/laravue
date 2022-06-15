@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Listing;
 use App\Models\ListingImages;
 use App\Models\Contracts;
+use App\Models\Proposals;
 
 use App\Http\Resources\ListingResource;
 use App\Http\Resources\ContractResource;
@@ -46,6 +47,16 @@ class ContractsController extends Controller
             ];
             return response()->json($response_data);
         }
+        $contractExist = Contracts::where(['listing_id' => $request->listing_id ,'status' => 'pre_contract'])
+                ->exists();
+        
+        if($contractExist == true){
+            $response_data = [
+                'success' => false,
+                'message' => 'Someone already assigned pre_contract!',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
 
         $listing = Listing::where('id',$request->listing_id)->where('status','waiting_assignment')->first();        
 
@@ -64,6 +75,8 @@ class ContractsController extends Controller
             
             $contract_data = Contracts::find($contract->id);
 
+            Proposals::where(['listing_id'  => $request->listing_id,'user_id' ,$request->contractor_id])->update(['status' => 'pre_contract']);    
+            
             $response_data = [
                 'success' => true,
                 'message' => 'Contract Assigned successfully!',
@@ -88,7 +101,7 @@ class ContractsController extends Controller
 
             $response_data = [
                 'success' => true,
-                'message' => 'Contract Assigned successfully!',
+                'message' => 'Contracts List!',
                 'data' => ContractResource::collection($contract),
             ];
             return response()->json($response_data, $this->successStatus);
