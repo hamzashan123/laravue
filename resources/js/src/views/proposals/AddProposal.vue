@@ -12,9 +12,9 @@
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
-                        :to="{ name: 'proposals' }"
+                        :to="{ name: 'listings.view', params: { listingId: listing.id } }"
                     >
-                        Back to Proposals
+                        Back
                     </b-button>
                 </div>
             </b-col>
@@ -43,9 +43,9 @@
                                     id="target-date"
                                     placeholder="Target Date"
                                     :value="
-                                        listing.target_completion_datefrom +
-                                        ' - ' +
-                                        listing.target_completion_dateto
+                                       ' Start:  ' + listing.target_completion_datefrom +
+                                        '  -  ' +
+                                        ' End :  ' + listing.target_completion_dateto
                                     "
                                     disabled
                                 />
@@ -61,9 +61,9 @@
                                     id="target-budget"
                                     placeholder="Target Budget"
                                     :value="
-                                        listing.min_budget +
-                                        ' - ' +
-                                        listing.max_budget
+                                        ' Min:  ' + listing.min_budget +
+                                        '  -  ' +
+                                        ' Max:  ' + listing.max_budget
                                     "
                                     disabled
                                 />
@@ -85,25 +85,30 @@
                                 label-for="target-date"
                                 label-cols-md="3"
                             >
-                            <div class="form-inline">
 
-                                <b-form-datepicker
-                                    placeholder="Select From Date"
-                                    id="target_startdate"
-                                    class="mb-1 p-0 mr-1"
-                                    v-model="proposal.target_startdate"
-                                    name="target_startdate"
-                                />
-                                <b-form-datepicker
-                                    placeholder="Select End Date"
-                                    id="target_enddate"
-                                    class="mb-1 p-0"
-                                    v-model="proposal.target_enddate"
-                                    :min="proposal.target_startdate"
-                                    name="target_enddate"
-                                />
+                            <div class="form-row">
+                                <div class="col p-0 mr-1">
+                                    <b-form-datepicker
+                                        placeholder="Select From Date"
+                                        id="target_startdate"
+                                        class=" p-0 overflow-hiden"
+                                        v-model="proposal.target_startdate"
+                                        name="target_startdate"
+                                    />
+                                </div>
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="Select End Date"
+                                        id="target_enddate"
+                                        class=" p-0"
+                                        v-model="proposal.target_enddate"
+                                        :min="proposal.target_startdate"
+                                        name="target_enddate"
+                                    />
+                                </div>
                             </div>
                             </b-form-group>
+
                         </b-col>
                         <b-col cols="12">
                             <b-form-group
@@ -111,18 +116,21 @@
                                 label-for="target-budget"
                                 label-cols-md="3"
                             >
-                            <div class="form-inline">
-
-                                <b-form-input
+                            <div class="form-row">
+                                <div class="col p-0 mr-1">
+                                    <b-form-input
                                     v-model="proposal.min_budget"
                                     class="mb-1 mr-1"
                                     placeholder="Minimum Budget"
                                 />
-                                <b-form-input
+                                </div>
+                                <div class="col p-0">
+                                    <b-form-input
                                     v-model="proposal.max_budget"
                                     class="mb-1"
                                     placeholder="Maximum Budget"
                                 />
+                                </div>
                             </div>
                             </b-form-group>
                         </b-col>

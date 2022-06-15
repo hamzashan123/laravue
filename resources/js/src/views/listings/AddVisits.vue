@@ -6,7 +6,7 @@
                 <b-card-text>
                     <h1>Add Visit Details on {{ listing.title }}</h1>
 
-                    <b-badge :variant="statuses_color[1][listing.status]">
+                    <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
                     </b-badge>
                 </b-card-text>
@@ -562,10 +562,7 @@ export default {
                                     },
                                 });
 
-                                this.$router.push({
-                                    name: "listings.view",
-                                    params: { id: this.id },
-                                });
+                                this.$router.push({ name: "listings.detail", params: { id: this.id } });
                             } else {
                                 console.log(response);
                                 this.$toast({

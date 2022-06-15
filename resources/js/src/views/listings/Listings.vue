@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Header -->
-        <b-row class="mb-4">
+        <b-row class="mb-3">
             <b-col md="6" sm="12">
                 <b-card-text> <h1>Project Listings</h1> </b-card-text>
             </b-col>
@@ -22,88 +22,69 @@
         <b-card title="Latest Listings" no-body>
             <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-card-body>
-                    <div class="d-flex justify-content-between flex-wrap">
-                        <!-- filter -->
-                        <b-form-group
-                            label="Search"
-                            label-cols-sm="3"
-                            label-align-sm="left"
-                            label-size="md"
-                            label-for="filterInput"
-                            class="mb-0"
-                        >
-                            <b-input-group size="md">
-                                <b-form-input
-                                    id="filterInput"
-                                    v-model="filter"
-                                    type="search"
-                                    placeholder="Search Project Listing"
+                    <b-row>
+                        <b-col>
+                            <!-- filter -->
+                            <b-form-group
+                                label="Search"
+                                label-cols-sm="3"
+                                label-align-sm="left"
+                                label-size="md"
+                                label-for="filterInput"
+                                class="mb-0"
+                            >
+                                <b-input-group size="md">
+                                    <b-form-input
+                                        id="filterInput"
+                                        v-model="filter"
+                                        type="search"
+                                        placeholder="Search Proposals"
+                                    />
+                                    <b-input-group-append>
+                                        <b-button
+                                            :disabled="!filter"
+                                            @click="filter = ''"
+                                        >
+                                            Clear
+                                        </b-button>
+                                    </b-input-group-append>
+                                </b-input-group>
+                            </b-form-group>
+                        </b-col>
+                        <b-col class="text-center">
+                            <!-- Dates Filter -->
+                            <b-button
+                                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                                variant="flat-primary"
+                            >
+                                <feather-icon
+                                    icon="CalendarIcon"
+                                    class="mr-50"
                                 />
-                                <b-input-group-append>
-                                    <b-button
-                                        :disabled="!filter"
-                                        @click="filter = ''"
-                                    >
-                                        Clear
-                                    </b-button>
-                                </b-input-group-append>
-                            </b-input-group>
-                        </b-form-group>
-                        <!-- Dates Filter -->
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 3 Months</span>
-                        </b-button>
-
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 6 Months</span>
-                        </b-button>
-
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 12 Months</span>
-                        </b-button>
-
-                        <!-- sorting  -->
-                        <b-form-group
-                            label="Sort"
-                            label-size="md"
-                            label-align-sm="left"
-                            label-cols-sm="2"
-                            label-for="sortBySelect"
-                            class="mr-1 mb-md-0"
-                        >
-                            <b-input-group size="md">
-                                <b-form-select
-                                    id="sortBySelect"
-                                    v-model="sortBy"
-                                    :options="sortOptions"
-                                >
-                                    <template #first>
-                                        <option value="">none</option>
-                                    </template>
-                                </b-form-select>
-                                <b-form-select
-                                    v-model="sortDesc"
-                                    size="md"
-                                    :disabled="!sortBy"
-                                >
-                                    <option :value="false">Asc</option>
-                                    <option :value="true">Desc</option>
-                                </b-form-select>
-                            </b-input-group>
-                        </b-form-group>
-                    </div>
+                                <span class="align-middle">Last 3 Months</span>
+                            </b-button>
+                        </b-col>
+                        <b-col>
+                            <div class="form-row">
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="From Date"
+                                        id="filter_from_Date"
+                                        class="mb-1 p-0 block"
+                                        name="filter_from_Date"
+                                    />
+                                </div>
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="To Date"
+                                        id="filter_to_Date"
+                                        name="filter_to_Date"
+                                        class="mb-1 p-0"
+                                    />
+                                </div>
+                            </div>
+                        </b-col>
+                    </b-row>
                 </b-card-body>
 
                 <b-table
@@ -122,11 +103,26 @@
                     @filtered="onFiltered"
                     show-empty
                 >
-                    <template #cell(images)="data">
-                        <b-avatar v-for="(image, idx) in data.item.images.slice(0, 1)" :key="idx"  :src="image" class="mx-1" />
-                    </template>
-                    <template #cell(name)="data">
-                        <span class="text-nowrap">{{ data.value }}</span>
+                    <template #cell(title)="data">
+
+                        <b-media vertical-align="center">
+                            <template #aside>
+                                <b-avatar
+                                    size="40"
+                                    v-for="(
+                                        image, idx
+                                    ) in data.item.images.slice(0, 1)"
+                                    :key="idx"
+                                    :src="image"
+                                    variant="light-primary"
+                                />
+                            </template>
+                            <span
+                                class="font-weight-bold d-block text-nowrap mt-1"
+                            >
+                                {{ data.value  }}
+                            </span>
+                        </b-media>
                     </template>
                     <template #cell(status)="data">
                          <b-badge :variant="statuses_color[1][data.value]">
@@ -242,6 +238,8 @@ import {
     BInputGroupAppend,
     BCardBody,
     BOverlay,
+    BFormDatepicker,
+    BMedia,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
@@ -268,6 +266,8 @@ export default {
         BInputGroupAppend,
         BCardBody,
         BOverlay,
+        BFormDatepicker,
+        BMedia,
     },
     data() {
         return {
@@ -283,8 +283,7 @@ export default {
             filterOn: [],
             fields: [
                 { key: "id", label: "Id" },
-                { key: "images", label: "" },
-                { key: "title", label: "Listing Title" },
+                { key: "title", label: "Listing" },
                 {
                     key: "status",
                     label: "Contract Status",

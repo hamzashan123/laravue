@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Header -->
-    <b-row class="mb-2">
+    <b-row class="mb-3">
       <b-col md="6" sm="12">
         <b-card-text> <h1>Customers</h1> </b-card-text>
       </b-col>
@@ -31,158 +31,215 @@
         </div>
       </b-col>
     </b-row>
-    <!-- Customer Table -->
-    <b-card-code title="Latest Listings" no-body>
-      <b-card-body>
-        <div class="d-flex justify-content-between flex-wrap">
-          <!-- filter -->
-          <b-form-group
-            label="Search"
-            label-cols-sm="3"
-            label-align-sm="left"
-            label-size="md"
-            label-for="filterInput"
-            class="mb-0"
-          >
-            <b-input-group size="md">
-              <b-form-input
-                id="filterInput"
-                v-model="filter"
-                type="search"
-                placeholder="Search Project Listing"
-              />
-              <b-input-group-append>
-                <b-button :disabled="!filter" @click="filter = ''">
-                  Clear
-                </b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </b-form-group>
+        <!-- Table -->
+        <b-card title="Latest Listings" no-body>
+            <b-overlay :show="isLoading" spinner-variant="primary">
+                <b-card-body>
+                    <b-row>
+                        <b-col>
+                            <!-- filter -->
+                            <b-form-group
+                                label="Search"
+                                label-cols-sm="3"
+                                label-align-sm="left"
+                                label-size="md"
+                                label-for="filterInput"
+                                class="mb-0"
+                            >
+                                <b-input-group size="md">
+                                    <b-form-input
+                                        id="filterInput"
+                                        v-model="filter"
+                                        type="search"
+                                        placeholder="Search Proposals"
+                                    />
+                                    <b-input-group-append>
+                                        <b-button
+                                            :disabled="!filter"
+                                            @click="filter = ''"
+                                        >
+                                            Clear
+                                        </b-button>
+                                    </b-input-group-append>
+                                </b-input-group>
+                            </b-form-group>
+                        </b-col>
+                        <b-col class="text-center">
+                            <!-- Dates Filter -->
+                            <b-button
+                                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                                variant="flat-primary"
+                            >
+                                <feather-icon
+                                    icon="CalendarIcon"
+                                    class="mr-50"
+                                />
+                                <span class="align-middle">Last 3 Months</span>
+                            </b-button>
+                        </b-col>
+                        <b-col>
+                            <div class="form-row">
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="From Date"
+                                        id="filter_from_Date"
+                                        class="mb-1 p-0 block"
+                                        name="filter_from_Date"
+                                    />
+                                </div>
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="To Date"
+                                        id="filter_to_Date"
+                                        name="filter_to_Date"
+                                        class="mb-1 p-0"
+                                    />
+                                </div>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </b-card-body>
 
-          <!-- sorting  -->
-          <b-form-group
-            label="Sort"
-            label-size="md"
-            label-align-sm="left"
-            label-cols-sm="2"
-            label-for="sortBySelect"
-            class="mr-1 mb-md-0"
-          >
-            <b-input-group size="md">
-              <b-form-select
-                id="sortBySelect"
-                v-model="sortBy"
-                :options="sortOptions"
-              >
-                <template #first>
-                  <option value="">none</option>
-                </template>
-              </b-form-select>
-              <b-form-select v-model="sortDesc" size="md" :disabled="!sortBy">
-                <option :value="false">Asc</option>
-                <option :value="true">Desc</option>
-              </b-form-select>
-            </b-input-group>
-          </b-form-group>
-        </div>
-      </b-card-body>
+                <b-table
+                    striped
+                    responsive
+                    class="position-relative"
+                    :per-page="perPage"
+                    :current-page="currentPage"
+                    :items="items"
+                    :fields="fields"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    :sort-direction="sortDirection"
+                    :filter="filter"
+                    :filter-included-fields="filterOn"
+                    @filtered="onFiltered"
+                    show-empty
+                >
+                    <template #cell(title)="data">
 
-      <b-table
-        striped
-        hover
-        responsive
-        class="position-relative"
-        :per-page="perPage"
-        :current-page="currentPage"
-        :items="items"
-        :fields="fields"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        :sort-direction="sortDirection"
-        :filter="filter"
-        :filter-included-fields="filterOn"
-        @filtered="onFiltered"
-      >
-        <template #cell(avatar)="data">
-          <b-avatar :src="data.value" />
-        </template>
-        <template #cell(status)="data">
-          <b-badge :variant="status[1][data.value]">
-            {{ status[0][data.value] }}
-          </b-badge>
-        </template>
-      </b-table>
+                        <b-media vertical-align="center">
+                            <template #aside>
+                                <b-avatar
+                                    size="40"
+                                    v-for="(
+                                        image, idx
+                                    ) in data.item.images.slice(0, 1)"
+                                    :key="idx"
+                                    :src="image"
+                                    variant="light-primary"
+                                />
+                            </template>
+                            <span
+                                class="font-weight-bold d-block text-nowrap mt-1"
+                            >
+                                {{ data.value  }}
+                            </span>
+                        </b-media>
+                    </template>
+                    <template #cell(status)="data">
+                         <b-badge :variant="statuses_color[1][data.value]">
+                            {{ statuses_color[0][data.value] }}
+                        </b-badge>
+                    </template>
+                    <template #cell(location)="data">
+                            {{ ( data.item.addaddress_line1 ) ? data.item.addaddress_line1 : "" }}
+                            {{ ( data.item.district ) ? data.item.district : "" }}
+                            {{ ( data.item.state ) ? data.item.state : "" }}
+                            {{ ( data.item.country ) ? data.item.country : "" }}
+                    </template>
+                    <template #cell(created_at)="data">
+                            {{ new Date(data.value).toDateString() }}
+                    </template>
+                    <template #cell(actions)="data">
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="primary"
+                            :class="data.value"
+                            :to="{
+                                name: 'listings.view',
+                                params: { listingId: data.item.id },
+                            }"
+                        >
+                            See Details
+                        </b-button>
 
-      <b-card-body class="d-flex justify-content-between flex-wrap pt-0">
-        <!-- page length -->
-        <b-form-group
-          label="Per Page"
-          label-cols="6"
-          label-align="left"
-          label-size="sm"
-          label-for="sortBySelect"
-          class="text-nowrap mb-md-0 mr-1"
-        >
-          <b-form-select
-            id="perPageSelect"
-            v-model="perPage"
-            size="sm"
-            inline
-            :options="pageOptions"
-          />
-        </b-form-group>
+                        <b-button
+                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="primary"
+                            :class="data.value"
+                            :to="{
+                                name: 'listings.edit',
+                                params: { listingId: data.item.id },
+                            }"
+                        >
+                            <feather-icon icon="EditIcon" size="15" />
+                        </b-button>
+                    </template>
+                </b-table>
 
-        <!-- pagination -->
-        <div>
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            first-number
-            last-number
-            prev-class="prev-item"
-            next-class="next-item"
-            class="mb-0"
-          >
-            <template #prev-text>
-              <feather-icon icon="ChevronLeftIcon" size="18" />
-            </template>
-            <template #next-text>
-              <feather-icon icon="ChevronRightIcon" size="18" />
-            </template>
-          </b-pagination>
-        </div>
-      </b-card-body>
-    </b-card-code>
-  </div>
+                <b-card-body
+                    class="d-flex justify-content-between flex-wrap pt-0"
+                >
+                    <!-- page length -->
+                    <b-form-group
+                        label="Per Page"
+                        label-cols="6"
+                        label-align="left"
+                        label-size="sm"
+                        label-for="sortBySelect"
+                        class="text-nowrap mb-md-0 mr-1"
+                    >
+                        <b-form-select
+                            id="perPageSelect"
+                            v-model="perPage"
+                            size="sm"
+                            inline
+                            :options="pageOptions"
+                        />
+                    </b-form-group>
+
+                    <!-- pagination -->
+                    <div>
+                        <b-pagination
+                            v-model="currentPage"
+                            :total-rows="totalRows"
+                            :per-page="perPage"
+                            first-number
+                            last-number
+                            prev-class="prev-item"
+                            next-class="next-item"
+                            class="mb-0"
+                        >
+                            <template #prev-text>
+                                <feather-icon
+                                    icon="ChevronLeftIcon"
+                                    size="18"
+                                />
+                            </template>
+                            <template #next-text>
+                                <feather-icon
+                                    icon="ChevronRightIcon"
+                                    size="18"
+                                />
+                            </template>
+                        </b-pagination>
+                    </div>
+                </b-card-body>
+            </b-overlay>
+        </b-card>
+    </div>
 </template>
 
-
 <script>
-import BCardCode from "@core/components/b-card-code/BCardCode.vue";
 import {
-  BRow,
-  BCol,
-  BTable,
-  BAvatar,
-  BBadge,
-  BFormGroup,
-  BFormSelect,
-  BPagination,
-  BInputGroup,
-  BFormInput,
-  BInputGroupAppend,
-  BButton,
-  BCardBody,
-  BCardText,
-} from "bootstrap-vue";
-import Ripple from "vue-ripple-directive";
-
-export default {
-  components: {
+    BCard,
     BRow,
     BCol,
-    BCardCode,
+    BButton,
+    BCardText,
+    BLink,
     BTable,
     BAvatar,
     BBadge,
@@ -192,230 +249,133 @@ export default {
     BInputGroup,
     BFormInput,
     BInputGroupAppend,
-    BButton,
     BCardBody,
-    BCardText,
-  },
-  data() {
-    return {
-      perPage: 5,
-      pageOptions: [3, 5, 10],
-      totalRows: 1,
-      currentPage: 1,
-      sortBy: "",
-      sortDesc: false,
-      sortDirection: "asc",
-      filter: null,
-      filterOn: [],
-      infoModal: {
-        id: "info-modal",
-        title: "",
-        content: "",
-      },
-      fields: [
-        {
-          key: "id",
-          label: "Id",
-        },
-        {
-          key: "avatar",
-          label: "Avatar",
-        },
-        { key: "full_name", label: "Full Name", sortable: true },
-        { key: "post", label: "Post", sortable: true },
-        "email",
-        "city",
-        "start_date",
-        "salary",
-        "age",
-        "experience",
-        { key: "status", label: "Status", sortable: true },
-      ],
-      /* eslint-disable global-require */
-      items: [
-        {
-          id: 1,
-          avatar: require("@/assets/images/avatars/10-small.png"),
-          full_name: "Korrie O'Crevy",
-          post: "Nuclear Power Engineer",
-          email: "kocrevy0@thetimes.co.uk",
-          city: "Krasnosilka",
-          start_date: "09/23/2016",
-          salary: "$23896.35",
-          age: "61",
-          experience: "1 Year",
-          status: 2,
-        },
-        {
-          id: 2,
-          avatar: require("@/assets/images/avatars/1-small.png"),
-          full_name: "Bailie Coulman",
-          post: "VP Quality Control",
-          email: "bcoulman1@yolasite.com",
-          city: "Hinigaran",
-          start_date: "05/20/2018",
-          salary: "$13633.69",
-          age: "63",
-          experience: "3 Years",
-          status: 2,
-        },
-        {
-          id: 3,
-          avatar: require("@/assets/images/avatars/9-small.png"),
-          full_name: "Stella Ganderton",
-          post: "Operator",
-          email: "sganderton2@tuttocitta.it",
-          city: "Golcowa",
-          start_date: "03/24/2018",
-          salary: "$13076.28",
-          age: "66",
-          experience: "6 Years",
-          status: 5,
-        },
-        {
-          id: 4,
-          avatar: require("@/assets/images/avatars/3-small.png"),
-          full_name: "Dorolice Crossman",
-          post: "Cost Accountant",
-          email: "dcrossman3@google.co.jp",
-          city: "Paquera",
-          start_date: "12/03/2017",
-          salary: "$12336.17",
-          age: "22",
-          experience: "2 Years",
-          status: 2,
-        },
-        {
-          id: 5,
-          avatar: require("@/assets/images/avatars/4-small.png"),
-          full_name: "Harmonia Nisius",
-          post: "Senior Cost Accountant",
-          email: "hnisius4@gnu.org",
-          city: "Lucan",
-          start_date: "08/25/2017",
-          salary: "$10909.52",
-          age: "33",
-          experience: "3 Years",
-          status: 2,
-        },
-        {
-          id: 6,
-          avatar: require("@/assets/images/avatars/5-small.png"),
-          full_name: "Genevra Honeywood",
-          post: "Geologist",
-          email: "ghoneywood5@narod.ru",
-          city: "Maofan",
-          start_date: "06/01/2017",
-          salary: "$17803.80",
-          age: "61",
-          experience: "1 Year",
-          status: 1,
-        },
-        {
-          id: 7,
-          avatar: require("@/assets/images/avatars/7-small.png"),
-          full_name: "Eileen Diehn",
-          post: "Environmental Specialist",
-          email: "ediehn6@163.com",
-          city: "Lampuyang",
-          start_date: "10/15/2017",
-          salary: "$18991.67",
-          age: "59",
-          experience: "9 Years",
-          status: 3,
-        },
-        {
-          id: 8,
-          avatar: require("@/assets/images/avatars/9-small.png"),
-          full_name: "Richardo Aldren",
-          post: "Senior Sales Associate",
-          email: "raldren7@mtv.com",
-          city: "Skoghall",
-          start_date: "11/05/2016",
-          salary: "$19230.13",
-          age: "55",
-          experience: "5 Years",
-          status: 3,
-        },
-        {
-          id: 9,
-          avatar: require("@/assets/images/avatars/2-small.png"),
-          full_name: "Allyson Moakler",
-          post: "Safety Technician",
-          email: "amoakler8@shareasale.com",
-          city: "Mogilany",
-          start_date: "12/29/2018",
-          salary: "$11677.32",
-          age: "39",
-          experience: "9 Years",
-          status: 5,
-        },
-        {
-          id: 10,
-          avatar: require("@/assets/images/avatars/6-small.png"),
-          full_name: "Merline Penhalewick",
-          post: "Junior Executive",
-          email: "mpenhalewick9@php.net",
-          city: "Kanuma",
-          start_date: "04/19/2019",
-          salary: "$15939.52",
-          age: "23",
-          experience: "3 Years",
-          status: 2,
-        },
-      ],
-      /* eslint-disable global-require */
-      status: [
-        {
-          1: "Current",
-          2: "Professional",
-          3: "Rejected",
-          4: "Resigned",
-          5: "Applied",
-        },
-        {
-          1: "light-primary",
-          2: "light-success",
-          3: "light-danger",
-          4: "light-warning",
-          5: "light-info",
-        },
-      ],
-    };
-  },
-  computed: {
-    sortOptions() {
-      // Create an options list from our fields
-      return this.fields
-        .filter((f) => f.sortable)
-        .map((f) => ({ text: f.label, value: f.key }));
+    BOverlay,
+    BFormDatepicker,
+    BMedia,
+} from "bootstrap-vue";
+import Ripple from "vue-ripple-directive";
+import { mapGetters, mapActions } from "vuex";
+import { statuses_color } from "@/fieldsdata/index.js";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { can } from '@/auth/authentication.js'
+
+export default {
+    components: {
+        BRow,
+        BCol,
+        BCard,
+        BButton,
+        BCardText,
+        BLink,
+        BTable,
+        BAvatar,
+        BBadge,
+        BFormGroup,
+        BFormSelect,
+        BPagination,
+        BInputGroup,
+        BFormInput,
+        BInputGroupAppend,
+        BCardBody,
+        BOverlay,
+        BFormDatepicker,
+        BMedia,
     },
-  },
-  mounted() {
-    // Set the initial number of items
-    this.totalRows = this.items.length;
-  },
-  methods: {
-    info(item, index, button) {
-      this.infoModal.title = `Row index: ${index}`;
-      this.infoModal.content = JSON.stringify(item, null, 2);
-      this.$root.$emit("bv::show::modal", this.infoModal.id, button);
+    data() {
+        return {
+            noData: false,
+            perPage: 25,
+            pageOptions: [10, 25, 50],
+            totalRows: 1,
+            currentPage: 1,
+            sortBy: "",
+            sortDesc: false,
+            sortDirection: "asc",
+            filter: null,
+            filterOn: [],
+            fields: [
+                { key: "id", label: "Id" },
+                { key: "title", label: "Name" },
+                {
+                    key: "status",
+                    label: "Contract Status",
+                    sortable: true,
+                },
+                { key: "location", label: "Location", sortable: true },
+                { key: "created_at", label: "Date", sortable: true },
+                "actions",
+            ],
+            items: [],
+            statuses_color,
+            // check user
+            can,
+        };
     },
-    resetInfoModal() {
-      this.infoModal.title = "";
-      this.infoModal.content = "";
+    computed: {
+        sortOptions() {
+            // Create an options list from our fields
+            return this.fields
+                .filter((f) => f.sortable)
+                .map((f) => ({ text: f.label, value: f.key }));
+        },
+        ...mapGetters({
+            isLoading: "listing/getIsLoading",
+            getMessage: "listing/getMessage",
+            getError: "listing/getError",
+        }),
     },
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
-      this.currentPage = 1;
+    mounted() {
+
+        // getting lsiting
+        this.loadListings()
+            .then((response) => {
+                if( response.success ) {
+                    this.items = response.data
+                    // console.log(response.data.length);
+                    // Set the initial number of items
+                    this.totalRows = response.data.length;
+
+                } else {
+                    this.noData = true,
+                    this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: response.message,
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
+
+
     },
-  },
-  directives: {
-    Ripple,
-  },
+    methods: {
+        ...mapActions({ loadListings: "listing/loadListings" }),
+
+        onFiltered(filteredItems) {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            this.totalRows = filteredItems.length;
+            this.currentPage = 1;
+        },
+    },
+    directives: {
+        Ripple,
+    },
 };
 </script>
 
-<style>
-</style>
+<style></style>

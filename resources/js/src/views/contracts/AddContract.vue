@@ -481,8 +481,8 @@
                                     </b-col>
                                 </div>
                             </b-tab>
-                            <b-tab>
-                                <template #title>
+                            <b-tab @click="refreshComments">
+                                <template #title >
                                     <feather-icon icon="MessageCircleIcon" />
                                     <span>Comment</span>
                                 </template>
@@ -532,25 +532,25 @@
                                                     src=""
                                                 />
                                                 <div
-                                                    class="chat-info col shadow p-1 bg-white rounded text-white "
-                                                    :class=" comment.user_role == 'Contractor' ? 'bg-primary ' : '' || comment.user_role == 'EB Staff' ? 'bg-warning ' : '' || comment.user_role == 'Client' ? 'bg-info' : '' "
+                                                    :class=" comment.user_role == 'Contractor' ? 'border-primary ' : '' || comment.user_role == 'EB Staff' ? 'border-warning ' : '' || comment.user_role == 'Client' ? 'border-info' : '' "
+                                                    class="chat-info col shadow p-1 bg-white rounded border-bottom-0 border-right-0 border-top-0"
 
                                                 >
-                                                    <div class="d-flex align-item-center">
+                                                    <div class="d-flex align-item-center justify-content-between">
 
-                                                        <h5 class="mb-0 p-0 mr-2 d-inline text-white" >
+                                                        <h5 class="mb-0 p-0 mr-2 d-inline " >
                                                             {{ comment.user_name }}
                                                         </h5>
-                                                        <small>
+                                                        <small class="mr-auto">
                                                             {{new Date(comment.created_at).toDateString() }}
                                                         </small>
 
-                                                        <small class="ml-auth">
-                                                            UserType: <span class="font-weight-bold">  ( {{ comment.user_role }} ) </span>
-                                                        </small>
+                                                         <b-badge :variant="comment.user_role == 'Contractor' ? 'primary ' : '' || comment.user_role == 'EB Staff' ? 'warning ' : '' || comment.user_role == 'Client' ? 'info' : ''">
+                                                            {{ comment.user_role }}
+                                                        </b-badge>
                                                     </div>
 
-                                                    <p class="card-text h4 text-white">
+                                                    <p class="card-text h4 mt-1">
                                                         {{ comment.message }}
                                                     </p>
                                                 </div>
@@ -723,6 +723,8 @@ export default {
 
             can,
 
+            latLng: { lat: 20.5937, lng: 78.9629 },
+
             perfectScrollbarSettings: {
                 maxScrollbarLength: 60,
                 height: 10,
@@ -812,6 +814,7 @@ export default {
                                 variant: "success",
                             },
                         });
+                        this.noData = false
                         // this.$router.push({
                         //     name: "contracts.add",
                         //     params: { listingId: this.listingId },
@@ -885,6 +888,7 @@ export default {
                                 variant: "success",
                             },
                         });
+                        this.noData = false
                         // this.$router.push({
                         //     name: "contracts.add",
                         //     params: { listingId: this.listingId },
@@ -963,6 +967,10 @@ export default {
                         },
                     });
                 });
+        },
+
+        refreshComments() {
+            this.loadComments()
         },
     },
     computed: {

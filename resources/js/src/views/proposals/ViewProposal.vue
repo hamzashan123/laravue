@@ -147,7 +147,7 @@
                                 :disabled="proposal.status == 'reject'"
                             >
                                 Reject
-                                <b-spinner small v-if="isLoading" />
+                                <b-spinner small v-if="isRejectLoading" />
                             </b-button>
                             <b-button
                                 v-if="can('create', 'all-proposal')"
@@ -423,7 +423,7 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.$router.push({ name: 'proposals' })
+                        this.$router.push({ name: 'proposals.listing', params: { listingId: this.listing.id } })
                     } else {
                         console.log(response);
                         this.$toast({
@@ -464,7 +464,7 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.$router.push({ name: 'proposals' })
+                        this.$router.push({ name: 'proposals.listing', params: { listingId: this.listing.id } })
                     } else {
                         console.log(response);
                         this.$toast({
@@ -499,7 +499,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({ isLoading: "proposal/getIsLoading", isDataLoading: "proposal/getIsDataLoading" }),
+        ...mapGetters({ isLoading: "proposal/getIsLoading", isDataLoading: "proposal/getIsDataLoading", isRejectLoading: "proposal/getIsRejectLoading", }),
     },
     created() {
         this.proposalId = this.$route.params.proposalId;

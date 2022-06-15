@@ -46,6 +46,7 @@
                     :state="errors.length > 0 ? false : null"
                     name="login-email"
                     placeholder="john@example.com"
+                    autofocus
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -55,9 +56,6 @@
               <b-form-group>
                 <div class="d-flex justify-content-between">
                   <label for="login-password">Password</label>
-                  <b-link :to="{ name: 'forgot' }">
-                    <small>Forgot Password?</small>
-                  </b-link>
                 </div>
                 <validation-provider
                   #default="{ errors }"
@@ -87,6 +85,11 @@
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
+                <div class="text-right">
+                  <b-link :to="{ name: 'forgot' }">
+                    <small>Forgot Password?</small>
+                  </b-link>
+                </div>
               </b-form-group>
 
               <!-- checkbox -->

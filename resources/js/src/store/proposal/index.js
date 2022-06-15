@@ -14,6 +14,7 @@ export default {
         isCreated: false,
         isUpdated: false,
         isDeleted: false,
+        isRejectLoading: false,
     },
     getters: {
         getProposal: (state) => state.proposals,
@@ -22,6 +23,8 @@ export default {
         getMessage: (state) => state.message,
         getError: (state) => state.error,
         getIsCreated: (state) => state.isCreated,
+        getIsCreated: (state) => state.isCreated,
+        getIsRejectLoading: (state) =>  state.isRejectLoading,
     },
     mutations: {
         setProposals(state, proposals) {
@@ -35,6 +38,9 @@ export default {
         },
         setIsDataLoading(state, payload) {
             state.isDataLoading = payload;
+        },
+        setIsRejectLoading(state, isRejectLoading) {
+            state.isRejectLoading = isRejectLoading;
         },
         setMessage(state, message) {
             state.message = message;
@@ -170,7 +176,7 @@ export default {
 
         // reject / deny propsoal
         rejectProposal({ commit }, proposalId) {
-            commit("setIsLoading", true);
+            commit("setIsRejectLoading", true);
             return new Promise((resolve, reject) => {
                 axios({
                     url: "deny-proposal",
@@ -180,17 +186,17 @@ export default {
                     .then((response) => {
                         if (response.data.success) {
 
-                            commit("setIsLoading", false);
+                            commit("setIsRejectLoading", false);
                             return resolve(response.data);
                         } else {
-                            commit("setIsLoading", false);
+                            commit("setIsRejectLoading", false);
                             return resolve(response.data);
                         }
                     })
                     .catch((error) => {
                         console.log(error);
                         commit("setError", error);
-                        commit("setIsLoading", false);
+                        commit("setIsRejectLoading", false);
                         return reject(error);
                     });
             });

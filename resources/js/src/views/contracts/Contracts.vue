@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Header -->
-        <b-row class="mb-4">
+        <b-row class="mb-3">
             <b-col md="8" sm="12">
                 <b-card-text> <h1>Project Contracts</h1> </b-card-text>
             </b-col>
@@ -32,79 +32,71 @@
 
         <!-- Table -->
         <b-card title="Latest Contracts" no-body>
-            <b-overlay :show="isDataLoading"  spinner-variant="primary">
+            <b-overlay :show="isDataLoading" spinner-variant="primary">
                 <b-card-body>
-                    <div class="d-flex justify-content-between flex-wrap">
-                        <!-- filter -->
-                        <b-form-group
-                            label="Search"
-                            label-cols-sm="3"
-                            label-align-sm="left"
-                            label-size="md"
-                            label-for="filterInput"
-                            class="mb-0"
-                        >
-                            <b-input-group size="md">
-                                <b-form-input
-                                    id="filterInput"
-                                    v-model="filter"
-                                    type="search"
-                                    placeholder="Search Contracts"
+                    <b-row>
+                        <b-col>
+                            <!-- filter -->
+                            <b-form-group
+                                label="Search"
+                                label-cols-sm="3"
+                                label-align-sm="left"
+                                label-size="md"
+                                label-for="filterInput"
+                                class="mb-0"
+                            >
+                                <b-input-group size="md">
+                                    <b-form-input
+                                        id="filterInput"
+                                        v-model="filter"
+                                        type="search"
+                                        placeholder="Search Proposals"
+                                    />
+                                    <b-input-group-append>
+                                        <b-button
+                                            :disabled="!filter"
+                                            @click="filter = ''"
+                                        >
+                                            Clear
+                                        </b-button>
+                                    </b-input-group-append>
+                                </b-input-group>
+                            </b-form-group>
+                        </b-col>
+                        <b-col class="text-center">
+                            <!-- Dates Filter -->
+                            <b-button
+                                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                                variant="flat-primary"
+                            >
+                                <feather-icon
+                                    icon="CalendarIcon"
+                                    class="mr-50"
                                 />
-                                <b-input-group-append>
-                                    <b-button
-                                        :disabled="!filter"
-                                        @click="filter = ''"
-                                    >
-                                        Clear
-                                    </b-button>
-                                </b-input-group-append>
-                            </b-input-group>
-                        </b-form-group>
-                        <!-- Dates Filter -->
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 3 Months</span>
-                        </b-button>
-
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 6 Months</span>
-                        </b-button>
-
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 12 Months</span>
-                        </b-button>
-
-                        <div class="form-row">
-                            <div class="col p-0">
-                                <b-form-datepicker
-                                    placeholder="From Date"
-                                    id="target_completion_datefrom"
-                                    class="mb-1 p-0"
-                                    name="target_completion_datefrom"
-                                />
+                                <span class="align-middle">Last 3 Months</span>
+                            </b-button>
+                        </b-col>
+                        <b-col>
+                            <div class="form-row">
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="From Date"
+                                        id="filter_from_Date"
+                                        class="mb-1 p-0 block"
+                                        name="filter_from_Date"
+                                    />
+                                </div>
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="To Date"
+                                        id="filter_to_Date"
+                                        name="filter_to_Date"
+                                        class="mb-1 p-0"
+                                    />
+                                </div>
                             </div>
-                            <div class="col p-0">
-                                <b-form-datepicker
-                                    placeholder="To Date"
-                                    id="target_completion_dateto"
-                                    name="target_completion_dateto"
-                                    class="mb-1 p-0"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                        </b-col>
+                    </b-row>
                 </b-card-body>
 
                 <b-table
@@ -124,21 +116,28 @@
                     show-empty
                 >
 
+                    <template #cell(contractor)="data">
+                        {{ data.item.contractor.first_name + " " + data.item.contractor.last_name  }}
+                    </template>
                     <template #cell(title)="data">
                         <b-media vertical-align="center">
                             <template #aside>
                                 <b-avatar
-                                size="40"
-                                v-for="(image, idx) in data.item.listing.images.slice(0, 1)"
-                                :key="idx"
-                                :src="image.image"
-                                variant="light-primary"
+                                    size="40"
+                                    v-for="(
+                                        image, idx
+                                    ) in data.item.listing.images.slice(0, 1)"
+                                    :key="idx"
+                                    :src="image"
+                                    variant="light-primary"
                                 />
                             </template>
-                            <span class="font-weight-bold d-block text-nowrap mt-1">
+                            <span
+                                class="font-weight-bold d-block text-nowrap mt-1"
+                            >
                                 {{ data.item.listing.title }}
                             </span>
-                            </b-media>
+                        </b-media>
                     </template>
                     <template #cell(status)="data">
                         <b-badge :variant="statuses_color[1][data.value]">
@@ -146,20 +145,40 @@
                         </b-badge>
                     </template>
                     <template #cell(location)="data">
-                        {{  data.item.listing.addaddress_line1 ? data.item.listing.addaddress_line1 + ", " : "" }}
-                        {{ data.item.listing.district ? data.item.listing.district + ", " : "" }}
-                        {{ data.item.listing.state ? data.item.listing.state + ", " : "" }}
-                        {{ data.item.listing.country ? data.item.listing.country : "" }}
+                        {{
+                            data.item.listing.addaddress_line1
+                                ? data.item.listing.addaddress_line1 + ", "
+                                : ""
+                        }}
+                        {{
+                            data.item.listing.district
+                                ? data.item.listing.district + ", "
+                                : ""
+                        }}
+                        {{
+                            data.item.listing.state
+                                ? data.item.listing.state + ", "
+                                : ""
+                        }}
+                        {{
+                            data.item.listing.country
+                                ? data.item.listing.country
+                                : ""
+                        }}
                     </template>
                     <template #cell(listing_date)="data">
-                        {{ new Date(data.item.listing.created_at).toDateString() }}
+                        {{
+                            new Date(
+                                data.item.listing.created_at
+                            ).toDateString()
+                        }}
                     </template>
                     <template #cell(target_start_date)="data">
-                         {{ data.item.listing.target_completion_datefrom }}
+                        {{ data.item.listing.target_completion_datefrom }}
                     </template>
                     <template #cell(actions)="data">
-                        <b-button
-                            v-if=" can('create', 'all-contract') "
+                        <!-- <b-button
+                            v-if="can('create', 'all-contract')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
                             class="mb-1"
@@ -169,7 +188,7 @@
                             }"
                         >
                             Add Docs
-                        </b-button>
+                        </b-button> -->
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="success"
@@ -263,7 +282,7 @@ import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import { can } from '@/auth/authentication.js'
+import { can } from "@/auth/authentication.js";
 
 export default {
     components: {
@@ -300,17 +319,22 @@ export default {
             filterOn: [],
             fields: [
                 { key: "id", label: "Id" },
-                { key: "title", label: "Contractor Name" },
+                { key: "title", label: "Listing" },
+                { key: "contractor", label: "Contractor" },
                 { key: "status", label: "Contract Status", sortable: true },
                 { key: "location", label: "Location", sortable: true },
-                { key: "listing_date", label: "Listing Date", sortable: true, },
-                { key: "target_start_date", label: "Target Start Date", sortable: true },
+                { key: "listing_date", label: "Listing Date", sortable: true },
+                {
+                    key: "target_start_date",
+                    label: "Target Start Date",
+                    sortable: true,
+                },
                 "actions",
             ],
             items: [],
             statuses_color,
 
-             can,
+            can,
         };
     },
     computed: {
@@ -320,9 +344,10 @@ export default {
                 .filter((f) => f.sortable)
                 .map((f) => ({ text: f.label, value: f.key }));
         },
-        ...mapGetters({ isLoading: "contract/getIsLoading", isDataLoading: "contract/getIsDataLoading" }),
-
-
+        ...mapGetters({
+            isLoading: "contract/getIsLoading",
+            isDataLoading: "contract/getIsDataLoading",
+        }),
     },
     mounted() {
         // getting contracts on listing
@@ -331,7 +356,6 @@ export default {
                 console.log(response);
                 if (response.success) {
                     this.items = response.data;
-
                 } else {
                     this.$toast({
                         component: ToastificationContent,
@@ -359,15 +383,13 @@ export default {
         this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadContracts: "contract/loadContracts",  }),
-
+        ...mapActions({ loadContracts: "contract/loadContracts" }),
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-
     },
     directives: {
         Ripple,
@@ -376,5 +398,3 @@ export default {
 </script>
 
 <style></style>
-
-

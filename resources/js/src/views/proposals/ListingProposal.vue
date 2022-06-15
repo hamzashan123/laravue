@@ -83,77 +83,69 @@
         <b-card title="Latest Proposals" no-body>
             <b-overlay :show="isDataLoading"  spinner-variant="primary">
                 <b-card-body>
-                    <div class="d-flex justify-content-between flex-wrap">
-                        <!-- filter -->
-                        <b-form-group
-                            label="Search"
-                            label-cols-sm="3"
-                            label-align-sm="left"
-                            label-size="md"
-                            label-for="filterInput"
-                            class="mb-0"
-                        >
-                            <b-input-group size="md">
-                                <b-form-input
-                                    id="filterInput"
-                                    v-model="filter"
-                                    type="search"
-                                    placeholder="Search Proposals"
+                    <b-row>
+                        <b-col>
+                            <!-- filter -->
+                            <b-form-group
+                                label="Search"
+                                label-cols-sm="3"
+                                label-align-sm="left"
+                                label-size="md"
+                                label-for="filterInput"
+                                class="mb-0"
+                            >
+                                <b-input-group size="md">
+                                    <b-form-input
+                                        id="filterInput"
+                                        v-model="filter"
+                                        type="search"
+                                        placeholder="Search Proposals"
+                                    />
+                                    <b-input-group-append>
+                                        <b-button
+                                            :disabled="!filter"
+                                            @click="filter = ''"
+                                        >
+                                            Clear
+                                        </b-button>
+                                    </b-input-group-append>
+                                </b-input-group>
+                            </b-form-group>
+                        </b-col>
+                        <b-col class="text-center">
+                            <!-- Dates Filter -->
+                            <b-button
+                                v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+                                variant="flat-primary"
+                            >
+                                <feather-icon
+                                    icon="CalendarIcon"
+                                    class="mr-50"
                                 />
-                                <b-input-group-append>
-                                    <b-button
-                                        :disabled="!filter"
-                                        @click="filter = ''"
-                                    >
-                                        Clear
-                                    </b-button>
-                                </b-input-group-append>
-                            </b-input-group>
-                        </b-form-group>
-                        <!-- Dates Filter -->
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 3 Months</span>
-                        </b-button>
-
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 6 Months</span>
-                        </b-button>
-
-                        <b-button
-                            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-                            variant="flat-primary"
-                        >
-                            <feather-icon icon="CalendarIcon" class="mr-50" />
-                            <span class="align-middle">Last 12 Months</span>
-                        </b-button>
-
-                        <div class="form-row">
-                            <div class="col p-0">
-                                <b-form-datepicker
-                                    placeholder="From Date"
-                                    id="target_completion_datefrom"
-                                    class="mb-1 p-0"
-                                    name="target_completion_datefrom"
-                                />
+                                <span class="align-middle">Last 3 Months</span>
+                            </b-button>
+                        </b-col>
+                        <b-col>
+                            <div class="form-row">
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="From Date"
+                                        id="filter_from_Date"
+                                        class="mb-1 p-0 block"
+                                        name="filter_from_Date"
+                                    />
+                                </div>
+                                <div class="col p-0">
+                                    <b-form-datepicker
+                                        placeholder="To Date"
+                                        id="filter_to_Date"
+                                        name="filter_to_Date"
+                                        class="mb-1 p-0"
+                                    />
+                                </div>
                             </div>
-                            <div class="col p-0">
-                                <b-form-datepicker
-                                    placeholder="To Date"
-                                    id="target_completion_dateto"
-                                    name="target_completion_dateto"
-                                    class="mb-1 p-0"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                        </b-col>
+                    </b-row>
                 </b-card-body>
 
                 <b-table
