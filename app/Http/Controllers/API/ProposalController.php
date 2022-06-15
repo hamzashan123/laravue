@@ -296,8 +296,16 @@ class ProposalController extends Controller
             ];
             return response()->json($response_data);
         }
-        
-        $data = Proposals::where('listing_id', $request->listing_id)->paginate(10);       
+        //only client can see approved proposal by staff
+        if(Auth::user()->role_id == 1){
+            $data = Proposals::where(['listing_id' => $request->listing_id , 'status' => 'approved'])->paginate(10);
+        //contractor can see only his proposal
+        }else if(Auth::user()->role_id == 2){
+            $data = Proposals::where(['listing_id' => $request->listing_id , 'user_id' => Auth::user()->id])->paginate(10);
+        }else{
+            $data = Proposals::where('listing_id', $request->listing_id)->paginate(10);
+        }
+               
 
         if (count($data) > 0) {
             $response_data = [
