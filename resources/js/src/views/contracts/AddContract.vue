@@ -541,7 +541,7 @@
                                                         <h5 class="mb-0 p-0 mr-2 d-inline " >
                                                             {{ comment.user_name }}
                                                         </h5>
-                                                        <small class="mr-auto">
+                                                        <small class="ml-auto">
                                                             {{new Date(comment.created_at).toDateString() }}
                                                         </small>
 
@@ -595,7 +595,7 @@
                         </div>
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <div id="map" class="h-100 mt-2"></div>
+                                <show-map lat=20.5937 lng=78.9629 />
                             </b-col>
                             <b-col lg="6">
                                 <b-form-group
@@ -702,6 +702,7 @@ import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { can } from "@/auth/authentication.js";
+import ShowMap from '@/components/ShowMap.vue'
 
 export default {
     data() {
@@ -722,8 +723,6 @@ export default {
             statuses_color,
 
             can,
-
-            latLng: { lat: 20.5937, lng: 78.9629 },
 
             perfectScrollbarSettings: {
                 maxScrollbarLength: 60,
@@ -759,6 +758,7 @@ export default {
         BSpinner,
         BBadge,
         VuePerfectScrollbar,
+        ShowMap,
     },
     methods: {
         ...mapActions({
@@ -918,13 +918,6 @@ export default {
                 });
         },
 
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
-        },
-
         // Add commments
         addCommentTrigger() {
             let commentData = new FormData();
@@ -1029,9 +1022,6 @@ export default {
             });
 
         this.loadComments();
-    },
-    mounted() {
-        this.initMap()
     },
     directives: {
         Ripple,

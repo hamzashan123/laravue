@@ -238,7 +238,7 @@
                         </div>
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <div id="map" class="h-100 mt-2"></div>
+                                <show-map lat=20.5937 lng=78.9629 />
                             </b-col>
                             <b-col lg="6">
                                 <b-form-group
@@ -338,6 +338,7 @@ import {
     BInputGroupPrepend,
     BSpinner,
 } from "bootstrap-vue";
+import ShowMap from '@/components/ShowMap.vue'
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
@@ -369,7 +370,9 @@ export default {
         BInputGroupPrepend,
         BSpinner,
         Swiper,
-        SwiperSlide
+        SwiperSlide,
+
+        ShowMap,
     },
     data() {
         return {

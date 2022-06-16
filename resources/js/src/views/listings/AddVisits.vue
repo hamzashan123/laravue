@@ -331,7 +331,7 @@
                             </div>
                             <b-row>
                                 <b-col lg="6" class="mb-2">
-                                    <div id="map" class="h-100 mt-2"></div>
+                                    <show-map lat=20.5937 lng=78.9629 />
                                 </b-col>
                                 <b-col lg="6">
                                     <b-form-group
@@ -440,6 +440,7 @@ import { mapActions, mapGetters } from "vuex";
 import { required } from "@validations";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { statuses_color } from "@/fieldsdata/index.js";
+import ShowMap from '@/components/ShowMap.vue'
 
 export default {
     components: {
@@ -463,6 +464,7 @@ export default {
         BEmbed,
         BSpinner,
         BBadge,
+        ShowMap,
     },
     data() {
         return {
@@ -470,7 +472,6 @@ export default {
             gmapAutocompelte: "",
             autocomplete: null,
             place: "",
-            latLng: { lat: 20.5937, lng: 78.9629 },
             // listing
             imagesShowWhileUpload: [],
             imagesFileUploader: [],
@@ -590,70 +591,8 @@ export default {
             });
         },
 
-        // Initialize Google Map on focus
-        setGmapOnFocus() {
-            this.autocomplete = new google.maps.places.Autocomplete(
-                document.getElementById("gmap-autocompelte"),
-                {
-                    componentRestrictions: { country: ["in"] },
-                    fields: ["address_components", "geometry"],
-                    types: ["address"],
-                }
-            );
-            // console.log("autocomplete", this.autocomplete);
-            this.autocomplete.addListener(
-                "place_changed",
-                this.getAddressOnChange
-            );
-        },
-        // Get address on change
-        getAddressOnChange() {
-            this.place = this.autocomplete.getPlace();
 
-            // let lat = place.geometry.location.lat()
-            // let lng = place.geometry.location.lng()
 
-            this.latLng = {
-                lat: this.place.geometry.location.lat(),
-                lng: this.place.geometry.location.lng(),
-            };
-
-            this.initMap();
-
-            for (const component of this.place.address_components) {
-                // @ts-ignore remove once typings fixed
-                const componentType = component.types[0];
-
-                switch (componentType) {
-                    case "street_number": {
-                        this.listing.address_line1 = `${component.long_name} ${address1}`;
-                        break;
-                    }
-
-                    case "route": {
-                        this.listing.address_line1 += component.short_name;
-                        break;
-                    }
-                    case "locality":
-                        this.listing.district = component.long_name;
-                        break;
-                    case "administrative_area_level_1": {
-                        this.listing.state = component.long_name;
-                        break;
-                    }
-                    case "country":
-                        this.listing.country = component.long_name;
-                        break;
-                }
-            }
-        },
-        // Initialize map
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
-        },
     },
     computed: {
         ...mapGetters({
@@ -662,7 +601,6 @@ export default {
         }),
     },
     mounted() {
-        this.initMap();
 
         this.id = this.$route.params.listingId;
 
