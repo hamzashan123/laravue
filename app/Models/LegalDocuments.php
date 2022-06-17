@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\ListingImages;
 use App\Models\Proposals;
 use App\Models\Listing;
+use App\Models\LegalDocumentImages;
+use App\Models\Contracts;
 
 class LegalDocuments extends Model
 {
@@ -15,9 +17,9 @@ class LegalDocuments extends Model
         'id',
         'user_id',
         'listing_id',
-        'legal_document_name',
-        'legal_document_path',
-        'legal_document_date',
+        //'legal_document_name',
+        //'legal_document_path',
+        //'legal_document_date',
         'user_type',
         'status',
         'document_type',
@@ -59,5 +61,15 @@ class LegalDocuments extends Model
         return $this->hasMany(LegalDocuments::class,'listing_id','listing_id')
             ->where('user_type','contractor')->where('document_type','finance')
             ->select('listing_documents.*');
+    }
+
+    public function getLegalDocumentImages() {
+        return $this->hasMany(LegalDocumentImages::class,'listing_document_id','id')
+            ->select('listing_document_images.*');
+    }
+
+    public function getContract() {
+        return $this->hasOne(Contracts::class,'listing_id','listing_id')
+            ->select('contracts.*');
     }
 }
