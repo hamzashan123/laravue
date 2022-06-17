@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Listing;
 use App\Models\User;
+use App\Models\Proposals;
 
 class Contracts extends Model
 {
@@ -33,7 +34,5 @@ class Contracts extends Model
     public function getAssignedBy() {
         return $this->hasOne(User::class,'id','assigned_by')
             ->select('users.*');
-    }
-    
-
+    }    
 }
