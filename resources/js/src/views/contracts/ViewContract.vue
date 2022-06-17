@@ -22,7 +22,6 @@
                         Start Contract
                     </b-button>
                     <b-button
-                        v-if="can('create', 'all-contract')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'contracts.add', params: { listingID: id } }"
@@ -714,7 +713,7 @@
 
                             <b-row>
                                 <b-col lg="6" class="mb-2">
-                                    <div id="map" class="h-100 mt-2"></div>
+                                    <show-map lat=20.5937 lng=78.9629 />
                                 </b-col>
                                 <b-col lg="6">
                                     <b-form-group
@@ -833,6 +832,7 @@ import { statuses_color } from "@/fieldsdata/index.js";
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 import { can } from "@/auth/authentication.js";
+import ShowMap from '@/components/ShowMap.vue'
 
 export default {
     components: {
@@ -865,12 +865,12 @@ export default {
         SwiperSlide,
         BTabs,
         BTab,
+
+        ShowMap,
     },
     data() {
         return {
             progressValue: "40%",
-            // map
-            latLng: { lat: 20.5937, lng: 78.9629 },
 
             swiperOptions: {
                 navigation: {
@@ -895,13 +895,7 @@ export default {
         ...mapActions({ loadLegalDocument: "contract/loadLegalDocument" }),
 
 
-        // Initialize map
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
-        },
+
     },
     computed: {
         ...mapGetters({
@@ -909,7 +903,6 @@ export default {
         }),
     },
     mounted() {
-        this.initMap();
 
         this.id = this.$route.params.listingId;
 

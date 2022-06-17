@@ -53,79 +53,7 @@
 
         <b-card>
             <b-overlay :show="isLoading" spinner-variant="primary">
-                <b-row>
-                    <!-- <b-col lg="12" > -->
-                        <!-- <div class="text-right">
-                            <b-button
-                            v-if="can('update', 'listing') || can('update', 'all-listing')"
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="primary"
-                            :to="{ name: 'listings.edit', params: { listingId: id } }"
-                        >
-                            Edit
-                            </b-button>
-                        </div> -->
-                    <!-- </b-col> -->
-                    <b-col md="6">
-                        <h4 class="mb-2 text-primary">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Target Compilation date Range
-                        </h4>
-
-                        <div class="form-row">
-                            <div class="col">
-                                <b-form-input
-                                    v-model="listing.target_completion_datefrom"
-                                    id="target_completion_datefrom"
-                                    placeholder="From Date"
-                                    disabled
-                                />
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    v-model="listing.target_completion_dateto"
-                                    id="target_completion_dateto"
-                                    placeholder="Date To"
-                                    disabled
-                                />
-                            </div>
-                        </div>
-                    </b-col>
-                    <b-col md="6">
-                        <h4 class="mb-2 text-primary">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Target Budget - Min and Max
-                        </h4>
-                        <div class="form-row">
-                            <div class="col">
-                                <b-form-input
-                                    v-model="listing.min_budget"
-                                    id="min_budget"
-                                    placeholder="Minimum Budget"
-                                    disabled
-                                />
-                            </div>
-                            <div class="col">
-                                <b-form-input
-                                    v-model="listing.max_budget"
-                                    id="max_budget"
-                                    placeholder="Maximum Budget"
-                                    disabled
-                                />
-                            </div>
-                        </div>
-
-                        <!-- </b-form> -->
-                    </b-col>
-                </b-row>
+                <show-client-date-budget :listing="listing" />
             </b-overlay>
         </b-card>
 
@@ -135,156 +63,19 @@
                 <b-row>
                     <!-- Images -->
                     <b-col md="6" class="mb-2">
-                        <div class="d-flex flex-wrap mb-2">
-                            <b-img
-                                v-for="(image, idx) in listing.images"
-                                :key="idx"
-                                fluid
-                                thumbnail
-                                class="w-50"
-                                :src="image"
-                                v-b-modal.modal-listing-images
-                            />
-                        </div>
-                            <div v-if="!listing.images">No images found</div>
-
-                        <!-- modal -->
-                            <b-modal
-                            id="modal-listing-images"
-                            ok-only
-                            centered
-                            size="lg"
-                            >
-                            <swiper
-                                class="swiper-navigations"
-                                :options="swiperOptions"
-                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            >
-                                <swiper-slide
-                                v-for="(image, index) in listing.images"
-                                :key="index"
-                                >
-                                <b-img
-                                    :src="image"
-                                    fluid
-                                />
-                                </swiper-slide>
-
-                                <!-- Add Arrows -->
-                                <div
-                                slot="button-next"
-                                class="swiper-button-next"
-                                />
-                                <div
-                                slot="button-prev"
-                                class="swiper-button-prev"
-                                />
-                            </swiper>
-                            </b-modal>
+                        <show-images-slider :listing="listing" />
                     </b-col>
                     <!-- Details Form -->
                     <b-col md="6" class="mb-2">
-                        <h4 class="mb-2">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Listing Details
-                        </h4>
-                        <b-form-group
-                            label="Name your listing"
-                            label-for="listingname"
-                        >
-                            <b-form-input
-                                id="listingname"
-                                v-model="listing.title"
-                                placeholder="Name"
-                                disabled
-                            />
-                        </b-form-group>
-
-                        <div class="mb-2">
-                            <label for="listingDetails">Description</label>
-                            <b-form-textarea
-                                id="listingDetails"
-                                v-model="listing.description"
-                                placeholder="Listing Details"
-                                rows="3"
-                                disabled
-                            />
-                        </div>
+                        <show-title-description heading="Listing Details" :listing="listing" />
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <div id="map" class="h-100 mt-2"></div>
+                                <show-map lat=20.5937 lng=78.9629 />
                             </b-col>
                             <b-col lg="6">
-                                <b-form-group
-                                    label="Address Line 1 *"
-                                    label-for="address-line-1"
-                                >
-                                    <b-form-input
-                                        v-model="listing.address_line1"
-                                        id="address-line-1"
-                                        placeholder="Address Line 1 *"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Address Line 2 *"
-                                    label-for="address-line-2"
-                                >
-                                    <b-form-input
-                                        v-model="listing.address_line2"
-                                        id="address-line-2"
-                                        placeholder="Address Line 2 *"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Country"
-                                    label-for="country"
-                                >
-                                    <b-form-input
-                                        id="country"
-                                        placeholder="Country"
-                                        v-model="listing.country"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group label="State" label-for="state">
-                                    <b-form-input
-                                        placeholder="State"
-                                        v-model="listing.state"
-                                        id="state"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="District"
-                                    label-for="district"
-                                >
-                                    <b-form-input
-                                        placeholder="District"
-                                        v-model="listing.district"
-                                        id="district"
-                                        disabled
-                                    />
-                                </b-form-group>
+                                <show-address :listing="listing"/>
                             </b-col>
                         </b-row>
-                        <!-- Save -->
-                        <!-- <b-col class="text-right">
-                        <b-button
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            type="submit"
-                            variant="primary"
-                            @click.prevent="saveListingTrigger"
-                        >
-                            Save Details
-                            <b-spinner small v-if="isLoading" />
-                        </b-button>
-                    </b-col> -->
                     </b-col>
                 </b-row>
             </b-overlay>
@@ -312,15 +103,19 @@ import {
     BEmbed,
     BOverlay,
     BBadge,
-    BModal,
+    // BModal,
 } from "bootstrap-vue";
+import ShowMap from '@/components/ShowMap.vue'
+import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
+import ShowAddress from '@/components/ShowAddress.vue'
+import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
+import ShowClientDateBudget from '@/components/ShowClientDateBudget.vue'
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { can } from '@/auth/authentication.js'
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+
 
 export default {
     components: {
@@ -342,9 +137,15 @@ export default {
         BEmbed,
         BOverlay,
         BBadge,
-        BModal,
-        Swiper,
-        SwiperSlide,
+        // BModal,
+        // Swiper,
+        // SwiperSlide,
+
+        ShowMap,
+        ShowTitleDescription,
+        ShowAddress,
+        ShowImagesSlider,
+        ShowClientDateBudget
     },
     data() {
         return {
@@ -353,14 +154,6 @@ export default {
             statuses_color,
             draftListingId: '',
             can,
-
-            latLng: { lat: 20.5937, lng: 78.9629 },
-            swiperOptions: {
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-                },
-            },
         };
     },
     methods: {
@@ -396,26 +189,8 @@ export default {
                 });
         },
 
-        // Initialize map
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
 
-            //  var geocoder = new google.maps.Geocoder();
-            // geocoder.geocode({ 'address': "Navale Bridge, Maharashtra," }, function (results, status) {
-            //     if (status == google.maps.GeocoderStatus.OK) {
-            //         map.setCenter(results[0].geometry.location);
-            //         var marker = new google.maps.Marker({
-            //             map: map,
-            //             position: results[0].geometry.location,
-            //         });
-            //     } else
-            //       alert("Problem with geolocation");
 
-            // });
-        }
     },
     computed: {
         ...mapGetters({ isLoading: "listing/getIsLoading" }),
@@ -453,9 +228,6 @@ export default {
                     },
                 });
             });
-    },
-    mounted() {
-        this.initMap()
     },
     directives: {
         Ripple,
