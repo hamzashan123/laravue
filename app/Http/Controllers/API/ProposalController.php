@@ -325,4 +325,3 @@ class ProposalController extends Controller
     }
 
 }
-

@@ -269,5 +269,24 @@ class UserController extends Controller
         return response()->json($response_data,  $this->successStatus);
 
     }
+
+    public function getUsers() {
+        $users = User::where('status', 'active')->get();
+
+        if(count($users) > 0) {
+            $response_data = [
+                'success' => true,
+                'message' => 'Users List',
+                'user' => UserResource::collection($users)
+            ];
+            return response()->json($response_data, $this->successStatus);
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
 }
 

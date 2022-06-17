@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Storage;
 use URL;
 use Auth;
 use Illuminate\Support\Facades\File;
-use App\Http\Resources\UserResource;
 use App\Http\Resources\ListingResource;
 use App\Http\Resources\LegalDocumentsResource;
+use App\Http\Resources\ContractResource;
+use App\Http\Resources\ProposalsResource;
+use App\Models\Proposals;
 
-class LegalResource extends JsonResource
+class ContractDetailResource extends JsonResource
 {
     /**s
      * Transform the resource into an array.
@@ -23,8 +25,14 @@ class LegalResource extends JsonResource
     {              
         //$document = URL::to('/') . Storage::disk('local')->url('public/ListingDocuments/' .$this->listing_id . '/' . $this->user_type . '/' . $this->legal_document_path);
         
+        $proposal = Proposals::where('listing_id', $this->getListing->id)
+                             ->where('user_id', $this->getContract->contractor_id)
+                             ->where('status', 'pre_contract')->first();
+
         return [
             'listing'=> new ListingResource($this->getListing),
+            'contract'=> new ContractResource($this->getContract),
+            'proposal'=> new ProposalsResource($proposal),
             'legal_client_documents'=> LegalDocumentsResource::collection($this->getLegalClientDocuments),
             'legal_contractor_documents'=> LegalDocumentsResource::collection($this->getLegalContractorDocuments),
             'finance_client_documents'=> LegalDocumentsResource::collection($this->getFinanceClientDocuments),
