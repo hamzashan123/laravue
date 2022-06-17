@@ -17,12 +17,9 @@ use Illuminate\Support\Facades\Http;
 
 Route::post('login', [App\Http\Controllers\API\UserController::class, 'login']);
 Route::post('register', [App\Http\Controllers\API\UserController::class, 'register']);
-
+Route::post('get-users', [App\Http\Controllers\API\UserController::class, 'getUsers']);
 
 Route::post('getlistingbyid', [App\Http\Controllers\API\ListingController::class, 'getListingById']);
-
-
-
 
 Route::post('get-listing', [App\Http\Controllers\API\ListingController::class, 'getListing']);
 Route::post('get-published-listings', [App\Http\Controllers\API\ListingController::class, 'getPublishedListings']);
@@ -50,7 +47,6 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('get-listing-proposals', [App\Http\Controllers\API\ProposalController::class, 'getListingProposals']);
     Route::post('get-proposal-details', [App\Http\Controllers\API\ProposalController::class, 'getProposalDetails']);
 
-
     //Visits
     Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);
     Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
@@ -64,6 +60,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     //Contracts
     Route::post('assign-contract', [App\Http\Controllers\API\ContractsController::class, 'assignContract']);
     Route::post('get-contracts', [App\Http\Controllers\API\ContractsController::class, 'getContracts']);
+    Route::post('get-contract-detail', [App\Http\Controllers\API\ContractsController::class, 'getContractDetail']);
 
     //Chat
     Route::post('post-comment', [App\Http\Controllers\API\ChatController::class, 'postComment']);
