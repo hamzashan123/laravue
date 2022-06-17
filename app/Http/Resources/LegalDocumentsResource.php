@@ -9,6 +9,7 @@ use Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ListingResource;
+use App\Http\Resources\LegalDocumentImagesResource;
 
 class LegalDocumentsResource extends JsonResource
 {
@@ -21,15 +22,13 @@ class LegalDocumentsResource extends JsonResource
     public function toArray($request)
     {
               
-        $document = URL::to('/') . Storage::disk('local')->url('public/ListingDocuments/' .$this->listing_id . '/' . $this->user_type . '/' . $this->legal_document_path);
+        //$document = URL::to('/') . Storage::disk('local')->url('public/ListingDocuments/' .$this->listing_id . '/' . $this->user_type . '/' . $this->legal_document_path);
         
 
         return [
             'id'=> $this->id,
-            'user'=> new UserResource($this->getUser),           
-            'legal_document_name'=> $this->legal_document_name,
-            'legal_document_path'=> $document,
-            'legal_document_date'=> $this->legal_document_date,
+            'user'=> new UserResource($this->getUser),
+            'documents'=> LegalDocumentImagesResource::collection($this->getLegalDocumentImages),
             'user_type'=> $this->user_type,
             'status'=> $this->status,
             'document_type'=> $this->document_type,            

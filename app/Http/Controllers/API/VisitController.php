@@ -48,10 +48,19 @@ class VisitController extends Controller
             return response()->json($response_data);
         }
 
+        $visitPercentage = Visits::where('user_id', Auth::user()->id)->where('listing_id', $request->listing_id)->sum('percentage');
+        if($request->percentage > (100 - $visitPercentage)) {
+            $response_data = [
+                'success' => false,
+                'message' => 'percentage has been exceed'                   
+            ];
+            return response()->json($response_data);
+        }
+
         $data = Listing::where('id',$request->listing_id)->where('status', 'pre_contract')->first();
 
         if ($data != null) {
-            $input = $request->all();            
+            $input = $request->all();
             $input['user_id'] = Auth::user()->id;
             $input['listing_id']  = $input['listing_id'];
             $input['visit_date']  = $input['visit_date'];
@@ -59,7 +68,6 @@ class VisitController extends Controller
             $input['visit_summary']  = $input['visit_summary'] ?? '';
             $input['visit_detail']  = $input['visit_detail'] ?? '';
             $input['status']  = 'active';
-
 
             $visits = Visits::create($input);
             
@@ -87,6 +95,7 @@ class VisitController extends Controller
                 'success' => true,
                 'message' => 'Upload Listing Visit successfully!',
                 'data' => new VisitResource($visit_data),
+                'percentage' => ($visitPercentage + $request->percentage),
             ];
             return response()->json($response_data, $this->successStatus);
         }
@@ -114,6 +123,7 @@ class VisitController extends Controller
             return response()->json($response_data);
         }
 
+        $visitPercentage = Visits::where('user_id', Auth::user()->id)->where('listing_id', $request->listing_id)->sum('percentage');
         $data = Visits::where('listing_id',$request->listing_id)->orderBy('id','asc')->paginate(20);
 
         if(count($data) > 0)
@@ -122,6 +132,7 @@ class VisitController extends Controller
                 'success' => true,
                 'message' =>  'Listings Visits',
                 'data' => VisitResource::collection($data),
+                'percentage' => $visitPercentage,
             ];
             return response()->json($response_data, $this->successStatus);
         } else {

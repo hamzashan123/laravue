@@ -22,9 +22,11 @@ use App\Models\Listing;
 use App\Models\ListingImages;
 use App\Models\Contracts;
 use App\Models\Proposals;
+use App\Models\LegalDocuments;
 
 use App\Http\Resources\ListingResource;
 use App\Http\Resources\ContractResource;
+use App\Http\Resources\ContractDetailResource;
 
 class ContractsController extends Controller
 {
@@ -47,9 +49,13 @@ class ContractsController extends Controller
             ];
             return response()->json($response_data);
         }
+
+        
         $contractExist = Contracts::where(['listing_id' => $request->listing_id ,'status' => 'pre_contract'])
                 ->exists();
         
+
+
         if($contractExist == true){
             $response_data = [
                 'success' => false,
@@ -60,6 +66,7 @@ class ContractsController extends Controller
 
         $listing = Listing::where('id',$request->listing_id)->where('status','waiting_assignment')->first();        
 
+        
         if ($listing != null) {
 
             $input = $request->all();
@@ -72,10 +79,10 @@ class ContractsController extends Controller
 
             $listing->status = 'pre_contract';
             $listing->save();
-            
+
             $contract_data = Contracts::find($contract->id);
 
-            Proposals::where(['listing_id'  => $request->listing_id,'user_id' ,$request->contractor_id])->update(['status' => 'pre_contract']);    
+            Proposals::where(['listing_id' => $request->listing_id, 'user_id' => $request->contractor_id])->update(['status' => 'pre_contract']);    
             
             $response_data = [
                 'success' => true,
@@ -115,5 +122,37 @@ class ContractsController extends Controller
         }
     }
 
-}
+    public function getContractDetail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'listing_id'            => 'required',           
+        ]);
 
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $data = LegalDocuments::select('listing_id')->where('listing_id', $request->listing_id)
+        ->distinct()->get();
+
+        if(count($data) > 0) {
+            $response_data = [
+                'success' => true,
+                'message' =>  'Contract Detail',
+                'data' => ContractDetailResource::collection($data),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }        
+    }
+}
