@@ -20,8 +20,8 @@
             size="40"
             variant="light-primary"
             badge
-            :text="userAvatarText"
-            :src="user.avatar"
+            :text="userAvatarText ? userAvatarText : ''"
+            :src="user.avatar ? user.avatar : ''"
             class="badge-minimal ml-1"
             badge-variant="success"
           />
@@ -44,10 +44,10 @@ import { mapActions, mapGetters } from "vuex";
 import { can } from '@/auth/authentication'
 
 export default {
+  props: ['user'],
     data() {
         return {
-            user: {},
-            userRole: {},
+            // user: {},
             can
 
 
@@ -61,14 +61,14 @@ export default {
     BDropdownDivider,
     BAvatar,
   },
-  mounted() {
-      const getUser = JSON.parse(localStorage.getItem("userData"))
-      this.user = getUser
+  // mounted() {
+  //     const getUser = JSON.parse(localStorage.getItem("userData"))
+  //     this.user = getUser
 
-      const userRole = getUser.user_role;
-      this.userRole = userRole
+  //     const userRole = getUser.user_role;
+  //     this.userRole = userRole
 
-  },
+  // },
   methods: {
     ...mapActions({ logout: "auth/logout" }),
 

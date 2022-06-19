@@ -111,13 +111,13 @@ class ChatController extends Controller
             return response()->json($response_data);
         }
 
-        if(!(Auth::user()->role_id == 3 || $to_user->role_id == 3)) {
-            $response_data = [
-                'success' => false,
-                'message' => 'Message sender or receiver must be eb staff'
-            ];
-            return response()->json($response_data);
-        }
+        // if(!(Auth::user()->role_id == 3 || $to_user->role_id == 3)) {
+        //     $response_data = [
+        //         'success' => false,
+        //         'message' => 'Message sender or receiver must be eb staff'
+        //     ];
+        //     return response()->json($response_data);
+        // }
 
         $input = $request->all();
         $input['from_user_id']  = Auth::user()->id;
@@ -137,8 +137,7 @@ class ChatController extends Controller
 
     public function getMessages(Request $request)
     {
-        $messages = Messages::where('from_user_id', Auth::user()->id)->orWhere('to_user_id', Auth::user()->id)
-        ->orderBy('created_at','desc')->paginate(20);
+        $messages = Messages::where('from_user_id', Auth::user()->id)->paginate(20);
 
         if(count($messages) > 0) {
             $response_data = [

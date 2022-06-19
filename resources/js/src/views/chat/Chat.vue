@@ -16,7 +16,7 @@
                                 v-for="chatUser in chatUsers"
                                 :key="chatUser.id"
                             >
-                                <div @click="startChat(chatUser.id)">
+                                <div @click="startChat(chatUser.id, chatUser)">
                                     <b-avatar
                                         size="32"
                                         variant="light-primary"
@@ -30,7 +30,7 @@
                     </vue-perfect-scrollbar>
                 </b-col>
                 <b-col sm="9">
-                    <topbar />
+                    <topbar :user="toUser"/>
 
                     <div class="">
                         <vue-perfect-scrollbar
@@ -63,7 +63,7 @@
                                         "
                                     >
                                         <h5 class="mb-0 p-0 mr-2 d-inline">
-                                            {{ chat.to_user }}
+                                            {{ chat.from_user }}
                                         </h5>
                                         <small>
                                             {{
@@ -151,7 +151,8 @@ export default {
             isChatLoading: false,
 
             message: "",
-            toUserId: 1,
+            toUserId: 0,
+            toUser: {},
 
             perfectScrollbarSettings: {
                 maxScrollbarLength: 60,
@@ -192,11 +193,12 @@ export default {
             sendMessage: "chat/sendMessage",
         }),
 
-        startChat(userId) {
+        startChat(userId, toUser) {
             this.isChartStarted = true
-            this.loadChats();
+            this.loadChats({ to_user_id: userId });
             this.toUserId = userId;
-            console.log(userId);
+            this.toUser = toUser
+            console.log(toUser);
         },
 
         // Add commments
