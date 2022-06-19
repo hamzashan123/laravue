@@ -28,11 +28,11 @@ class ContractDetailResource extends JsonResource
         $proposal = Proposals::where('listing_id', $this->getListing->id)
                              ->where('user_id', $this->getContract->contractor_id)
                              ->where('status', 'pre_contract')->first();
-
+        
         return [
             'listing'=> new ListingResource($this->getListing),
             'contract'=> new ContractResource($this->getContract),
-            'proposal'=> new ProposalsResource($proposal),
+            'proposal'=> new ProposalsResource($proposal) ? new ProposalsResource($proposal) : 'No proposal yet!',
             'legal_client_documents'=> LegalDocumentsResource::collection($this->getLegalClientDocuments),
             'legal_contractor_documents'=> LegalDocumentsResource::collection($this->getLegalContractorDocuments),
             'finance_client_documents'=> LegalDocumentsResource::collection($this->getFinanceClientDocuments),
@@ -41,10 +41,10 @@ class ContractDetailResource extends JsonResource
             'legal_contractor_total_percentage'=> $this->getLegalContractorDocuments->sum('percentage'),
             'finance_client_total_percentage'=> $this->getFinanceClientDocuments->sum('percentage'),
             'finance_contractor_total_percentage'=> $this->getFinanceContractorDocuments->sum('percentage'),
-            'legal_client_last_update_on'=> $this->getLegalClientDocuments->max('created_at'),
-            'legal_contractor_last_update_on'=> $this->getLegalContractorDocuments->max('created_at'),
-            'finance_client_last_update_on'=> $this->getFinanceClientDocuments->max('created_at'),
-            'finance_contractor_last_update_on'=> $this->getFinanceContractorDocuments->max('created_at'),
+            'legal_client_last_update_on'=> $this->getLegalClientDocuments->max('created_at') ? $this->getLegalClientDocuments->max('created_at') : 'No last update',
+            'legal_contractor_last_update_on'=> $this->getLegalContractorDocuments->max('created_at') ? $this->getLegalContractorDocuments->max('created_at') : 'No last update' ,
+            'finance_client_last_update_on'=> $this->getFinanceClientDocuments->max('created_at') ? $this->getFinanceClientDocuments->max('created_at') : 'No last update' ,
+            'finance_contractor_last_update_on'=> $this->getFinanceContractorDocuments->max('created_at') ? $this->getFinanceContractorDocuments->max('created_at') : 'No last update',
         ];
     }
 }

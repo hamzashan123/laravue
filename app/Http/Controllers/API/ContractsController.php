@@ -139,8 +139,8 @@ class ContractsController extends Controller
 
         $data = LegalDocuments::select('listing_id')->where('listing_id', $request->listing_id)
         ->distinct()->get();
-
-        if(count($data) > 0) {
+        
+        if(count($data) >= 0) {
             $response_data = [
                 'success' => true,
                 'message' =>  'Contract Detail',

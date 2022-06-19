@@ -263,7 +263,7 @@
                                                                         <span
                                                                             class="align-middle"
                                                                             >{{
-                                                                                docDetails.created_at
+                                                                                new Date(docDetails.created_at).toDateString()
                                                                             }}</span
                                                                         >
                                                                         <feather-icon
@@ -344,7 +344,7 @@
                                                                         <span
                                                                             class="align-middle"
                                                                             >{{
-                                                                                docDetails.created_at
+                                                                                new Date(docDetails.created_at).toDateString()
                                                                             }}</span
                                                                         >
                                                                         <feather-icon
@@ -434,7 +434,7 @@
                                                                         <span
                                                                             class="align-middle"
                                                                             >{{
-                                                                                docDetails.created_at
+                                                                                new Date(docDetails.created_at).toDateString()
                                                                             }}</span
                                                                         >
                                                                         <feather-icon
@@ -515,7 +515,7 @@
                                                                         <span
                                                                             class="align-middle"
                                                                             >{{
-                                                                                docDetails.created_at
+                                                                                new Date(docDetails.created_at).toDateString()
                                                                             }}</span
                                                                         >
                                                                         <feather-icon

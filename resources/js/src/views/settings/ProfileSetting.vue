@@ -323,7 +323,7 @@ export default {
             ProfileData.append('last_name', this.user.last_name);
             ProfileData.append('email', this.user.email);
             ProfileData.append('contact', this.user.contact);
-            ProfileData.append('address', this.user.address);
+            ProfileData.append('address', this.user.address) ;
             ProfileData.append('date_of_birth', this.user.date_of_birth);
             ProfileData.append('country', this.user.country);
             ProfileData.append('state', this.user.state);
