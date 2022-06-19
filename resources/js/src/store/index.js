@@ -12,6 +12,7 @@ import proposal from './proposal'
 import contract from './contract'
 import dashboard from './dashboard'
 import chat from './chat'
+import account from './account'
 
 Vue.use(Vuex)
 
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     contract,
     dashboard,
     chat,
+    account,
   },
   strict: process.env.DEV,
 })

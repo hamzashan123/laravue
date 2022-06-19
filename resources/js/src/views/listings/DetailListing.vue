@@ -5,7 +5,6 @@
             <b-col md="6" sm="12">
                 <b-card-text>
                     <h1>Visits on {{ listing.title }}</h1>
-
                     <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
                     </b-badge>
@@ -35,126 +34,7 @@
         <b-form @submit.prevent enctype="multipart/form-data">
             <validation-observer ref="validationRules">
                 <b-card>
-                    <b-row>
-                        <b-col md="6">
-                            <h4 class="mb-2 text-primary">
-                                <feather-icon
-                                    icon="ChevronsUpIcon"
-                                    size="18"
-                                    class="mr-50"
-                                />
-                                Target Compilation date Range
-                            </h4>
-
-                            <div class="form-row">
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="From Date"
-                                        rules="required"
-                                    >
-                                        <b-form-datepicker
-                                            placeholder="Select From Date"
-                                            id="target_completion_datefrom"
-                                            class="mb-1 p-0"
-                                            v-model="
-                                                listing.target_completion_datefrom
-                                            "
-                                            name="target_completion_datefrom"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="To Date"
-                                        rules="required"
-                                    >
-                                        <b-form-datepicker
-                                            placeholder="Select To Date"
-                                            id="target_completion_dateto"
-                                            v-model="
-                                                listing.target_completion_dateto
-                                            "
-                                            :min="
-                                                listing.target_completion_datefrom
-                                            "
-                                            name="target_completion_dateto"
-                                            class="mb-1 p-0"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                            </div>
-                        </b-col>
-                        <b-col md="6">
-                            <h4 class="mb-2 text-primary">
-                                <feather-icon
-                                    icon="ChevronsUpIcon"
-                                    size="18"
-                                    class="mr-50"
-                                />
-                                Target Budget - Min and Max
-                            </h4>
-                            <div class="form-row">
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="Minimum budget"
-                                        rules="required"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.min_budget"
-                                            class="mb-1"
-                                            placeholder="Minimum Budget"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="Maximum budget"
-                                        rules="required"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.max_budget"
-                                            placeholder="Maximum Budget"
-                                            class="mb-1"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                            </div>
-
-                            <!-- </b-form> -->
-                        </b-col>
-                    </b-row>
+                    <show-client-date-budget :listing="listing" />
                 </b-card>
 
                 <!-- Images and Detail -->
@@ -213,158 +93,19 @@
                         </b-col>
                         <!-- Details Form -->
                         <b-col md="6" class="mb-2">
-                            <h4 class="mb-2">
-                                <feather-icon
-                                    icon="ChevronsUpIcon"
-                                    size="18"
-                                    class="mr-50"
-                                />
-                                Listing Details
-                            </h4>
-                            <validation-provider
-                                #default="{ errors }"
-                                name="Name"
-                                rules="required"
-                            >
-                                <b-form-group
-                                    label="Name your listing"
-                                    label-for="listingname"
-                                >
-                                    <b-form-input
-                                        id="listingname"
-                                        v-model="listing.title"
-                                        placeholder="Name"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <small class="text-danger">{{
-                                    errors[0]
-                                }}</small>
-                            </validation-provider>
+                            <show-title-description heading="Listing Details" :listing="listing" />
 
-                            <div class="mb-2">
-                                <label for="listingDetails">Details</label>
-                                <b-form-textarea
-                                    id="listingDetails"
-                                    v-model="listing.description"
-                                    placeholder="Listing Details"
-                                    rows="3"
-                                    disabled
-                                />
-                            </div>
-
-                            <!-- images -->
-                            <div class="d-flex flex-wrap mb-2">
-                            <b-img
-                                v-for="(image, idx) in listing.images"
-                                :key="idx"
-                                fluid
-                                thumbnail
-                                class="w-25"
-                                :src="image"
-                                v-b-modal.modal-listing-images
-                            />
-                            <div v-if="!listing.images">No images found</div>
-                        </div>
-                        <!-- modal -->
-                            <b-modal
-                            id="modal-listing-images"
-                            ok-only
-                            centered
-                            size="lg"
-                            >
-                            <swiper
-                                class="swiper-navigations"
-                                :options="swiperOptions"
-                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            >
-                                <swiper-slide
-                                v-for="(image, index) in listing.images"
-                                :key="index"
-                                >
-                                <b-img
-                                    :src="image"
-                                    fluid
-                                />
-                                </swiper-slide>
-
-                                <!-- Add Arrows -->
-                                <div
-                                slot="button-next"
-                                class="swiper-button-next"
-                                />
-                                <div
-                                slot="button-prev"
-                                class="swiper-button-prev"
-                                />
-                            </swiper>
-                            </b-modal>
-
+                            <show-images-slider :listing="listing" />
                             <!-- <b-row>
                                 <b-col lg="6" class="mb-2">
-                                    <div id="map" class="h-100 mt-2"></div>
+                                    <show-map lat=20.5937 lng=78.9629 />
                                 </b-col>
                                 <b-col lg="6">
-                                    <b-form-group
-                                        label="Address Line 1"
-                                        label-for="address-line-1"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.address_line1"
-                                            id="address-line-1"
-                                            placeholder="Address Line 1"
-                                            required
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="Address Line 2"
-                                        label-for="address-line-2"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.address_line2"
-                                            id="address-line-2"
-                                            placeholder="Address Line 2"
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="Country"
-                                        label-for="country"
-                                    >
-                                        <b-form-input
-                                            id="country"
-                                            placeholder="Country"
-                                            required
-                                            v-model="listing.country"
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="State"
-                                        label-for="state"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.state"
-                                            placeholder="State"
-                                            id="state"
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="District"
-                                        label-for="district"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.district"
-                                            placeholder="District"
-                                            id="district"
-                                            disabled
-                                        />
-                                    </b-form-group>
+                                    <show-address :listing="listing"/>
                                 </b-col>
                             </b-row> -->
-                        </b-col>
+
+                         </b-col>
                     </b-row>
                 </b-card>
             </validation-observer>
@@ -405,7 +146,10 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import { statuses_color } from "@/fieldsdata/index.js";
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
-
+import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
+import ShowAddress from '@/components/ShowAddress.vue'
+import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
+import ShowClientDateBudget from '@/components/ShowClientDateBudget.vue'
 export default {
     components: {
         ValidationProvider,
@@ -434,6 +178,10 @@ export default {
         AppTimelineItem,
         Swiper,
         SwiperSlide,
+        ShowTitleDescription,
+        ShowAddress,
+        ShowImagesSlider,
+        ShowClientDateBudget,
     },
     data() {
         return {

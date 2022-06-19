@@ -3,75 +3,109 @@
         <!-- -->
         <b-card>
             <b-row>
-                <b-col>
-
-                <div class="">
+                <b-col sm="3">
                     <vue-perfect-scrollbar
                         :settings="perfectScrollbarSettings"
-                        class="user-chats scroll-area p-1 mb-0 mt-2"
+                        class="scroll-area p-1 mb-0 mt-2"
                     >
                         <div
-                            class="chats position-relative"
-                            style="height: 70vh"
+                            class="position-relative"
                         >
                             <div
-                                class="d-flex align-item-center mb-1 mt-1 pb-1"
-                                v-for="chat in chats"
-                                :key="chat.id"
+                                class="d-flex align-item-center mb-1 mt-1 pb-1 cursor-pointer sidebar-content card"
+                                v-for="chatUser in chatUsers"
+                                :key="chatUser.id"
                             >
-                                <b-avatar
-                                    size="32"
-                                    variant="light-primary"
-                                    class="mr-1"
-                                    src=""
-                                />
-                                <div
-                                    class="chat-info col shadow p-1 bg-white rounded"
-                                    :class="
-                                        chat.my_message
-                                            ? 'bg-primary bg-lighten-5'
-                                            : ''
-                                    "
-                                >
-                                    <h5 class="mb-0 p-0 mr-2 d-inline">
-                                        {{ chat.to_user }}
-                                    </h5>
-                                    <small>
-                                        {{
-                                            new Date(
-                                                chat.created_at
-                                            ).toDateString()
-                                        }}
-                                    </small>
-                                    <p class="card-text">
-                                        {{ chat.message }}
-                                    </p>
+                                <div @click="startChat(chatUser.id)">
+                                    <b-avatar
+                                        size="32"
+                                        variant="light-primary"
+                                        class="mr-1"
+                                        src="chatUser.avatar"
+                                    />
+                                    {{ chatUser.user_name }}
                                 </div>
                             </div>
                         </div>
                     </vue-perfect-scrollbar>
+                </b-col>
+                <b-col sm="9">
+                    <topbar />
 
-                    <div class="d-flex align-item-center p-1">
-                        <b-form-input
-                            v-model="message"
-                            id="message"
-                            placeholder="Write..."
-                            rows="3"
-                            class="mr-1"
-                        />
-                        <b-button
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            type="submit"
-                            variant="primary"
-                            @click="addChatTrigger"
+                    <div class="">
+                        <vue-perfect-scrollbar
+                            :settings="perfectScrollbarSettings"
+                            class="user-chats scroll-area p-1 mb-0 mt-2"
                         >
-                            <feather-icon icon="SendIcon" v-if="!isLoading" />
-                            <b-spinner small v-if="isLoading" />
-                        </b-button>
+                            <div v-if="!isChartStarted" style="height: 60vh"> Start chart </div>
+                            <div
+                                class="chats position-relative"
+                                v-if="isChartStarted"
+                                style="height: 60vh"
+                            >
+                                <div
+                                    class="d-flex align-item-center mb-1 mt-1 pb-1"
+                                    v-for="chat in chats"
+                                    :key="chat.id"
+                                >
+                                    <b-avatar
+                                        size="32"
+                                        variant="light-primary"
+                                        class="mr-1"
+                                        src=""
+                                    />
+                                    <div
+                                        class="chat-info col shadow p-1 bg-white rounded"
+                                        :class="
+                                            chat.my_message
+                                                ? 'bg-primary bg-lighten-5'
+                                                : ''
+                                        "
+                                    >
+                                        <h5 class="mb-0 p-0 mr-2 d-inline">
+                                            {{ chat.to_user }}
+                                        </h5>
+                                        <small>
+                                            {{
+                                                new Date(
+                                                    chat.created_at
+                                                ).toDateString()
+                                            }}
+                                        </small>
+                                        <p class="card-text">
+                                            {{ chat.message }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </vue-perfect-scrollbar>
+
+                        <div>
+                            <b-form
+                                @submit.prevent="sendMessageTrigger"
+                                class="d-flex align-item-center p-1"
+                            >
+                                <b-form-input
+                                    v-model="message"
+                                    id="message"
+                                    placeholder="Write..."
+                                    rows="3"
+                                    class="mr-1"
+                                />
+                                <b-button
+                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                    type="submit"
+                                    variant="primary"
+                                >
+                                    <feather-icon
+                                        icon="SendIcon"
+                                        v-if="!isLoading"
+                                    />
+                                    <b-spinner small v-if="isLoading" />
+                                </b-button>
+                            </b-form>
+                        </div>
                     </div>
-
-                </div>
-
                 </b-col>
             </b-row>
         </b-card>
@@ -105,30 +139,24 @@ import {
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
+import Topbar from "./Topbar.vue";
 import { mapActions, mapGetters } from "vuex";
-import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import { can } from "@/auth/authentication.js";
 
 export default {
     data() {
         return {
+            chatUsers: {},
+            isChartStarted: false,
+            isChatLoading: false,
 
             message: "",
-            to_user_id: 1,
-
-            statuses_color,
-
-            can,
+            toUserId: 1,
 
             perfectScrollbarSettings: {
                 maxScrollbarLength: 60,
                 height: 10,
             },
-            document_type_options: [
-                { text: "Legal Document", value: "legal" },
-                { text: "Payment Document", value: "finance" },
-            ],
         };
     },
     components: {
@@ -155,33 +183,33 @@ export default {
         BSpinner,
         BBadge,
         VuePerfectScrollbar,
+        Topbar,
     },
     methods: {
         ...mapActions({
+            loadAccounts: "account/loadAccounts",
             loadChats: "chat/loadChats",
-            addChat: "chat/addChat",
+            sendMessage: "chat/sendMessage",
         }),
 
+        startChat(userId) {
+            this.isChartStarted = true
+            this.loadChats();
+            this.toUserId = userId;
+            console.log(userId);
+        },
 
         // Add commments
-        addChatTrigger() {
+        sendMessageTrigger() {
             let chatData = new FormData();
-            chatData.append("to_user_id", this.to_user_id);
+            chatData.append("to_user_id", this.toUserId);
             chatData.append("message", this.message);
 
-            this.addChat(chatData)
+            this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
                         console.log(response.data);
                         this.message = "";
-                        // this.$toast({
-                        //     component: ToastificationContent,
-                        //     props: {
-                        //         title: response.message,
-                        //         icon: "EditIcon",
-                        //         variant: "success",
-                        //     },
-                        // });
                     } else {
                         console.log(response);
                         this.$toast({
@@ -207,6 +235,10 @@ export default {
                     });
                 });
         },
+        scrollToEnd: function () {
+            // scroll to the start of the last message
+            this.$el.scrollTop = this.$el.lastElementChild.offsetTop;
+        },
     },
     computed: {
         ...mapGetters({
@@ -214,38 +246,44 @@ export default {
             isDataLoading: "chat/getIsDataLoading",
             chats: "chat/getChats",
         }),
+
+        reverseChat() {
+            return this.chats.slice().reverse()
+        }
     },
     created() {
+        // getting lsiting
+        this.loadAccounts()
+            .then((response) => {
+                console.log(response);
+                if (response.success) {
+                    this.chatUsers = response.user;
+                } else {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
 
-
-
-        this.loadChats();
-        //     .then((response) => {
-        //     if (response.success) {
-        //         console.log(response);
-        //         this.chats = response.data;
-        //     } else {
-        //         this.$toast({
-        //             component: ToastificationContent,
-        //             props: {
-        //                 title: response.message,
-        //                 icon: "EditIcon",
-        //                 variant: "danger",
-        //             },
-        //         });
-        //     }
-        // })
-        // .catch((error) => {
-        //     console.log(error);
-        //     this.$toast({
-        //         component: ToastificationContent,
-        //         props: {
-        //             title: "Error while loading",
-        //             icon: "EditIcon",
-        //             variant: "danger",
-        //         },
-        //     });
-        // });
+    },
+    updated() {
+        this.$nextTick(() => this.scrollToEnd());
     },
     directives: {
         Ripple,

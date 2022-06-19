@@ -199,6 +199,24 @@ export default {
             });
         },
 
+        // Getting contract details
+        loadContractDetails({ commit }, id) {
+            commit("setIsDataLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "get-contract-detail", data: id, method: "POST" })
+                    .then((response) => {
+                        commit("setIsDataLoading", false);
+                        return resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsDataLoading", false);
+                        commit("setError", error);
+                        return reject(error);
+                    });
+            });
+        },
+
 
         // Updating
 

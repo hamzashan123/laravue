@@ -157,156 +157,19 @@
                 <b-row>
                     <!-- Images -->
                     <b-col md="6" class="mb-2">
-                        <div class="d-flex flex-wrap mb-2">
-                            <b-img
-                                v-for="(image, idx) in listing.images"
-                                :key="idx"
-                                fluid
-                                thumbnail
-                                class="w-50"
-                                :src="image"
-                                v-b-modal.modal-listing-images
-                            />
-                        </div>
-                            <div v-if="!listing.images">No images found</div>
-
-                        <!-- modal -->
-                            <b-modal
-                            id="modal-listing-images"
-                            ok-only
-                            centered
-                            size="lg"
-                            >
-                            <swiper
-                                class="swiper-navigations"
-                                :options="swiperOptions"
-                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            >
-                                <swiper-slide
-                                v-for="(image, index) in listing.images"
-                                :key="index"
-                                >
-                                <b-img
-                                    :src="image"
-                                    fluid
-                                />
-                                </swiper-slide>
-
-                                <!-- Add Arrows -->
-                                <div
-                                slot="button-next"
-                                class="swiper-button-next"
-                                />
-                                <div
-                                slot="button-prev"
-                                class="swiper-button-prev"
-                                />
-                            </swiper>
-                            </b-modal>
+                        <show-images-slider :listing="listing" />
                     </b-col>
                     <!-- Details Form -->
                     <b-col md="6" class="mb-2">
-                        <h4 class="mb-2">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Listing Details by Client
-                        </h4>
-                        <b-form-group
-                            label="Name your listing"
-                            label-for="listingname"
-                        >
-                            <b-form-input
-                                id="listingname"
-                                v-model="listing.title"
-                                placeholder="Name"
-                                disabled
-                            />
-                        </b-form-group>
-
-                        <div class="mb-2">
-                            <label for="listingDetails">Description</label>
-                            <b-form-textarea
-                                id="listingDetails"
-                                v-model="listing.description"
-                                placeholder="Listing Details"
-                                rows="3"
-                                disabled
-                            />
-                        </div>
+                        <show-title-description heading="Listing Details" :listing="listing" />
                         <b-row>
                             <b-col lg="6" class="mb-2">
                                 <show-map lat=20.5937 lng=78.9629 />
                             </b-col>
                             <b-col lg="6">
-                                <b-form-group
-                                    label="Address Line 1 *"
-                                    label-for="address-line-1"
-                                >
-                                    <b-form-input
-                                        v-model="listing.address_line1"
-                                        id="address-line-1"
-                                        placeholder="Address Line 1 *"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Address Line 2 *"
-                                    label-for="address-line-2"
-                                >
-                                    <b-form-input
-                                        v-model="listing.address_line2"
-                                        id="address-line-2"
-                                        placeholder="Address Line 2 *"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Country"
-                                    label-for="country"
-                                >
-                                    <b-form-input
-                                        id="country"
-                                        placeholder="Country"
-                                        v-model="listing.country"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group label="State" label-for="state">
-                                    <b-form-input
-                                        placeholder="State"
-                                        v-model="listing.state"
-                                        id="state"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="District"
-                                    label-for="district"
-                                >
-                                    <b-form-input
-                                        placeholder="District"
-                                        v-model="listing.district"
-                                        id="district"
-                                        disabled
-                                    />
-                                </b-form-group>
+                                <show-address :listing="listing"/>
                             </b-col>
                         </b-row>
-                        <!-- Save -->
-                        <!-- <b-col class="text-right">
-                        <b-button
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            type="submit"
-                            variant="primary"
-                            @click.prevent="saveListingTrigger"
-                        >
-                            Save Details
-                            <b-spinner small v-if="isLoading" />
-                        </b-button>
-                    </b-col> -->
                     </b-col>
                 </b-row>
             </b-overlay>
@@ -338,13 +201,16 @@ import {
     BInputGroupPrepend,
     BSpinner,
 } from "bootstrap-vue";
-import ShowMap from '@/components/ShowMap.vue'
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
+import ShowMap from '@/components/ShowMap.vue'
+import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
+import ShowAddress from '@/components/ShowAddress.vue'
+import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
 
 export default {
     components: {
@@ -373,6 +239,9 @@ export default {
         SwiperSlide,
 
         ShowMap,
+        ShowTitleDescription,
+        ShowAddress,
+        ShowImagesSlider,
     },
     data() {
         return {
@@ -438,14 +307,6 @@ export default {
                 });
         },
 
-        // Initialize map
-        initMap() {
-            let map = new google.maps.Map(document.getElementById("map"), {
-                center: this.latLng,
-                zoom: 12,
-            });
-        }
-
     },
     computed: {
         ...mapGetters({ isLoading: "listing/getIsLoading"  }),
@@ -484,9 +345,6 @@ export default {
                     },
                 });
             });
-    },
-    mounted() {
-        this.initMap()
     },
     directives: {
         Ripple,

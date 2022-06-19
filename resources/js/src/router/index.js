@@ -221,7 +221,15 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/accounts/edit',
+        path: '/accounts/view/:accountId',
+        name: 'accounts.view',
+        component: () => import('@/views/accounts/EditAccount.vue'),
+        meta: {
+            navActiveLink: 'accounts'
+        },
+    },
+    {
+        path: '/accounts/edit/:accountId',
         name: 'accounts.edit',
         component: () => import('@/views/accounts/EditAccount.vue'),
         meta: {

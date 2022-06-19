@@ -68,7 +68,7 @@ export default {
         },
 
         // adding chat
-        addChat({ commit, dispatch }, chatData) {
+        sendMessage({ commit, dispatch }, chatData) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({
