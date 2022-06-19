@@ -32,7 +32,7 @@
             </b-col>
         </b-row>
         <!-- Table -->
-        <b-card title="Latest Listings" no-body>
+        <b-card title="Latest Accounts" no-body>
             <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-card-body>
                     <b-row>
@@ -122,18 +122,14 @@
                             <template #aside>
                                 <b-avatar
                                     size="40"
-                                    v-for="(
-                                        image, idx
-                                    ) in data.item.images.slice(0, 1)"
-                                    :key="idx"
-                                    :src="image"
+                                    :src="data.item.avatar"
                                     variant="light-primary"
                                 />
                             </template>
                             <span
                                 class="font-weight-bold d-block text-nowrap mt-1"
                             >
-                                {{ data.value  }}
+                                {{ data.item.user_name  }}
                             </span>
                         </b-media>
                     </template>
@@ -142,14 +138,11 @@
                             {{ statuses_color[0][data.value] }}
                         </b-badge>
                     </template>
-                    <template #cell(location)="data">
-                            {{ ( data.item.addaddress_line1 ) ? data.item.addaddress_line1 : "" }}
-                            {{ ( data.item.district ) ? data.item.district : "" }}
-                            {{ ( data.item.state ) ? data.item.state : "" }}
-                            {{ ( data.item.country ) ? data.item.country : "" }}
+                    <template #cell(email)="data">
+                            {{ data.value  }}
                     </template>
-                    <template #cell(created_at)="data">
-                            {{ new Date(data.value).toDateString() }}
+                    <template #cell(user_role)="data">
+                            {{ data.item.user_role.role }}
                     </template>
                     <template #cell(actions)="data">
                         <b-button
@@ -157,21 +150,21 @@
                             variant="primary"
                             :class="data.value"
                             :to="{
-                                name: 'listings.view',
-                                params: { listingId: data.item.id },
+                                name: 'accounts.view',
+                                params: { accountId: data.item.id },
                             }"
                         >
                             See Details
                         </b-button>
 
                         <b-button
-                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                            v-if="can('update', 'account') || can('update', 'all-account')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
                             :class="data.value"
                             :to="{
-                                name: 'listings.edit',
-                                params: { listingId: data.item.id },
+                                name: 'accounts.edit',
+                                params: { accountId: data.item.id },
                             }"
                         >
                             <feather-icon icon="EditIcon" size="15" />
@@ -299,11 +292,11 @@ export default {
                 { key: "title", label: "Name" },
                 {
                     key: "status",
-                    label: "Contract Status",
+                    label: "Status",
                     sortable: true,
                 },
-                { key: "location", label: "Location", sortable: true },
-                { key: "created_at", label: "Date", sortable: true },
+                { key: "email", label: "email" },
+                { key: "user_role", label: "Role", sortable: true },
                 "actions",
             ],
             items: [],
@@ -320,21 +313,21 @@ export default {
                 .map((f) => ({ text: f.label, value: f.key }));
         },
         ...mapGetters({
-            isLoading: "listing/getIsLoading",
-            getMessage: "listing/getMessage",
-            getError: "listing/getError",
+            isLoading: "account/getIsLoading",
+            getMessage: "account/getMessage",
+            getError: "account/getError",
         }),
     },
     mounted() {
 
         // getting lsiting
-        this.loadListings()
+        this.loadAccounts()
             .then((response) => {
+                console.log(response);
                 if( response.success ) {
-                    this.items = response.data
-                    // console.log(response.data.length);
+                    this.items = response.user
                     // Set the initial number of items
-                    this.totalRows = response.data.length;
+                    this.totalRows = response.user.length;
 
                 } else {
                     this.noData = true,
@@ -364,7 +357,7 @@ export default {
 
     },
     methods: {
-        ...mapActions({ loadListings: "listing/loadListings" }),
+        ...mapActions({ loadAccounts: "account/loadAccounts" }),
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering

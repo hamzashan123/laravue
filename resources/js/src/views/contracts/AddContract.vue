@@ -6,7 +6,10 @@
             <b-col md="6" sm="12">
                 <b-card-text>
                     <h1>Add documents on {{ listing.title }}</h1>
-                    <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
+                    <b-badge
+                        :variant="statuses_color[1][listing.status]"
+                        v-if="listing.status"
+                    >
                         {{ statuses_color[0][listing.status] }}
                     </b-badge>
                 </b-card-text>
@@ -53,7 +56,7 @@
                         </div>
                         <div class="col">
                             <b-form-input
-                                value="25%"
+                                :value="legal_client_total_percentage + '%'"
                                 id="target_completion_dateto"
                                 placeholder="Date To"
                                 class="mb-2"
@@ -67,28 +70,37 @@
                         </div>
                         <div class="col">
                             <div
-                                v-for="(lcd, idx) in legal_client_documents"
-                                :key="idx"
+                                v-for="(
+                                    documentsArray, i
+                                ) in legal_client_documents"
+                                :key="i"
                             >
-                                <b-avatar
-                                    variant="light-dark"
-                                    square
-                                    :text="
-                                        lcd.legal_document_path.substr(
-                                            lcd.legal_document_path.length - 3
-                                        )
-                                    "
-                                    size="md"
-                                />
-                                <b-button
-                                    v-ripple.400="'rgba(30, 30, 30, 0.15)'"
-                                    variant="outline-dark"
-                                    size="sm"
-                                    :href="lcd.legal_document_path"
-                                    target="_blank"
+                                <div
+                                    v-for="(
+                                        doc, idx
+                                    ) in documentsArray.documents"
+                                    :key="idx"
                                 >
-                                    {{ lcd.legal_document_name }}
-                                </b-button>
+                                    <b-avatar
+                                        variant="light-dark"
+                                        square
+                                        :text="
+                                            doc.legal_document_name
+                                                .split('.')
+                                                .pop()
+                                        "
+                                        size="md"
+                                    />
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        :href="doc.legal_document_path"
+                                        target="_blank"
+                                    >
+                                        {{ doc.legal_document_name }}
+                                    </b-button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -108,7 +120,7 @@
                         </div>
                         <div class="col">
                             <b-form-input
-                                value="25%"
+                                :value="legal_contractor_total_percentage + '%'"
                                 id="target_completion_dateto"
                                 placeholder="Date To"
                                 class="mb-2"
@@ -122,28 +134,37 @@
                         </div>
                         <div class="col">
                             <div
-                                v-for="(lcd, idx) in legal_contractor_documents"
-                                :key="idx"
+                                v-for="(
+                                    documentsArray, i
+                                ) in legal_contractor_documents"
+                                :key="i"
                             >
-                                <b-avatar
-                                    variant="light-dark"
-                                    square
-                                    :text="
-                                        lcd.legal_document_path.substr(
-                                            lcd.legal_document_path.length - 3
-                                        )
-                                    "
-                                    size="md"
-                                />
-                                <b-button
-                                    v-ripple.400="'rgba(30, 30, 30, 0.15)'"
-                                    variant="outline-dark"
-                                    size="sm"
-                                    :href="lcd.legal_document_path"
-                                    target="_blank"
+                                <div
+                                    v-for="(
+                                        doc, idx
+                                    ) in documentsArray.documents"
+                                    :key="idx"
                                 >
-                                    {{ lcd.legal_document_name }}
-                                </b-button>
+                                    <b-avatar
+                                        variant="light-dark"
+                                        square
+                                        :text="
+                                            doc.legal_document_name
+                                                .split('.')
+                                                .pop()
+                                        "
+                                        size="md"
+                                    />
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        :href="doc.legal_document_path"
+                                        target="_blank"
+                                    >
+                                        {{ doc.legal_document_name }}
+                                    </b-button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,7 +189,7 @@
                         </div>
                         <div class="col">
                             <b-form-input
-                                value="25%"
+                                :value="finance_client_total_percentage + '%'"
                                 id="target_completion_dateto"
                                 placeholder="Date To"
                                 class="mb-2"
@@ -182,28 +203,37 @@
                         </div>
                         <div class="col">
                             <div
-                                v-for="(lcd, idx) in finance_client_documents"
-                                :key="idx"
+                                v-for="(
+                                    documentsArray, i
+                                ) in finance_client_documents"
+                                :key="i"
                             >
-                                <b-avatar
-                                    variant="light-dark"
-                                    square
-                                    :text="
-                                        lcd.legal_document_path.substr(
-                                            lcd.legal_document_path.length - 3
-                                        )
-                                    "
-                                    size="md"
-                                />
-                                <b-button
-                                    v-ripple.400="'rgba(30, 30, 30, 0.15)'"
-                                    variant="outline-dark"
-                                    size="sm"
-                                    :href="lcd.legal_document_path"
-                                    target="_blank"
+                                <div
+                                    v-for="(
+                                        doc, idx
+                                    ) in documentsArray.documents"
+                                    :key="idx"
                                 >
-                                    {{ lcd.legal_document_name }}
-                                </b-button>
+                                    <b-avatar
+                                        variant="light-dark"
+                                        square
+                                        :text="
+                                            doc.legal_document_name
+                                                .split('.')
+                                                .pop()
+                                        "
+                                        size="md"
+                                    />
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        :href="doc.legal_document_path"
+                                        target="_blank"
+                                    >
+                                        {{ doc.legal_document_name }}
+                                    </b-button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -223,7 +253,9 @@
                         </div>
                         <div class="col">
                             <b-form-input
-                                value="25%"
+                                :value="
+                                    finance_contractor_total_percentage + '%'
+                                "
                                 id="target_completion_dateto"
                                 placeholder="Date To"
                                 class="mb-2"
@@ -238,29 +270,36 @@
                         <div class="col">
                             <div
                                 v-for="(
-                                    lcd, idx
+                                    documentsArray, i
                                 ) in finance_contractor_documents"
-                                :key="idx"
+                                :key="i"
                             >
-                                <b-avatar
-                                    variant="light-dark"
-                                    square
-                                    :text="
-                                        lcd.legal_document_path.substr(
-                                            lcd.legal_document_path.length - 3
-                                        )
-                                    "
-                                    size="md"
-                                />
-                                <b-button
-                                    v-ripple.400="'rgba(30, 30, 30, 0.15)'"
-                                    variant="outline-dark"
-                                    size="sm"
-                                    target="_blank"
-                                    :href="lcd.legal_document_path"
+                                <div
+                                    v-for="(
+                                        doc, idx
+                                    ) in documentsArray.documents"
+                                    :key="idx"
                                 >
-                                    {{ lcd.legal_document_name }}
-                                </b-button>
+                                    <b-avatar
+                                        variant="light-dark"
+                                        square
+                                        :text="
+                                            doc.legal_document_name
+                                                .split('.')
+                                                .pop()
+                                        "
+                                        size="md"
+                                    />
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        target="_blank"
+                                        :href="doc.legal_document_path"
+                                    >
+                                        {{ doc.legal_document_name }}
+                                    </b-button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -482,7 +521,7 @@
                                 </div>
                             </b-tab>
                             <b-tab @click="refreshComments">
-                                <template #title >
+                                <template #title>
                                     <feather-icon icon="MessageCircleIcon" />
                                     <span>Comment</span>
                                 </template>
@@ -528,29 +567,69 @@
                                                 <b-avatar
                                                     size="32"
                                                     variant="light-primary"
-                                                    class="mr-1 "
+                                                    class="mr-1"
                                                     src=""
                                                 />
                                                 <div
-                                                    :class=" comment.user_role == 'Contractor' ? 'border-primary ' : '' || comment.user_role == 'EB Staff' ? 'border-warning ' : '' || comment.user_role == 'Client' ? 'border-info' : '' "
+                                                    :class="
+                                                        comment.user_role ==
+                                                        'Contractor'
+                                                            ? 'border-primary '
+                                                            : '' ||
+                                                              comment.user_role ==
+                                                                  'EB Staff'
+                                                            ? 'border-warning '
+                                                            : '' ||
+                                                              comment.user_role ==
+                                                                  'Client'
+                                                            ? 'border-info'
+                                                            : ''
+                                                    "
                                                     class="chat-info col shadow p-1 bg-white rounded border-bottom-0 border-right-0 border-top-0"
-
                                                 >
-                                                    <div class="d-flex align-item-center justify-content-between">
-
-                                                        <h5 class="mb-0 p-0 mr-2 d-inline " >
-                                                            {{ comment.user_name }}
+                                                    <div
+                                                        class="d-flex align-item-center justify-content-between"
+                                                    >
+                                                        <h5
+                                                            class="mb-0 p-0 mr-2 d-inline"
+                                                        >
+                                                            {{
+                                                                comment.user_name
+                                                            }}
                                                         </h5>
                                                         <small class="ml-auto">
-                                                            {{new Date(comment.created_at).toDateString() }}
+                                                            {{
+                                                                new Date(
+                                                                    comment.created_at
+                                                                ).toDateString()
+                                                            }}
                                                         </small>
 
-                                                         <b-badge :variant="comment.user_role == 'Contractor' ? 'primary ' : '' || comment.user_role == 'EB Staff' ? 'warning ' : '' || comment.user_role == 'Client' ? 'info' : ''">
-                                                            {{ comment.user_role }}
+                                                        <b-badge
+                                                            :variant="
+                                                                comment.user_role ==
+                                                                'Contractor'
+                                                                    ? 'primary '
+                                                                    : '' ||
+                                                                      comment.user_role ==
+                                                                          'EB Staff'
+                                                                    ? 'warning '
+                                                                    : '' ||
+                                                                      comment.user_role ==
+                                                                          'Client'
+                                                                    ? 'info'
+                                                                    : ''
+                                                            "
+                                                        >
+                                                            {{
+                                                                comment.user_role
+                                                            }}
                                                         </b-badge>
                                                     </div>
 
-                                                    <p class="card-text h4 mt-1">
+                                                    <p
+                                                        class="card-text h4 mt-1"
+                                                    >
                                                         {{ comment.message }}
                                                     </p>
                                                 </div>
@@ -563,107 +642,15 @@
                     </b-col>
                     <!-- Details Form -->
                     <b-col md="6" class="mb-2">
-                        <h4 class="mb-2">
-                            <feather-icon
-                                icon="ChevronsUpIcon"
-                                size="18"
-                                class="mr-50"
-                            />
-                            Listing Details
-                        </h4>
-                        <b-form-group
-                            label="Name your listing"
-                            label-for="listingname"
-                        >
-                            <b-form-input
-                                id="listingname"
-                                v-model="listing.title"
-                                placeholder="Name"
-                                disabled
-                            />
-                        </b-form-group>
-
-                        <div class="mb-2">
-                            <label for="listingDetails">Description</label>
-                            <b-form-textarea
-                                id="listingDetails"
-                                v-model="listing.description"
-                                placeholder="Listing Details"
-                                rows="3"
-                                disabled
-                            />
-                        </div>
+                        <show-title-description heading="Listing Details" :listing="listing" />
                         <b-row>
                             <b-col lg="6" class="mb-2">
                                 <show-map lat=20.5937 lng=78.9629 />
                             </b-col>
                             <b-col lg="6">
-                                <b-form-group
-                                    label="Address Line 1 *"
-                                    label-for="address-line-1"
-                                >
-                                    <b-form-input
-                                        v-model="listing.address_line1"
-                                        id="address-line-1"
-                                        placeholder="Address Line 1 *"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Address Line 2 *"
-                                    label-for="address-line-2"
-                                >
-                                    <b-form-input
-                                        v-model="listing.address_line2"
-                                        id="address-line-2"
-                                        placeholder="Address Line 2 *"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="Country"
-                                    label-for="country"
-                                >
-                                    <b-form-input
-                                        id="country"
-                                        placeholder="Country"
-                                        v-model="listing.country"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group label="State" label-for="state">
-                                    <b-form-input
-                                        placeholder="State"
-                                        v-model="listing.state"
-                                        id="state"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label="District"
-                                    label-for="district"
-                                >
-                                    <b-form-input
-                                        placeholder="District"
-                                        v-model="listing.district"
-                                        id="district"
-                                        disabled
-                                    />
-                                </b-form-group>
+                                <show-address :listing="listing"/>
                             </b-col>
                         </b-row>
-                        <!-- Save -->
-                        <!-- <b-col class="text-right">
-                        <b-button
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            type="submit"
-                            variant="primary"
-                            @click.prevent="saveListingTrigger"
-                        >
-                            Save Details
-                            <b-spinner small v-if="isLoading" />
-                        </b-button>
-                    </b-col> -->
                     </b-col>
                 </b-row>
             </b-form>
@@ -702,7 +689,9 @@ import { mapActions, mapGetters } from "vuex";
 import { statuses_color } from "@/fieldsdata/index.js";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { can } from "@/auth/authentication.js";
-import ShowMap from '@/components/ShowMap.vue'
+import ShowMap from "@/components/ShowMap.vue";
+import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
+import ShowAddress from '@/components/ShowAddress.vue'
 
 export default {
     data() {
@@ -717,6 +706,10 @@ export default {
             legal_contractor_documents: {},
             finance_client_documents: {},
             finance_contractor_documents: {},
+            legal_client_total_percentage: 0,
+            legal_contractor_total_percentage: 0,
+            finance_client_total_percentage: 0,
+            finance_contractor_total_percentage: 0,
 
             comment: "",
 
@@ -759,6 +752,8 @@ export default {
         BBadge,
         VuePerfectScrollbar,
         ShowMap,
+        ShowTitleDescription,
+        ShowAddress,
     },
     methods: {
         ...mapActions({
@@ -796,15 +791,22 @@ export default {
             this.uploadClientDoc(clientData)
                 .then((response) => {
                     if (response.success) {
-                        console.log(response.data);
+                        console.log(response.user);
 
-                        this.legalDocuments = response.data[0];
+                        this.legalDocuments = response.user[0];
 
-                        this.finance_client_documents = this.legalDocuments.finance_client_documents;
-                        this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
-                        this.legal_client_documents = this.legalDocuments.legal_client_documents;
-                        this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
-
+                        this.finance_client_documents =
+                            this.legalDocuments.finance_client_documents;
+                        this.finance_contractor_documents =
+                            this.legalDocuments.finance_contractor_documents;
+                        this.legal_client_documents =
+                            this.legalDocuments.legal_client_documents;
+                        this.legal_contractor_documents =
+                            this.legalDocuments.legal_contractor_documents;
+                        this.finance_client_total_percentage =
+                            this.legalDocuments.finance_client_total_percentage;
+                        this.legal_client_total_percentage =
+                            this.legalDocuments.legal_client_total_percentage;
 
                         this.$toast({
                             component: ToastificationContent,
@@ -814,7 +816,7 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.noData = false
+                        this.noData = false;
                         // this.$router.push({
                         //     name: "contracts.add",
                         //     params: { listingId: this.listingId },
@@ -870,15 +872,23 @@ export default {
             this.uploadContractorDoc(contractorData)
                 .then((response) => {
                     if (response.success) {
-
                         console.log(response.data);
 
-                        this.legalDocuments = response.data[0];
+                        this.legalDocuments = response.user[0];
 
-                        this.finance_client_documents = this.legalDocuments.finance_client_documents;
-                        this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
-                        this.legal_client_documents = this.legalDocuments.legal_client_documents;
-                        this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
+                        this.finance_client_documents =
+                            this.legalDocuments.finance_client_documents;
+                        this.finance_contractor_documents =
+                            this.legalDocuments.finance_contractor_documents;
+                        this.legal_client_documents =
+                            this.legalDocuments.legal_client_documents;
+                        this.legal_contractor_documents =
+                            this.legalDocuments.legal_contractor_documents;
+
+                        this.finance_contractor_total_percentage =
+                            this.legalDocuments.finance_contractor_total_percentage;
+                        this.legal_contractor_total_percentage =
+                            this.legalDocuments.legal_contractor_total_percentage;
 
                         this.$toast({
                             component: ToastificationContent,
@@ -888,7 +898,7 @@ export default {
                                 variant: "success",
                             },
                         });
-                        this.noData = false
+                        this.noData = false;
                         // this.$router.push({
                         //     name: "contracts.add",
                         //     params: { listingId: this.listingId },
@@ -963,7 +973,7 @@ export default {
         },
 
         refreshComments() {
-            this.loadComments()
+            this.loadComments();
         },
     },
     computed: {
@@ -979,23 +989,31 @@ export default {
         this.loadLegalDocument({ listing_id: this.listingId })
             .then((response) => {
                 if (response.success) {
-
-                    if(response.data.length == 0) {
-                    this.noData = true
-                    console.log("noData");
-
+                    if (response.data[0].length == 0) {
+                        this.noData = true;
                     } else {
+                        this.listing = response.data[0].listing;
+                        // Docs Data
+                        this.finance_client_documents =
+                            response.data[0].finance_client_documents;
+                        this.finance_contractor_documents =
+                            response.data[0].finance_contractor_documents;
+                        this.legal_client_documents =
+                            response.data[0].legal_client_documents;
+                        this.legal_contractor_documents =
+                            response.data[0].legal_contractor_documents;
 
-                        console.log(response);
-                        this.legalDocuments = response.data[0];
-
-                        this.listing = this.legalDocuments.listing;
-                        this.finance_client_documents = this.legalDocuments.finance_client_documents;
-                        this.finance_contractor_documents = this.legalDocuments.finance_contractor_documents;
-                        this.legal_client_documents = this.legalDocuments.legal_client_documents;
-                        this.legal_contractor_documents = this.legalDocuments.legal_contractor_documents;
+                        console.log(response, "response");
+                        // Percentages
+                        this.finance_client_total_percentage =
+                            response.data[0].finance_client_total_percentage;
+                        this.finance_contractor_total_percentage =
+                            response.data[0].finance_contractor_total_percentage;
+                        this.legal_client_total_percentage =
+                            response.data[0].legal_client_total_percentage;
+                        this.legal_contractor_total_percentage =
+                            response.data[0].legal_contractor_total_percentage;
                     }
-
                 } else {
                     console.log("else");
 

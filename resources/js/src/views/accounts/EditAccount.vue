@@ -1,269 +1,407 @@
 <template>
-  <div>
-    <!-- Header -->
-    <b-row class="mb-4">
-      <b-col md="6" sm="12">
-        <b-card-text> <h1>Edit Account</h1> </b-card-text>
-      </b-col>
-      <b-col md="6" sm="12">
-        <div class="text-right">
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            :to="{ name: 'accounts' }"
-          >
-            Update
-          </b-button>
-        </div>
-      </b-col>
-    </b-row>
+    <div>
+        <!-- Header -->
+        <b-row class="mb-2">
+            <b-col md="6" sm="12">
+                <b-card-text>
+                    <h1>Edit Account</h1>
+                </b-card-text>
+            </b-col>
+        </b-row>
 
-    <!-- Cutsom account form -->
-    <b-row>
-      <b-col md="4">
-        <b-card>
-          <!-- media -->
-          <b-media no-body>
-            <b-media-aside>
-              <b-link>
-                <b-img
-                  ref="previewEl"
-                  rounded
-                  :src="account.avatar"
-                  height="80"
-                />
-              </b-link>
-              <!--/ avatar -->
-            </b-media-aside>
-
-            <b-media-body class="mt-75 ml-75">
-              <h3>Account Name</h3>
-              <!-- upload button -->
-              <b-button
-                v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                variant="primary"
-                size="sm"
-                class="mb-75 mr-75"
-                @click="$refs.refInputEl.$el.click()"
-              >
-                Upload
-              </b-button>
-              <b-form-file
-                ref="refInputEl"
-                v-model="profileFile"
-                accept=".jpg, .png, .gif"
-                :hidden="true"
-                plain
-                @input="inputImageRenderer"
-              />
-              <!--/ upload button -->
-
-              <b-card-text
-                >Allowed JPG, GIF or PNG. Max size of 800kB</b-card-text
-              >
-            </b-media-body>
-          </b-media>
-          <!--/ media -->
-        </b-card>
-      </b-col>
-      <b-col md="8">
-        <b-card>
-          <!-- form -->
-          <b-form class="mt-2">
+        <!-- form -->
+        <b-form class="mt-2" enctype="multipart/form-data" @submit.prevent>
             <b-row>
-              <b-col sm="6">
-                <b-form-group label="First Name" label-for="account-name">
-                  <b-form-input
-                    v-model="account.firstName"
-                    name="name"
-                    placeholder="First Name"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="6">
-                <b-form-group label="Last Name" label-for="account-name">
-                  <b-form-input
-                    v-model="account.lastName"
-                    name="name"
-                    placeholder="Last Name"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="6">
-                <b-form-group label="Username" label-for="account-username">
-                  <b-form-input
-                    v-model="account.username"
-                    placeholder="Username"
-                    name="username"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="6">
-                <b-form-group label="E-mail" label-for="account-e-mail">
-                  <b-form-input
-                    v-model="account.email"
-                    name="email"
-                    placeholder="Email"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="6">
-                <b-form-group label="Phone" label-for="account-e-phone">
-                  <b-form-input
-                    v-model="account.phone"
-                    name="phone"
-                    placeholder="Phone"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="6">
-                <b-form-group label="Company" label-for="account-company">
-                  <b-form-input
-                    v-model="account.company"
-                    name="company"
-                    placeholder="Company name"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="4">
-                <b-form-group label="Country" label-for="country">
-                  <b-form-input id="country" placeholder="Country" required />
-                </b-form-group>
-              </b-col>
-              <b-col sm="4">
-                <b-form-group label="State" label-for="state">
-                  <b-form-select
-                    v-model="stateVal"
-                    :options="state"
-                    id="state"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col sm="4">
-                <b-form-group label="District" label-for="district">
-                  <b-form-select
-                    v-model="districtVal"
-                    :options="district"
-                    id="district"
-                  />
-                </b-form-group>
-              </b-col>
+                <b-col md="4">
+                    <b-card>
+                        <!-- media -->
+                        <b-media no-body>
+                            <b-media-aside>
+                                <b-link>
+                                    <b-avatar
+                                    size="80"
+                                    variant="light-primary"
+                                    badge
+                                    :text="userAvatarText"
+                                    :src="userAvatar"
+                                    class="badge-minimal"
+                                    badge-variant="success"
+                                    accept="image/*"
+                                />
+                                </b-link>
+                                <!--/ avatar -->
+                            </b-media-aside>
 
-              <!-- alert -->
-              <b-col cols="12" class="mt-75">
-                <b-alert show variant="warning" class="mb-50">
-                  <h4 class="alert-heading">
-                    Your email is not confirmed. Please check your inbox.
-                  </h4>
-                  <div class="alert-body">
-                    <b-link class="alert-link"> Resend confirmation </b-link>
-                  </div>
-                </b-alert>
-              </b-col>
-              <!--/ alert -->
+                            <b-media-body class="mt-75 ml-75">
+                                <div class="mb-2">
+                                    <h3>{{ user.first_name }} {{ user.last_name }} </h3>
+                                    <span class="user-status">{{ userRole.role }}</span>
+                                </div>
+                                <!-- upload button -->
+                                <b-button
+                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                    variant="primary"
+                                    size="sm"
+                                    class="mb-75 mr-75"
+                                    @click="$refs.refInputEl.$el.click()"
+                                >
+                                    Upload
+                                </b-button>
+                                <b-form-file
+                                    ref="refInputEl"
+                                    v-model="imageFileUploader"
+                                    @change="onFileUpload"
+                                    accept=".jpg, .png, .gif"
+                                    :hidden="true"
+                                    plain
+                                />
+                                <!--/ upload button -->
 
-              <b-col cols="12">
-                <b-button
-                  v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                  variant="primary"
-                  class="mt-2 mr-1"
-                >
-                  Save changes
-                </b-button>
-              </b-col>
+                                <b-card-text
+                                    >Allowed JPG, GIF or PNG.</b-card-text
+                                >
+                            </b-media-body>
+                        </b-media>
+                        <!--/ media -->
+                    </b-card>
+                </b-col>
+                <b-col md="8">
+                    <b-card>
+                        <b-row>
+                            <b-col sm="4">
+                                <b-form-group
+                                    label="First Name"
+                                    label-for="account-name"
+                                >
+                                    <b-form-input
+                                        v-model="user.first_name"
+                                        name="firstname"
+                                        placeholder="First Name"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="4">
+                                <b-form-group
+                                    label="Username"
+                                    label-for="user-name"
+                                >
+                                    <b-form-input
+                                        v-model="user.user_name"
+                                        name="username"
+                                        placeholder="Username"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="4">
+                                <b-form-group
+                                    label="Last Name"
+                                    label-for="account-name"
+                                >
+                                    <b-form-input
+                                        v-model="user.last_name"
+                                        name="lastname"
+                                        placeholder="Last Name"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="6">
+                                <b-form-group
+                                    label="E-mail"
+                                    label-for="account-e-mail"
+                                >
+                                    <b-form-input
+                                        v-model="user.email"
+                                        name="email"
+                                        placeholder="Email"
+                                        required
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="6">
+                                <b-form-group
+                                    label="Contact"
+                                    label-for="contact"
+                                >
+                                    <b-form-input
+                                        v-model="user.contact"
+                                        name="contact"
+                                        placeholder="Contact"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="6">
+                                <b-form-group
+                                    label="Date of Birth"
+                                    label-for="dateofbirth"
+                                >
+                                    <b-form-datepicker
+                                            placeholder="Date of Birth"
+                                            id="target_completion_dateto"
+                                            v-model="user.date_of_birth"
+                                            name="dateofbirth"
+                                            class="mb-1 p-0"
+                                        />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="6">
+                                <b-form-group
+                                    label="Address"
+                                    label-for="address"
+                                >
+                                    <b-form-input
+                                        v-model="user.address"
+                                        name="address"
+                                        placeholder="Address"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="4">
+                                <b-form-group
+                                    label="Country"
+                                    label-for="country"
+                                >
+                                    <b-form-input
+                                        id="country"
+                                        v-model="user.country"
+                                        placeholder="Country"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="4">
+                                <b-form-group label="State" label-for="state">
+                                    <b-form-input
+                                        id="state"
+                                        v-model="user.state"
+                                        placeholder="State"
+                                    />
+                                </b-form-group>
+                            </b-col>
+                            <b-col sm="4">
+                                <b-form-group label="City" label-for="city">
+                                    <b-form-input
+                                        id="city"
+                                        v-model="user.city"
+                                        placeholder="City"
+                                        required
+                                    />
+                                </b-form-group>
+                            </b-col>
+
+                            <!-- alert -->
+                            <!-- <b-col cols="12" class="mt-75">
+                                <b-alert show variant="warning" class="mb-50">
+                                    <h4 class="alert-heading">
+                                        Your email is not confirmed. Please
+                                        check your inbox.
+                                    </h4>
+                                    <div class="alert-body">
+                                        <b-link class="alert-link">
+                                            Resend confirmation
+                                        </b-link>
+                                    </div>
+                                </b-alert>
+                            </b-col> -->
+                            <!--/ alert -->
+
+                            <b-col cols="12">
+                                <b-button
+                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                    variant="primary"
+                                    class="mt-2 mr-1"
+                                     type="submit"
+                                     @click="updateProfileTrigger"
+                                >
+                                    Update
+                                    <b-spinner small v-if="isLoading" />
+                                </b-button>
+                            </b-col>
+                        </b-row>
+                    </b-card>
+                </b-col>
             </b-row>
-          </b-form>
-        </b-card>
-      </b-col>
-    </b-row>
-  </div>
+        </b-form>
+    </div>
 </template>
 
 <script>
 import {
-  BCard,
-  BRow,
-  BCol,
-  BButton,
-  BCardText,
-  BLink,
-  BFormGroup,
-  BFormInput,
-  BFormCheckbox,
-  BFormDatepicker,
-  BForm,
-  BFormSelect,
-  BImg,
-  BFormFile,
-  BFormTextarea,
-  BEmbed,
-  BAlert,
-  BMedia,
-  BMediaAside,
-  BMediaBody,
-} from "bootstrap-vue";
-import Ripple from "vue-ripple-directive";
-import { useInputImageRenderer } from "@core/comp-functions/forms/form-utils";
-import { ref } from "@vue/composition-api";
-
-export default {
-  components: {
-    BRow,
-    BCol,
-    BCard,
+    BFormFile,
     BButton,
-    BCardText,
-    BLink,
+    BForm,
     BFormGroup,
     BFormInput,
-    BFormCheckbox,
-    BFormDatepicker,
-    BForm,
-    BFormSelect,
-    BImg,
-    BFormFile,
-    BFormTextarea,
-    BEmbed,
+    BRow,
+    BCol,
     BAlert,
+    BCard,
+    BCardText,
     BMedia,
     BMediaAside,
     BMediaBody,
-  },
-  data() {
-    return {
-      account: {
-        avatar: require("@/assets/images/portrait/small/avatar-s-11.jpg"),
-        username: "johndoe",
-        fullName: "John Doe",
-        email: "granger007@hogward.com",
-        location: "Crystal Technologies",
-        phone: "321321321"
-      },
-      profileFile: null,
-    };
-  },
-  methods: {
-    resetForm() {
-      this.account = JSON.parse(JSON.stringify(this.generalData));
+    BLink,
+    BImg,
+    BFormSelect,
+    BSpinner,
+    BAvatar,
+    BFormDatepicker,
+} from "bootstrap-vue";
+import Ripple from "vue-ripple-directive";
+import { mapActions, mapGetters } from "vuex";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+
+export default {
+    components: {
+        BButton,
+        BForm,
+        BImg,
+        BFormFile,
+        BFormGroup,
+        BFormInput,
+        BRow,
+        BCol,
+        BAlert,
+        BCard,
+        BCardText,
+        BMedia,
+        BMediaAside,
+        BMediaBody,
+        BLink,
+        BFormSelect,
+        BSpinner,
+        BAvatar,
+        BFormDatepicker,
     },
-  },
-  setup() {
-    const refInputEl = ref(null);
-    const previewEl = ref(null);
+    directives: {
+        Ripple,
+    },
+    data() {
+        return {
+            accountId: '',
+            user: {
+                avatar: '',
+            },
+            userRole: {},
+            newAvatar: null,
+            imageFileUploader: null,
+            imageShowWhileUpload: null,
+        };
+    },
+    computed: {
+        ...mapGetters({ isLoading: "account/getIsLoading" }),
 
-    const { inputImageRenderer } = useInputImageRenderer(refInputEl, previewEl);
+        userAvatar() { return this.user.avatar; },
 
-    return {
-      refInputEl,
-      previewEl,
-      inputImageRenderer,
-    };
-  },
-  directives: {
-    Ripple,
-  },
+        userAvatarText() {
+          let f = this.user.first_name && this.user.first_name.substring(0, 1);
+          let l = this.user.last_name && this.user.last_name.substring(0, 1);
+          return f +""+ l
+        }
+    },
+    mounted() {
+
+        this.accountId = this.$route.params.accountId;
+
+        this.loadAccount({ id: this.accountId })
+            .then((response) => {
+                if (response.success) {
+                    this.listing = response.data[0];
+                    this.imagesShowWhileUpload = response.data[0].images
+                } else {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
+
+        const getUser = JSON.parse(localStorage.getItem("userData"));
+        this.user = getUser;
+
+        const userRole = getUser.user_role;
+        this.userRole = userRole
+    },
+    methods: {
+        // resetForm() {
+        //   this.user = JSON.parse(JSON.stringify(this.generalData));
+        // },
+        ...mapActions({
+            updateAccont: "account/updateAccont",
+            loadAccount: "account/loadAccount"
+        }),
+
+        updateProfileTrigger() {
+
+            var accountData = new FormData();
+            accountData.append('first_name', this.user.first_name);
+            accountData.append('user_name', this.user.user_name);
+            accountData.append('last_name', this.user.last_name);
+            accountData.append('email', this.user.email);
+            accountData.append('contact', this.user.contact);
+            accountData.append('address', this.user.address);
+            accountData.append('date_of_birth', this.user.date_of_birth);
+            accountData.append('country', this.user.country);
+            accountData.append('state', this.user.state);
+            accountData.append('city', this.user.city);
+            accountData.append('avatar', this.newAvatar);
+
+            this.updateAccont(accountData)
+                .then((response) => {
+                    if( response.success ) {
+
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: { title: response.message, icon: "EditIcon", variant: "success" },
+                        });
+                    } else {
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: { title: response.message, icon: "EditIcon", variant: "danger" },
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err, "e");
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error while updating!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        },
+        onFileUpload(e) {
+            let reader = new FileReader();
+            reader.readAsDataURL( e.target.files[0] );
+            reader.onload = (e) => {
+                this.imageShowWhileUpload = e.target.result;
+            };
+
+            this.user.avatar = URL.createObjectURL(e.target.files[0]);
+            this.newAvatar = e.target.files[0];
+        },
+        clearFiles() {
+            this.imageShowWhileUpload = null;
+        },
+        imageUrlAlt() {
+            this.user.avatar = require("@/assets/images/portrait/small/default.jpg");
+        },
+    },
 };
 </script>
-
-<style>
-</style>

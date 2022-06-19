@@ -23,7 +23,7 @@
                     </b-button>
 
                     <b-button
-                        v-if=" ( listing.status === 'publish' && can('create', 'proposal') ) || (listing.status === 'publish' && can('create', 'all-proposal') )"
+                        v-if=" ( listing.status === 'publish' && can('create', 'proposal') ) || ( can('create', 'all-proposal') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'proposals.add', params: { listingId: id } }"

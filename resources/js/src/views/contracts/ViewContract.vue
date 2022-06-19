@@ -4,9 +4,9 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Contract updates on {{ listing.title }}</h1>
+                    <h1>Contract of {{ listing.title }}</h1>
 
-                    <b-badge :variant="statuses_color[1][listing.status]">
+                    <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
                     </b-badge>
                 </b-card-text>
@@ -17,14 +17,16 @@
                         v-if="can('create', 'all-contract')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="success"
-
                     >
                         Start Contract
                     </b-button>
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        :to="{ name: 'contracts.add', params: { listingID: id } }"
+                        :to="{
+                            name: 'contracts.add',
+                            params: { listingID: id },
+                        }"
                     >
                         Upload Docs
                     </b-button>
@@ -40,77 +42,152 @@
         </b-row>
 
         <!-- Summary -->
-<b-row>
-            <b-col md="4" >
-                <b-card class="bg-primary bg-lighten-5">
-                    <b-row>
-                        <b-col cols="6">
-                            <b-card-title class="mb-1"> Clients Expectation </b-card-title>
-                            <div class="font-small-2">This Month</div>
-                            <h5 class="mb-1">$4055.56</h5>
-                            <b-card-text class="text-muted font-small-2">
-                                <span class="font-weight-bolder">68.2%</span
-                                ><span> more earnings than last month.</span>
-                            </b-card-text>
-                        </b-col>
-                        <b-col cols="6">
-                            <b-card-title class="mb-1"> Earnings </b-card-title>
-                            <div class="font-small-2">This Month</div>
-                            <h5 class="mb-1">$4055.56</h5>
-                            <b-card-text class="text-muted font-small-2">
-                                <span class="font-weight-bolder">68.2%</span
-                                ><span> more earnings than last month.</span>
-                            </b-card-text>
-                        </b-col>
-                    </b-row>
+        <b-row class="h-100">
+            <b-col md="4">
+                <b-card class="bg-lighten-5 border-primary">
+                    <div class="mb-1">
+                        <b-badge pill variant="primary" class="text-center">
+                            <feather-icon
+                                icon="UserIcon"
+                                size="24"
+                                class="text-center"
+                            />
+                        </b-badge>
+                        <b-card-title class="d-inline ml-1">
+                            Client's Expectation
+                        </b-card-title>
+                    </div>
+                    <div
+                        class="d-flex align-items-center justify-content-between"
+                    >
+                        <div class="font-small-5 text-uppercase">Budget</div>
+                        <div class="font-large-1">${{ listing.min_budget }} - ${{ listing.max_budget }}</div>
+                    </div>
+                    <div
+                        class="d-flex align-items-center justify-content-between"
+                    >
+                        <div class="font-small-5 text-uppercase">
+                            Date
+                        </div>
+                        <div class="font-large-1">{{ listing.target_completion_datefrom }} - {{ listing.target_completion_dateto }}</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <feather-icon
+                            icon="CalendarIcon"
+                            size="24"
+                            variant="primary"
+                            class="text-center text-primary mr-1"
+                        />
+                        <div class="font-small-4 mr-1 text-danger">{{ new Date(listing.created_at).toDateString() }}</div>
+                        <div class="font-small-5 text-uppercase mr-1">
+                            Listing Created on
+                        </div>
+                    </div>
                 </b-card>
             </b-col>
             <b-col md="4">
-                <b-card class="bg-danger bg-lighten-5">
-                    <b-row>
-                        <b-col cols="6">
-                            <b-card-title class="mb-1"> Contractor Estimates </b-card-title>
-                            <div class="font-small-2">This Month</div>
-                            <h5 class="mb-1">$4055.56</h5>
-                            <b-card-text class="text-muted font-small-2">
-                                <span class="font-weight-bolder">68.2%</span
-                                ><span> more earnings than last month.</span>
-                            </b-card-text>
-                        </b-col>
-                        <b-col cols="6">
-                            <b-card-title class="mb-1"> Contract Status </b-card-title>
-                            <div class="font-small-2">This Month</div>
-                            <h5 class="mb-1">$4055.56</h5>
-                            <b-card-text class="text-muted font-small-2">
-                                <span class="font-weight-bolder">68.2%</span
-                                ><span> more earnings than last month.</span>
-                            </b-card-text>
-                        </b-col>
-                    </b-row>
+                <b-card class="bg-lighten-5 border-warning">
+                    <div class="mb-1">
+                        <b-badge pill variant="warning" class="text-center">
+                            <feather-icon
+                                icon="ShoppingBagIcon"
+                                size="24"
+                                class="text-center"
+                            />
+                        </b-badge>
+                        <b-card-title class="d-inline ml-1">
+                            Contractor's Estimate
+                        </b-card-title>
+                    </div>
+                    <div
+                        class="d-flex align-items-center justify-content-between"
+                    >
+                        <div class="font-small-5 text-uppercase">Budget</div>
+                        <div class="font-large-1">${{ proposal.min_budget }} - ${{ proposal.max_budget }}</div>
+                    </div>
+                    <div
+                        class="d-flex align-items-center justify-content-between"
+                    >
+                        <div class="font-small-5 text-uppercase">
+                            Date
+                        </div>
+                        <div class="font-large-1">{{ proposal.target_startdate }} - {{ proposal.target_enddate }}</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <feather-icon
+                            icon="CalendarIcon"
+                            size="24"
+                            variant="warning"
+                            class="text-center text-warning mr-1"
+                        />
+                        <div class="font-small-4 mr-1 text-danger">{{ new Date(proposal.created_at).toDateString() }}</div>
+                        <div class="font-small-5 text-uppercase mr-1">
+                            Proposal Created on
+                        </div>
+                    </div>
                 </b-card>
             </b-col>
             <b-col md="4">
-                <b-card class="bg-success bg-lighten-5">
-                    <b-row>
-                        <b-col cols="6">
-                            <b-card-title class="mb-1"> Contract Status </b-card-title>
-                            <div class="font-small-2">This Month</div>
-                            <h5 class="mb-1">$4055.56</h5>
-                            <b-card-text class="text-muted font-small-2">
-                                <span class="font-weight-bolder">68.2%</span
-                                ><span> more earnings than last month.</span>
-                            </b-card-text>
-                        </b-col>
-                        <b-col cols="6">
-                            <b-card-title class="mb-1"> Earnings </b-card-title>
-                            <div class="font-small-2">This Month</div>
-                            <h5 class="mb-1">$4055.56</h5>
-                            <b-card-text class="text-muted font-small-2">
-                                <span class="font-weight-bolder">68.2%</span
-                                ><span> more earnings than last month.</span>
-                            </b-card-text>
-                        </b-col>
-                    </b-row>
+                <b-card class="bg-lighten-5 border-success">
+                    <div class="mb-1">
+                        <b-badge pill variant="success" class="text-center">
+                            <feather-icon
+                                icon="FileTextIcon"
+                                size="24"
+                                class="text-center"
+                            />
+                        </b-badge>
+                        <b-card-title class="d-inline ml-1">
+                            Contract Status
+                        </b-card-title>
+                    </div>
+                    <div
+                        class="d-flex align-items-center justify-content-between"
+                    >
+                        <div class="font-small-5 text-uppercase">Legal</div>
+                        <div class="font-large-1">{{ legal_client_total_percentage }}%</div>
+                        <div class="d-flex align-items-center">
+                            <feather-icon
+                                icon="CalendarIcon"
+                                size="24"
+                                variant="success"
+                                class="text-center text-success mr-1"
+                            />
+                            <div class="font-small-4 mr-1 text-danger">{{ new Date(legal_client_last_update_on).toDateString() }}</div>
+                            <div class="font-small-5 text-uppercase mr-1">
+                                Last updated on
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="d-flex align-items-center justify-content-between"
+                    >
+                        <div class="font-small-5 text-uppercase">Payment</div>
+                        <div class="font-large-1">{{ finance_client_total_percentage }}%</div>
+                        <div class="d-flex align-items-center">
+                            <feather-icon
+                                icon="CalendarIcon"
+                                size="24"
+                                variant="success"
+                                class="text-center text-success mr-1"
+                            />
+                            <div class="font-small-4 mr-1 text-danger">{{ new Date(finance_client_last_update_on).toDateString() }}</div>
+                            <div class="font-small-5 text-uppercase mr-1">
+                                Last update on
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="success"
+                        block
+                        :to="{
+                            name: 'contracts.view',
+                            params: { listingID: id },
+                        }"
+                    >
+                        View Details
+                    </b-button> -->
                 </b-card>
             </b-col>
         </b-row>
@@ -118,675 +195,379 @@
         <!-- Date and amount Form -->
         <b-form @submit.prevent enctype="multipart/form-data">
             <validation-observer ref="validationRules">
-                <b-card>
-                    <b-row>
-                        <b-col md="6">
-                            <h4 class="mb-2 text-primary">
-                                <feather-icon
-                                    icon="ChevronsUpIcon"
-                                    size="18"
-                                    class="mr-50"
-                                />
-                                Target Compilation date Range
-                            </h4>
-
-                            <div class="form-row">
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="From Date"
-                                        rules="required"
-                                    >
-                                        <b-form-datepicker
-                                            placeholder="Select From Date"
-                                            id="target_completion_datefrom"
-                                            class="mb-1 p-0"
-                                            v-model="
-                                                listing.target_completion_datefrom
-                                            "
-                                            name="target_completion_datefrom"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="To Date"
-                                        rules="required"
-                                    >
-                                        <b-form-datepicker
-                                            placeholder="Select To Date"
-                                            id="target_completion_dateto"
-                                            v-model="
-                                                listing.target_completion_dateto
-                                            "
-                                            :min="
-                                                listing.target_completion_datefrom
-                                            "
-                                            name="target_completion_dateto"
-                                            class="mb-1 p-0"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                            </div>
-                        </b-col>
-                        <b-col md="6">
-                            <h4 class="mb-2 text-primary">
-                                <feather-icon
-                                    icon="ChevronsUpIcon"
-                                    size="18"
-                                    class="mr-50"
-                                />
-                                Target Budget - Min and Max
-                            </h4>
-                            <div class="form-row">
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="Minimum budget"
-                                        rules="required"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.min_budget"
-                                            class="mb-1"
-                                            placeholder="Minimum Budget"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                                <div class="col">
-                                    <validation-provider
-                                        #default="{ errors }"
-                                        name="Maximum budget"
-                                        rules="required"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.max_budget"
-                                            placeholder="Maximum Budget"
-                                            class="mb-1"
-                                            :state="
-                                                errors.length > 0 ? false : null
-                                            "
-                                            disabled
-                                        />
-                                        <small class="text-danger">{{
-                                            errors[0]
-                                        }}</small>
-                                    </validation-provider>
-                                </div>
-                            </div>
-
-                            <!-- </b-form> -->
-                        </b-col>
-                    </b-row>
-                </b-card>
 
                 <!-- Images and Detail -->
                 <b-card>
                     <b-row>
                         <!-- Visting detail -->
                         <b-col md="6" class="mb-2">
-                        <b-tabs>
-                            <b-tab active>
-                                <template #title>
-                                    <feather-icon icon="HomeIcon" />
-                                    <span>Legal</span>
-                                </template>
-                                <b-row>
-                                    <!-- timeline -->
-                                    <b-col md="12" class="mb-2">
-                                        <h4 class="mb-2">
-                                            <feather-icon
-                                                icon="ChevronsUpIcon"
-                                                size="18"
-                                                class="mr-50"
-                                            />
-                                            Legal Updates
-                                        </h4>
-
-                                        <app-timeline>
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 4 - 40%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >01.03.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="40%"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
+                            <b-tabs>
+                                <b-tab active>
+                                    <template #title>
+                                        <feather-icon icon="HomeIcon" />
+                                        <span>Client</span>
+                                    </template>
+                                    <div>
+                                        <b-tabs>
+                                            <b-tab active>
+                                                <template #title>
+                                                    <feather-icon
+                                                        icon="HomeIcon"
                                                     />
-                                                </div>
-                                            </app-timeline-item>
+                                                    <span>Legal</span>
+                                                </template>
+                                                <b-row>
+                                                    <!-- timeline -->
+                                                    <b-col md="12" class="mb-2">
+                                                        <h4 class="mb-2">
+                                                            <feather-icon
+                                                                icon="ChevronsUpIcon"
+                                                                size="18"
+                                                                class="mr-50"
+                                                            />
+                                                            Legal Updates
+                                                        </h4>
 
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 3 - 30%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >01.04.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="30"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
+                                                        <app-timeline>
+                                                            <app-timeline-item
+                                                                variant="secondary"
+                                                                v-for="(
+                                                                    docDetails,
+                                                                    index
+                                                                ) in legal_client_documents"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                >
+                                                                    <h6>
+                                                                        {{
+                                                                            docDetails.notes
+                                                                        }}
+                                                                        -
+                                                                        {{
+                                                                            docDetails.percentage
+                                                                        }}%
+                                                                    </h6>
+                                                                    <b-button
+                                                                        v-ripple.400="
+                                                                            'rgba(113, 102, 240, 0.15)'
+                                                                        "
+                                                                        variant="outline-primary"
+                                                                        @click="
+                                                                            changeDocsData(
+                                                                                docDetails.documents
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            class="align-middle"
+                                                                            >{{
+                                                                                docDetails.created_at
+                                                                            }}</span
+                                                                        >
+                                                                        <feather-icon
+                                                                            icon="CalendarIcon"
+                                                                            class="mr-50"
+                                                                        />
+                                                                    </b-button>
+                                                                </div>
+                                                                <div
+                                                                    class="progress-wrapper"
+                                                                >
+                                                                    <b-progress
+                                                                        :value="
+                                                                            docDetails.percentage
+                                                                        "
+                                                                        max="100"
+                                                                        show-value
+                                                                        height="20px"
+                                                                    />
+                                                                </div>
+                                                            </app-timeline-item>
+                                                        </app-timeline>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-tab>
+                                            <b-tab>
+                                                <template #title>
+                                                    <feather-icon
+                                                        icon="ToolIcon"
                                                     />
-                                                </div>
-                                            </app-timeline-item>
+                                                    <span>Payments</span>
+                                                </template>
 
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 2 - 15%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >25.03.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="15"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
+                                                <b-row>
+                                                    <!-- timeline -->
+                                                    <b-col md="12" class="mb-2">
+                                                        <h4 class="mb-2">
+                                                            <feather-icon
+                                                                icon="ChevronsUpIcon"
+                                                                size="18"
+                                                                class="mr-50"
+                                                            />
+                                                            Payment Updates
+                                                        </h4>
+
+                                                        <app-timeline>
+                                                            <app-timeline-item
+                                                                variant="secondary"
+                                                                v-for="(
+                                                                    docDetails,
+                                                                    index
+                                                                ) in finance_client_documents"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                >
+                                                                    <h6>
+                                                                        {{
+                                                                            docDetails.notes
+                                                                        }}
+                                                                        -
+                                                                        {{
+                                                                            docDetails.percentage
+                                                                        }}%
+                                                                    </h6>
+                                                                    <b-button
+                                                                        v-ripple.400="
+                                                                            'rgba(113, 102, 240, 0.15)'
+                                                                        "
+                                                                        variant="outline-primary"
+                                                                        @click="
+                                                                            changeDocsData(
+                                                                                docDetails.documents
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            class="align-middle"
+                                                                            >{{
+                                                                                docDetails.created_at
+                                                                            }}</span
+                                                                        >
+                                                                        <feather-icon
+                                                                            icon="CalendarIcon"
+                                                                            class="mr-50"
+                                                                        />
+                                                                    </b-button>
+                                                                </div>
+                                                                <div
+                                                                    class="progress-wrapper"
+                                                                >
+                                                                    <b-progress
+                                                                        :value="
+                                                                            docDetails.percentage
+                                                                        "
+                                                                        max="100"
+                                                                        show-value
+                                                                        height="20px"
+                                                                    />
+                                                                </div>
+                                                            </app-timeline-item>
+                                                        </app-timeline>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-tab>
+                                        </b-tabs>
+                                    </div>
+                                </b-tab>
+                                <b-tab>
+                                    <template #title>
+                                        <feather-icon icon="HomeIcon" />
+                                        <span>Contractor</span>
+                                    </template>
+                                    <div>
+                                        <b-tabs>
+                                            <b-tab>
+                                                <template #title>
+                                                    <feather-icon
+                                                        icon="HomeIcon"
                                                     />
-                                                </div>
-                                            </app-timeline-item>
+                                                    <span>Legal</span>
+                                                </template>
+                                                <b-row>
+                                                    <!-- timeline -->
+                                                    <b-col md="12" class="mb-2">
+                                                        <h4 class="mb-2">
+                                                            <feather-icon
+                                                                icon="ChevronsUpIcon"
+                                                                size="18"
+                                                                class="mr-50"
+                                                            />
+                                                            Legal Updates
+                                                        </h4>
 
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 1 - 10%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >01.03.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <p>Some info here</p>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="10"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
+                                                        <app-timeline>
+                                                            <app-timeline-item
+                                                                variant="secondary"
+                                                                v-for="(
+                                                                    docDetails,
+                                                                    index
+                                                                ) in legal_contractor_documents"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                >
+                                                                    <h6>
+                                                                        {{
+                                                                            docDetails.notes
+                                                                        }}
+                                                                        -
+                                                                        {{
+                                                                            docDetails.percentage
+                                                                        }}%
+                                                                    </h6>
+                                                                    <b-button
+                                                                        v-ripple.400="
+                                                                            'rgba(113, 102, 240, 0.15)'
+                                                                        "
+                                                                        variant="outline-primary"
+                                                                        @click="
+                                                                            changeDocsData(
+                                                                                docDetails.documents
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            class="align-middle"
+                                                                            >{{
+                                                                                docDetails.created_at
+                                                                            }}</span
+                                                                        >
+                                                                        <feather-icon
+                                                                            icon="CalendarIcon"
+                                                                            class="mr-50"
+                                                                        />
+                                                                    </b-button>
+                                                                </div>
+                                                                <div
+                                                                    class="progress-wrapper"
+                                                                >
+                                                                    <b-progress
+                                                                        :value="
+                                                                            docDetails.percentage
+                                                                        "
+                                                                        max="100"
+                                                                        show-value
+                                                                        height="20px"
+                                                                    />
+                                                                </div>
+                                                            </app-timeline-item>
+                                                        </app-timeline>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-tab>
+                                            <b-tab>
+                                                <template #title>
+                                                    <feather-icon
+                                                        icon="ToolIcon"
                                                     />
-                                                </div>
-                                            </app-timeline-item>
-                                        </app-timeline>
-                                    </b-col>
-                                </b-row>
-                            </b-tab>
-                            <b-tab>
-                                <template #title>
-                                    <feather-icon icon="ToolIcon" />
-                                    <span>Payments</span>
-                                </template>
+                                                    <span>Payments</span>
+                                                </template>
 
-                                <b-row>
-                                    <!-- timeline -->
-                                    <b-col md="12" class="mb-2">
-                                        <h4 class="mb-2">
-                                            <feather-icon
-                                                icon="ChevronsUpIcon"
-                                                size="18"
-                                                class="mr-50"
-                                            />
-                                            Payment Updates
-                                        </h4>
+                                                <b-row>
+                                                    <!-- timeline -->
+                                                    <b-col md="12" class="mb-2">
+                                                        <h4 class="mb-2">
+                                                            <feather-icon
+                                                                icon="ChevronsUpIcon"
+                                                                size="18"
+                                                                class="mr-50"
+                                                            />
+                                                            Payment Updates
+                                                        </h4>
 
-                                        <app-timeline>
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 4 - 40%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >01.03.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        v-model="progressValue"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
-                                                    />
-                                                </div>
-                                            </app-timeline-item>
-
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 3 - 30%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >01.04.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="30"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
-                                                    />
-                                                </div>
-                                            </app-timeline-item>
-
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 2 - 15%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >25.03.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="15"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
-                                                    />
-                                                </div>
-                                            </app-timeline-item>
-
-                                            <app-timeline-item
-                                                variant="secondary"
-                                            >
-                                                <div
-                                                    class="
-                                                        d-flex
-                                                        align-items-start
-                                                        flex-sm-row
-                                                        flex-column
-                                                        flex-wrap
-                                                        justify-content-between
-                                                        mb-1 mb-sm-50
-                                                    "
-                                                >
-                                                    <h6>Report Week 1 - 10%</h6>
-                                                    <b-button
-                                                        v-ripple.400="
-                                                            'rgba(113, 102, 240, 0.15)'
-                                                        "
-                                                        variant="outline-primary"
-                                                    >
-                                                        <span
-                                                            class="align-middle"
-                                                            >01.03.2022</span
-                                                        >
-                                                        <feather-icon
-                                                            icon="CalendarIcon"
-                                                            class="mr-50"
-                                                        />
-                                                    </b-button>
-                                                </div>
-                                                <p>Some info here</p>
-                                                <div class="progress-wrapper">
-                                                    <b-progress
-                                                        value="10"
-                                                        max="100"
-                                                        show-value
-                                                        height="20px"
-                                                    />
-                                                </div>
-                                            </app-timeline-item>
-                                        </app-timeline>
-                                    </b-col>
-                                </b-row>
-                            </b-tab>
-                        </b-tabs>
-                    </b-col>
+                                                        <app-timeline>
+                                                            <app-timeline-item
+                                                                variant="secondary"
+                                                                v-for="(
+                                                                    docDetails,
+                                                                    index
+                                                                ) in finance_contractor_documents"
+                                                                :key="index"
+                                                            >
+                                                                <div
+                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                >
+                                                                    <h6>
+                                                                        {{
+                                                                            docDetails.notes
+                                                                        }}
+                                                                        -
+                                                                        {{
+                                                                            docDetails.percentage
+                                                                        }}%
+                                                                    </h6>
+                                                                    <b-button
+                                                                        v-ripple.400="
+                                                                            'rgba(113, 102, 240, 0.15)'
+                                                                        "
+                                                                        variant="outline-primary"
+                                                                        @click="
+                                                                            changeDocsData(
+                                                                                docDetails.documents
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            class="align-middle"
+                                                                            >{{
+                                                                                docDetails.created_at
+                                                                            }}</span
+                                                                        >
+                                                                        <feather-icon
+                                                                            icon="CalendarIcon"
+                                                                            class="mr-50"
+                                                                        />
+                                                                    </b-button>
+                                                                </div>
+                                                                <div
+                                                                    class="progress-wrapper"
+                                                                >
+                                                                    <b-progress
+                                                                        :value="
+                                                                            docDetails.percentage
+                                                                        "
+                                                                        max="100"
+                                                                        show-value
+                                                                        height="20px"
+                                                                    />
+                                                                </div>
+                                                            </app-timeline-item>
+                                                        </app-timeline>
+                                                    </b-col>
+                                                </b-row>
+                                            </b-tab>
+                                        </b-tabs>
+                                    </div>
+                                </b-tab>
+                            </b-tabs>
+                        </b-col>
                         <!-- Details Form -->
                         <b-col md="6" class="mb-2">
-                            <h4 class="mb-2">
-                                <feather-icon
-                                    icon="ChevronsUpIcon"
-                                    size="18"
-                                    class="mr-50"
-                                />
-                                Listing Details
-                            </h4>
-                            <validation-provider
-                                #default="{ errors }"
-                                name="Name"
-                                rules="required"
-                            >
-                                <b-form-group
-                                    label="Name your listing"
-                                    label-for="listingname"
-                                >
-                                    <b-form-input
-                                        id="listingname"
-                                        v-model="listing.title"
-                                        placeholder="Name"
-                                        disabled
-                                    />
-                                </b-form-group>
-                                <small class="text-danger">{{
-                                    errors[0]
-                                }}</small>
-                            </validation-provider>
-
-                            <div class="mb-2">
-                                <label for="listingDetails">Details</label>
-                                <b-form-textarea
-                                    id="listingDetails"
-                                    v-model="listing.description"
-                                    placeholder="Listing Details"
-                                    rows="3"
-                                    disabled
-                                />
-                            </div>
+                            <show-title-description heading="Listing Details" :listing="listing" />
 
                             <!-- images -->
-                            <div class="d-flex flex-wrap mb-2">
-                            <b-img
-                                v-for="(image, idx) in listing.images"
-                                :key="idx"
-                                fluid
-                                thumbnail
-                                class="w-25"
-                                :src="image"
-                                v-b-modal.modal-listing-images
-                            />
-                            <div v-if="!listing.images">No images found</div>
-                        </div>
-                        <!-- modal -->
-                            <b-modal
-                            id="modal-listing-images"
-                            ok-only
-                            centered
-                            size="lg"
-                            >
-                            <swiper
-                                class="swiper-navigations"
-                                :options="swiperOptions"
-                                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-                            >
-                                <swiper-slide
-                                v-for="(image, index) in listing.images"
-                                :key="index"
-                                >
-                                <b-img
-                                    :src="image"
-                                    fluid
-                                />
-                                </swiper-slide>
-
-                                <!-- Add Arrows -->
-                                <div
-                                slot="button-next"
-                                class="swiper-button-next"
-                                />
-                                <div
-                                slot="button-prev"
-                                class="swiper-button-prev"
-                                />
-                            </swiper>
-                            </b-modal>
+                            <div v-if="!isShowingDocuments">
+                                <show-images-slider :listing="listing" />
+                            </div>
+                            <!-- Documents -->
+                            <div v-if="isShowingDocuments">
+                                <show-documents :documents="showingCurrentDocs" />
+                            </div>
 
                             <b-row>
                                 <b-col lg="6" class="mb-2">
                                     <show-map lat=20.5937 lng=78.9629 />
                                 </b-col>
                                 <b-col lg="6">
-                                    <b-form-group
-                                        label="Address Line 1"
-                                        label-for="address-line-1"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.address_line1"
-                                            id="address-line-1"
-                                            placeholder="Address Line 1"
-                                            required
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="Address Line 2"
-                                        label-for="address-line-2"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.address_line2"
-                                            id="address-line-2"
-                                            placeholder="Address Line 2"
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="Country"
-                                        label-for="country"
-                                    >
-                                        <b-form-input
-                                            id="country"
-                                            placeholder="Country"
-                                            required
-                                            v-model="listing.country"
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="State"
-                                        label-for="state"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.state"
-                                            placeholder="State"
-                                            id="state"
-                                            disabled
-                                        />
-                                    </b-form-group>
-                                    <b-form-group
-                                        label="District"
-                                        label-for="district"
-                                    >
-                                        <b-form-input
-                                            v-model="listing.district"
-                                            placeholder="District"
-                                            id="district"
-                                            disabled
-                                        />
-                                    </b-form-group>
+                                    <show-address :listing="listing"/>
                                 </b-col>
                             </b-row>
-                            <!-- Update -->
-                            <!-- <b-col class="text-right">
-                                <b-button
-                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                                    type="submit"
-                                    variant="primary"
-                                    @click.prevent="updateListingTrigger"
-                                >
-                                    Update Details
-                                    <b-spinner small v-if="isLoading" />
-                                </b-button>
-                            </b-col> -->
+
                         </b-col>
                     </b-row>
                 </b-card>
@@ -821,6 +602,7 @@ import {
     BProgress,
     BTabs,
     BTab,
+    BAvatar,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import AppTimeline from "@core/components/app-timeline/AppTimeline.vue";
@@ -829,10 +611,14 @@ import { mapActions, mapGetters } from "vuex";
 import { required } from "@validations";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { statuses_color } from "@/fieldsdata/index.js";
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { Swiper, SwiperSlide } from "vue-awesome-swiper";
+import "swiper/css/swiper.css";
 import { can } from "@/auth/authentication.js";
-import ShowMap from '@/components/ShowMap.vue'
+import ShowMap from "@/components/ShowMap.vue";
+import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
+import ShowAddress from '@/components/ShowAddress.vue'
+import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
+import ShowDocuments from '@/components/ShowDocuments.vue'
 
 export default {
     components: {
@@ -865,37 +651,61 @@ export default {
         SwiperSlide,
         BTabs,
         BTab,
+        BAvatar,
 
         ShowMap,
+        ShowTitleDescription,
+        ShowAddress,
+        ShowImagesSlider,
+        ShowDocuments,
     },
     data() {
         return {
             progressValue: "40%",
 
+            contractDetails: {},
+            legal_client_documents: {},
+            legal_contractor_documents: {},
+            finance_client_documents: {},
+            finance_contractor_documents: {},
+            legal_client_total_percentage: 0,
+            legal_contractor_total_percentage: 0,
+            finance_client_total_percentage: 0,
+            finance_contractor_total_percentage: 0,
+
+            finance_client_last_update_on: '',
+            legal_client_last_update_on: '',
+
+            isShowingDocuments: false,
+            showingCurrentDocs: {},
+
             swiperOptions: {
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
                 },
             },
             // listing
-            imagesShowWhileUpload: [],
             id: "",
             listing: {},
-            listingVisit: {},
+            proposal: {},
+            contract: {},
+            contractor: {},
             //   Validation
             required,
             activeVisitData: false,
             statuses_color,
 
-            can
+            can,
         };
     },
     methods: {
-        ...mapActions({ loadLegalDocument: "contract/loadLegalDocument" }),
+        ...mapActions({ loadContractDetails: "contract/loadContractDetails" }),
 
-
-
+        changeDocsData(documents) {
+            this.isShowingDocuments = true;
+            this.showingCurrentDocs = documents;
+        },
     },
     computed: {
         ...mapGetters({
@@ -903,15 +713,37 @@ export default {
         }),
     },
     mounted() {
-
         this.id = this.$route.params.listingId;
 
-        this.loadLegalDocument({ listing_id: this.id })
+        this.loadContractDetails({ listing_id: this.id })
             .then((response) => {
                 if (response.success) {
-                    this.listing = response.user[0].listing;
-                    this.listingVisit = response.user;
-                    console.log(response.user);
+                    this.listing = response.data[0].listing;
+                    this.proposal = response.data[0].proposal;
+                    this.contract = response.data[0].contract;
+                    this.contractor = response.data[0].proposal.contractor;
+
+                    this.finance_client_documents =
+                        response.data[0].finance_client_documents;
+                    this.finance_contractor_documents =
+                        response.data[0].finance_contractor_documents;
+                    this.legal_client_documents =
+                        response.data[0].legal_client_documents;
+                    this.legal_contractor_documents =
+                        response.data[0].legal_contractor_documents;
+                    this.finance_client_total_percentage =
+                        response.data[0].finance_client_total_percentage;
+                    this.legal_client_total_percentage =
+                        response.data[0].legal_client_total_percentage;
+                    this.finance_contractor_total_percentage =
+                        response.data[0].finance_contractor_total_percentage;
+                    this.legal_contractor_total_percentage =
+                        response.data[0].legal_contractor_total_percentage;
+
+                    this.finance_client_last_update_on = response.data[0].finance_client_last_update_on;
+                    this.legal_client_last_update_on = response.data[0].legal_client_last_update_on;
+
+                    console.log(response);
                 } else {
                     this.$toast({
                         component: ToastificationContent,

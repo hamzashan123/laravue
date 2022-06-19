@@ -13,6 +13,9 @@ export const statuses_color = [
         "contract_assigned": "Contract Assigned",
         "contract_started": "Contract Started!",
         "completed": "Completed",
+        // normal status
+        "active": "Active",
+        "inactive": "In-active",
     },
     {
         // Listing
@@ -28,6 +31,9 @@ export const statuses_color = [
         "contract_assigned": "primary",
         "contract_started": "info",
         "completed": "success",
+        // status
+        "active": "success",
+        "inactive": "danger",
     },
 ];
 
