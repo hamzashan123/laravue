@@ -140,21 +140,21 @@
                     <b-col>
                         <div class="text-right">
                             <b-button
-                                v-if="can('create', 'all-proposal')"
+                                v-if="can('create', 'all-proposal') && proposal.status == 'pending'" 
                                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                 variant="danger"
                                 @click="rejectProposalTrigger"
-                                :disabled="proposal.status == 'reject'"
+                               
                             >
                                 Reject
                                 <b-spinner small v-if="isRejectLoading" />
                             </b-button>
                             <b-button
-                                v-if="can('create', 'all-proposal')"
+                                 v-if="can('create', 'all-proposal') && proposal.status == 'pending'" 
                                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                 variant="primary"
                                 @click="approveProposalTrigger"
-                                :disabled="proposal.status == 'approved'"
+                                
                             >
                                 Approve
                                 <b-spinner small v-if="isLoading" />

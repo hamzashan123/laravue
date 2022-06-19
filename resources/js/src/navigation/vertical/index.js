@@ -23,13 +23,14 @@ export default [
         icon: "LockIcon",
     },
     {
-        title: "Proposals",
-        route: "proposals",
-        icon: "ShoppingBagIcon",
+        title : can('create', 'proposal') ? "My Proposals" :  can('read', 'all-proposal') ? "All Proposals": "Proposals",
+            route: "proposals",
+            icon: "ShoppingBagIcon",
     },
-
+  
+   
     {
-        title: "Contracts",
+        title : can('create', 'contract') ? "My Contracts" :  can('read', 'all-contract') ? "All Contracts": "Contracts",
         route: "contracts",
         icon: "FileTextIcon",
     },

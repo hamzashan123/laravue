@@ -114,15 +114,27 @@ class ProposalController extends Controller
         }
 
         $data = Proposals::where('id',$request->id)->first();
+        if ($data != null) {
+            if($data['status'] == 'approved' ){
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Proposal already approved!',
+                    'errors' => $validator->errors()
+                ];
+                return response()->json($response_data);
+            }
+        }
 
         if ($data != null) {
+            
             $data->status = 'approved';
             $data->approved_by = Auth::user()->id;
             $data->rejected_by = null;
             $data->save();
 
             $listing = Listing::where('id',$data->listing_id)->first();
-            if($listing != null) {
+
+            if($listing != null && $listing['status'] != 'pre_contract') {
                 $listing->status = 'waiting_assignment';
                 $listing->save();
             }
@@ -251,7 +263,7 @@ class ProposalController extends Controller
         if(Auth::user()->role_id == 1) {
             //Client
             $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
-                $query->where(['status'=> 'approved']);
+                $query->whereIn('status' , ['approved' , 'pre_contract']);
             })->where('user_id', Auth::user()->id)->whereNotIn('status', ['draft','publish']);
         } else if (Auth::user()->role_id == 2) {
             //Contractor
@@ -298,7 +310,7 @@ class ProposalController extends Controller
         }
         //only client can see approved proposal by staff
         if(Auth::user()->role_id == 1){
-            $data = Proposals::where(['listing_id' => $request->listing_id , 'status' => 'approved'])->paginate(10);
+            $data = Proposals::where(['listing_id' => $request->listing_id])->whereIn('status' , ['approved' , 'pre_contract'])->paginate(10);
         //contractor can see only his proposal
         }else if(Auth::user()->role_id == 2){
             $data = Proposals::where(['listing_id' => $request->listing_id , 'user_id' => Auth::user()->id])->paginate(10);

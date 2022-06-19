@@ -223,7 +223,7 @@
                         </b-button>
 
                         <b-button
-                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') ) "
+                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') || data.item.status === 'approved' && can('create', 'precontract') ) "
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="success"
                             class="mb-1"

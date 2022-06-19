@@ -14,7 +14,7 @@
                     square
                     :text="doc.legal_document_name.split('.').pop()"
                     :src="
-                        'http://127.0.0.1:8000/storage/icons/' +
+                        'http://127.0.0.1:8000/images/icons/' +
                         doc.legal_document_name.split('.').pop() +
                         '.png'
                     "
