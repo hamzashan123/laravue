@@ -6,7 +6,7 @@
                 :key="idx"
                 fluid
                 thumbnail
-                class="w-50"
+                class="w-50 listing-image-fixed-height"
                 :src="image"
                 v-b-modal.modal-listing-images
             />
@@ -24,7 +24,7 @@
                     v-for="(image, index) in listing.images"
                     :key="index"
                 >
-                    <b-img :src="image" fluid />
+                    <b-img :src="image" fluid  class="slider-images-height"/>
                 </swiper-slide>
 
                 <!-- Add Arrows -->

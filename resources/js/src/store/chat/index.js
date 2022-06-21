@@ -78,7 +78,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
                             dispatch('loadChats')
                             commit("setIsLoading", false);
                             return resolve(response.data);

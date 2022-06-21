@@ -1,43 +1,46 @@
 <template>
     <div>
         <!-- -->
-        <b-card>
-            <b-row>
-                <b-col sm="3">
+        <b-row>
+            <b-col sm="3">
+                <b-card>
                     <vue-perfect-scrollbar
                         :settings="perfectScrollbarSettings"
-                        class="scroll-area p-1 mb-0 mt-2"
+                        class="scroll-area mb-0"
                     >
-                        <div
-                            class="position-relative"
-                        >
+                        <div class="position-relative">
                             <div
-                                class="d-flex align-item-center mb-1 mt-1 pb-1 cursor-pointer sidebar-content card"
+                                class="d-flex align-item-center cursor-pointer rounded users-list"
+                                :class="{ active: chatUser.id === userSelected}"
                                 v-for="chatUser in chatUsers"
                                 :key="chatUser.id"
                             >
                                 <div @click="startChat(chatUser.id, chatUser)">
                                     <b-avatar
                                         size="32"
-                                        variant="light-primary"
-                                        class="mr-1"
-                                        src="chatUser.avatar"
+                                        :variant=" chatUser.id === userSelected ? 'light-default' : 'light-primary'"
+                                        class="mr-1 border"
+                                        :src="chatUser.avatar"
                                     />
                                     {{ chatUser.user_name }}
                                 </div>
                             </div>
                         </div>
                     </vue-perfect-scrollbar>
-                </b-col>
-                <b-col sm="9">
-                    <topbar :user="toUser"/>
+                </b-card>
+            </b-col>
+            <b-col sm="9">
+                <b-card>
+                    <topbar :user="toUser" />
 
                     <div class="">
                         <vue-perfect-scrollbar
                             :settings="perfectScrollbarSettings"
-                            class="user-chats scroll-area p-1 mb-0 mt-2"
+                            class="user-chats scroll-area p-1 mb-0"
                         >
-                            <div v-if="!isChartStarted" style="height: 60vh"> Start chart </div>
+                            <div v-if="!isChartStarted" class="start-chat" style="height: 60vh">
+                                Start chat
+                            </div>
                             <div
                                 class="chats position-relative"
                                 v-if="isChartStarted"
@@ -52,7 +55,7 @@
                                         size="32"
                                         variant="light-primary"
                                         class="mr-1"
-                                        src=""
+                                        :src="loggedinUserAvatar"
                                     />
                                     <div
                                         class="chat-info col shadow p-1 bg-white rounded"
@@ -80,7 +83,7 @@
                             </div>
                         </vue-perfect-scrollbar>
 
-                        <div>
+                        <div v-if="isChartStarted">
                             <b-form
                                 @submit.prevent="sendMessageTrigger"
                                 class="d-flex align-item-center p-1"
@@ -106,9 +109,9 @@
                             </b-form>
                         </div>
                     </div>
-                </b-col>
-            </b-row>
-        </b-card>
+                </b-card>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
@@ -149,6 +152,8 @@ export default {
             chatUsers: {},
             isChartStarted: false,
             isChatLoading: false,
+            userSelected: false,
+
 
             message: "",
             toUserId: 0,
@@ -194,10 +199,11 @@ export default {
         }),
 
         startChat(userId, toUser) {
-            this.isChartStarted = true
+            this.isChartStarted = true;
+            this.userSelected = userId
             this.loadChats({ to_user_id: userId });
             this.toUserId = userId;
-            this.toUser = toUser
+            this.toUser = toUser;
             console.log(toUser);
         },
 
@@ -249,9 +255,13 @@ export default {
             chats: "chat/getChats",
         }),
 
+        loggedinUserAvatar() {
+            return JSON.parse(localStorage.getItem('userData')).avatar
+        },
+
         reverseChat() {
-            return this.chats.slice().reverse()
-        }
+            return this.chats.slice().reverse();
+        },
     },
     created() {
         // getting lsiting
@@ -282,7 +292,6 @@ export default {
                     },
                 });
             });
-
     },
     updated() {
         this.$nextTick(() => this.scrollToEnd());
