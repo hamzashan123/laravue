@@ -393,6 +393,73 @@ class ListingController extends Controller
         }
     }
 
-    
+    public function archiveListingImages(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'listing_id'     => 'required',
+            'image_url'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $image_url = explode('/', $request->image_url);
+        $image_ = $image_url[count($image_url) - 1];
+
+        $user = Auth::user();
+
+        if($user->role_id == 1 || $user->role_id == 3) {
+            
+            $listing = Listing::where('id', $request->listing_id);
+
+            if(count($listing->get()) > 0) {
+                if($user->role_id == 1) {
+                    $listing = $listing->where('user_id', $user->id);
+
+                    if(count($listing->get()) <= 0) {
+                        $response_data = [
+                            'success' => false,
+                            'message' => 'Data Not Found',
+                        ];
+                        return response()->json($response_data, $this->successStatus);
+                    }
+                }
+
+                $rows_affect = ListingImages::where(['listing_id' => $request->listing_id, 'image' => $image_, 'status' => 'active'])->update(['status' => 'delete']);
+                
+                if($rows_affect > 0) {
+                    $response_data = [
+                        'success' => true,
+                        'message' => 'Listing Image archive successfully!',                    
+                    ];
+                    return response()->json($response_data, $this->successStatus);
+                } else {
+                    $response_data = [
+                        'success' => false,
+                        'message' => 'Data Not Found',
+                    ];
+                    return response()->json($response_data, $this->successStatus);
+                }
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
 
 }

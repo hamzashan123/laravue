@@ -34,7 +34,7 @@ class Listing extends Model
 
     public function getImages() {
         return $this->hasMany(ListingImages::class,'listing_id','id')
-            ->select('listing_images.*');
+            ->select('listing_images.*')->where('status','active');
     }
 
     public function getUser() {
