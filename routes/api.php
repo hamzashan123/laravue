@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('create-listings', [App\Http\Controllers\API\ListingController::class, 'createListing']);
     Route::post('update-listing', [App\Http\Controllers\API\ListingController::class, 'updateListing']);
     Route::post('delete-listings', [App\Http\Controllers\API\ListingController::class, 'deleteListing']);
+    Route::post('archive-listing-images', [App\Http\Controllers\API\ListingController::class, 'archiveListingImages']);
 
 
     Route::post('my-listings', [App\Http\Controllers\API\ListingController::class, 'myListings']);
