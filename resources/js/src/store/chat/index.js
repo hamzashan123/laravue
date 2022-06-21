@@ -49,10 +49,10 @@ export default {
     actions: {
 
         // getting all chats
-        loadChats({ commit }) {
+        loadChats({ commit }, id) {
             commit("setIsDataLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "get-messages", method: "POST" })
+                axios({ url: "get-messages", data: id, method: "POST" })
                     .then((response) => {
                         commit("setIsDataLoading", false);
                         commit("setChats", response.data.data);

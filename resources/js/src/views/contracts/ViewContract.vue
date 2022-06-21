@@ -128,7 +128,7 @@
                 </b-card>
             </b-col>
             <b-col md="4">
-                <b-card class="bg-lighten-5 border-success">
+                <b-card class="bg-lighten-5 border-success pb-2">
                     <div class="mb-1">
                         <b-badge pill variant="success" class="text-center">
                             <feather-icon
@@ -208,169 +208,146 @@
                                         <span>Client</span>
                                     </template>
                                     <div>
-                                        <b-tabs>
-                                            <b-tab active>
-                                                <template #title>
-                                                    <feather-icon
-                                                        icon="HomeIcon"
-                                                    />
-                                                    <span>Legal</span>
-                                                </template>
-                                                <b-row>
-                                                    <!-- timeline -->
-                                                    <b-col md="12" class="mb-2">
-                                                        <h4 class="mb-2">
-                                                            <feather-icon
-                                                                icon="ChevronsUpIcon"
-                                                                size="18"
-                                                                class="mr-50"
-                                                            />
-                                                            Legal Updates
-                                                        </h4>
+                                        <b-form-group
+                                            label-for="client_options"
+                                        >
+                                            <b-form-radio-group
+                                                v-model="selectedClientTab"
+                                                :options="client_options"
+                                                class="mt-2 mb-2"
+                                                name="client_options"
+                                            >
+                                            </b-form-radio-group>
+                                        </b-form-group>
+                                        <b-row v-if="selectedClientTab == 'legal'">
+                                            <!-- timeline -->
+                                            <b-col md="12" class="mb-2">
 
-                                                        <app-timeline>
-                                                            <app-timeline-item
-                                                                variant="secondary"
-                                                                v-for="(
-                                                                    docDetails,
-                                                                    index
-                                                                ) in legal_client_documents"
-                                                                :key="index"
+                                                <app-timeline>
+                                                    <app-timeline-item
+                                                        variant="secondary"
+                                                        v-for="(
+                                                            docDetails,
+                                                            index
+                                                        ) in legal_client_documents"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                        >
+                                                            <h6>
+                                                                {{
+                                                                    docDetails.notes
+                                                                }}
+                                                                -
+                                                                {{
+                                                                    docDetails.percentage
+                                                                }}%
+                                                            </h6>
+                                                            <b-button
+                                                                v-ripple.400="
+                                                                    'rgba(113, 102, 240, 0.15)'
+                                                                "
+                                                                variant="outline-primary"
+                                                                @click="
+                                                                    changeDocsData(
+                                                                        docDetails.documents
+                                                                    )
+                                                                "
                                                             >
-                                                                <div
-                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                <span
+                                                                    class="align-middle"
+                                                                    >{{
+                                                                        new Date(docDetails.created_at).toDateString()
+                                                                    }}</span
                                                                 >
-                                                                    <h6>
-                                                                        {{
-                                                                            docDetails.notes
-                                                                        }}
-                                                                        -
-                                                                        {{
-                                                                            docDetails.percentage
-                                                                        }}%
-                                                                    </h6>
-                                                                    <b-button
-                                                                        v-ripple.400="
-                                                                            'rgba(113, 102, 240, 0.15)'
-                                                                        "
-                                                                        variant="outline-primary"
-                                                                        @click="
-                                                                            changeDocsData(
-                                                                                docDetails.documents
-                                                                            )
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            class="align-middle"
-                                                                            >{{
-                                                                                new Date(docDetails.created_at).toDateString()
-                                                                            }}</span
-                                                                        >
-                                                                        <feather-icon
-                                                                            icon="CalendarIcon"
-                                                                            class="mr-50"
-                                                                        />
-                                                                    </b-button>
-                                                                </div>
-                                                                <div
-                                                                    class="progress-wrapper"
-                                                                >
-                                                                    <b-progress
-                                                                        :value="
-                                                                            docDetails.percentage
-                                                                        "
-                                                                        max="100"
-                                                                        show-value
-                                                                        height="20px"
-                                                                    />
-                                                                </div>
-                                                            </app-timeline-item>
-                                                        </app-timeline>
-                                                    </b-col>
-                                                </b-row>
-                                            </b-tab>
-                                            <b-tab>
-                                                <template #title>
-                                                    <feather-icon
-                                                        icon="ToolIcon"
-                                                    />
-                                                    <span>Payments</span>
-                                                </template>
-
-                                                <b-row>
-                                                    <!-- timeline -->
-                                                    <b-col md="12" class="mb-2">
-                                                        <h4 class="mb-2">
-                                                            <feather-icon
-                                                                icon="ChevronsUpIcon"
-                                                                size="18"
-                                                                class="mr-50"
+                                                                <feather-icon
+                                                                    icon="CalendarIcon"
+                                                                    class="mr-50"
+                                                                />
+                                                            </b-button>
+                                                        </div>
+                                                        <div
+                                                            class="progress-wrapper"
+                                                        >
+                                                            <b-progress
+                                                                :value="
+                                                                    docDetails.percentage
+                                                                "
+                                                                max="100"
+                                                                show-value
+                                                                height="20px"
                                                             />
-                                                            Payment Updates
-                                                        </h4>
+                                                        </div>
+                                                    </app-timeline-item>
+                                                </app-timeline>
+                                            </b-col>
+                                        </b-row>
 
-                                                        <app-timeline>
-                                                            <app-timeline-item
-                                                                variant="secondary"
-                                                                v-for="(
-                                                                    docDetails,
-                                                                    index
-                                                                ) in finance_client_documents"
-                                                                :key="index"
+                                        <b-row v-if="selectedClientTab == 'payment'">
+                                            <!-- timeline -->
+                                            <b-col md="12" class="mb-2">
+
+                                                <app-timeline>
+                                                    <app-timeline-item
+                                                        variant="secondary"
+                                                        v-for="(
+                                                            docDetails,
+                                                            index
+                                                        ) in finance_client_documents"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                        >
+                                                            <h6>
+                                                                {{
+                                                                    docDetails.notes
+                                                                }}
+                                                                -
+                                                                {{
+                                                                    docDetails.percentage
+                                                                }}%
+                                                            </h6>
+                                                            <b-button
+                                                                v-ripple.400="
+                                                                    'rgba(113, 102, 240, 0.15)'
+                                                                "
+                                                                variant="outline-primary"
+                                                                @click="
+                                                                    changeDocsData(
+                                                                        docDetails.documents
+                                                                    )
+                                                                "
                                                             >
-                                                                <div
-                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                <span
+                                                                    class="align-middle"
+                                                                    >{{
+                                                                        new Date(docDetails.created_at).toDateString()
+                                                                    }}</span
                                                                 >
-                                                                    <h6>
-                                                                        {{
-                                                                            docDetails.notes
-                                                                        }}
-                                                                        -
-                                                                        {{
-                                                                            docDetails.percentage
-                                                                        }}%
-                                                                    </h6>
-                                                                    <b-button
-                                                                        v-ripple.400="
-                                                                            'rgba(113, 102, 240, 0.15)'
-                                                                        "
-                                                                        variant="outline-primary"
-                                                                        @click="
-                                                                            changeDocsData(
-                                                                                docDetails.documents
-                                                                            )
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            class="align-middle"
-                                                                            >{{
-                                                                                new Date(docDetails.created_at).toDateString()
-                                                                            }}</span
-                                                                        >
-                                                                        <feather-icon
-                                                                            icon="CalendarIcon"
-                                                                            class="mr-50"
-                                                                        />
-                                                                    </b-button>
-                                                                </div>
-                                                                <div
-                                                                    class="progress-wrapper"
-                                                                >
-                                                                    <b-progress
-                                                                        :value="
-                                                                            docDetails.percentage
-                                                                        "
-                                                                        max="100"
-                                                                        show-value
-                                                                        height="20px"
-                                                                    />
-                                                                </div>
-                                                            </app-timeline-item>
-                                                        </app-timeline>
-                                                    </b-col>
-                                                </b-row>
-                                            </b-tab>
-                                        </b-tabs>
+                                                                <feather-icon
+                                                                    icon="CalendarIcon"
+                                                                    class="mr-50"
+                                                                />
+                                                            </b-button>
+                                                        </div>
+                                                        <div
+                                                            class="progress-wrapper"
+                                                        >
+                                                            <b-progress
+                                                                :value="
+                                                                    docDetails.percentage
+                                                                "
+                                                                max="100"
+                                                                show-value
+                                                                height="20px"
+                                                            />
+                                                        </div>
+                                                    </app-timeline-item>
+                                                </app-timeline>
+                                            </b-col>
+                                        </b-row>
                                     </div>
                                 </b-tab>
                                 <b-tab>
@@ -379,169 +356,148 @@
                                         <span>Contractor</span>
                                     </template>
                                     <div>
-                                        <b-tabs>
-                                            <b-tab>
-                                                <template #title>
-                                                    <feather-icon
-                                                        icon="HomeIcon"
-                                                    />
-                                                    <span>Legal</span>
-                                                </template>
-                                                <b-row>
-                                                    <!-- timeline -->
-                                                    <b-col md="12" class="mb-2">
-                                                        <h4 class="mb-2">
-                                                            <feather-icon
-                                                                icon="ChevronsUpIcon"
-                                                                size="18"
-                                                                class="mr-50"
-                                                            />
-                                                            Legal Updates
-                                                        </h4>
+                                         <b-form-group
+                                            label-for="contractor_options"
+                                        >
+                                            <b-form-radio-group
+                                                v-model="selectedContractorTab"
+                                                :options="contractor_options"
+                                                class="mt-2 mb-2"
+                                                name="contractor_options"
+                                            >
+                                            </b-form-radio-group>
+                                        </b-form-group>
 
-                                                        <app-timeline>
-                                                            <app-timeline-item
-                                                                variant="secondary"
-                                                                v-for="(
-                                                                    docDetails,
-                                                                    index
-                                                                ) in legal_contractor_documents"
-                                                                :key="index"
+                                        <b-row v-if="selectedContractorTab == 'legal'">
+                                            
+                                            <!-- timeline -->
+                                            <b-col md="12" class="mb-2">
+
+                                                <app-timeline>
+                                                    <app-timeline-item
+                                                        variant="secondary"
+                                                        v-for="(
+                                                            docDetails,
+                                                            index
+                                                        ) in legal_contractor_documents"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                        >
+                                                            <h6>
+                                                                {{
+                                                                    docDetails.notes
+                                                                }}
+                                                                -
+                                                                {{
+                                                                    docDetails.percentage
+                                                                }}%
+                                                            </h6>
+                                                            <b-button
+                                                                v-ripple.400="
+                                                                    'rgba(113, 102, 240, 0.15)'
+                                                                "
+                                                                variant="outline-primary"
+                                                                @click="
+                                                                    changeDocsData(
+                                                                        docDetails.documents
+                                                                    )
+                                                                "
                                                             >
-                                                                <div
-                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                <span
+                                                                    class="align-middle"
+                                                                    >{{
+                                                                        new Date(docDetails.created_at).toDateString()
+                                                                    }}</span
                                                                 >
-                                                                    <h6>
-                                                                        {{
-                                                                            docDetails.notes
-                                                                        }}
-                                                                        -
-                                                                        {{
-                                                                            docDetails.percentage
-                                                                        }}%
-                                                                    </h6>
-                                                                    <b-button
-                                                                        v-ripple.400="
-                                                                            'rgba(113, 102, 240, 0.15)'
-                                                                        "
-                                                                        variant="outline-primary"
-                                                                        @click="
-                                                                            changeDocsData(
-                                                                                docDetails.documents
-                                                                            )
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            class="align-middle"
-                                                                            >{{
-                                                                                new Date(docDetails.created_at).toDateString()
-                                                                            }}</span
-                                                                        >
-                                                                        <feather-icon
-                                                                            icon="CalendarIcon"
-                                                                            class="mr-50"
-                                                                        />
-                                                                    </b-button>
-                                                                </div>
-                                                                <div
-                                                                    class="progress-wrapper"
-                                                                >
-                                                                    <b-progress
-                                                                        :value="
-                                                                            docDetails.percentage
-                                                                        "
-                                                                        max="100"
-                                                                        show-value
-                                                                        height="20px"
-                                                                    />
-                                                                </div>
-                                                            </app-timeline-item>
-                                                        </app-timeline>
-                                                    </b-col>
-                                                </b-row>
-                                            </b-tab>
-                                            <b-tab>
-                                                <template #title>
-                                                    <feather-icon
-                                                        icon="ToolIcon"
-                                                    />
-                                                    <span>Payments</span>
-                                                </template>
-
-                                                <b-row>
-                                                    <!-- timeline -->
-                                                    <b-col md="12" class="mb-2">
-                                                        <h4 class="mb-2">
-                                                            <feather-icon
-                                                                icon="ChevronsUpIcon"
-                                                                size="18"
-                                                                class="mr-50"
+                                                                <feather-icon
+                                                                    icon="CalendarIcon"
+                                                                    class="mr-50"
+                                                                />
+                                                            </b-button>
+                                                        </div>
+                                                        <div
+                                                            class="progress-wrapper"
+                                                        >
+                                                            <b-progress
+                                                                :value="
+                                                                    docDetails.percentage
+                                                                "
+                                                                max="100"
+                                                                show-value
+                                                                height="20px"
                                                             />
-                                                            Payment Updates
-                                                        </h4>
+                                                        </div>
+                                                    </app-timeline-item>
+                                                </app-timeline>
+                                            </b-col>
+                                        </b-row>
 
-                                                        <app-timeline>
-                                                            <app-timeline-item
-                                                                variant="secondary"
-                                                                v-for="(
-                                                                    docDetails,
-                                                                    index
-                                                                ) in finance_contractor_documents"
-                                                                :key="index"
+                                        <b-row v-if="selectedContractorTab == 'payment'">
+                                            <!-- timeline -->
+                                            <b-col md="12" class="mb-2">
+
+                                                <app-timeline>
+                                                    <app-timeline-item
+                                                        variant="secondary"
+                                                        v-for="(
+                                                            docDetails,
+                                                            index
+                                                        ) in finance_contractor_documents"
+                                                        :key="index"
+                                                    >
+                                                        <div
+                                                            class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                        >
+                                                            <h6>
+                                                                {{
+                                                                    docDetails.notes
+                                                                }}
+                                                                -
+                                                                {{
+                                                                    docDetails.percentage
+                                                                }}%
+                                                            </h6>
+                                                            <b-button
+                                                                v-ripple.400="
+                                                                    'rgba(113, 102, 240, 0.15)'
+                                                                "
+                                                                variant="outline-primary"
+                                                                @click="
+                                                                    changeDocsData(
+                                                                        docDetails.documents
+                                                                    )
+                                                                "
                                                             >
-                                                                <div
-                                                                    class="d-flex align-items-start flex-sm-row flex-column flex-wrap justify-content-between mb-1 mb-sm-50"
+                                                                <span
+                                                                    class="align-middle"
+                                                                    >{{
+                                                                        new Date(docDetails.created_at).toDateString()
+                                                                    }}</span
                                                                 >
-                                                                    <h6>
-                                                                        {{
-                                                                            docDetails.notes
-                                                                        }}
-                                                                        -
-                                                                        {{
-                                                                            docDetails.percentage
-                                                                        }}%
-                                                                    </h6>
-                                                                    <b-button
-                                                                        v-ripple.400="
-                                                                            'rgba(113, 102, 240, 0.15)'
-                                                                        "
-                                                                        variant="outline-primary"
-                                                                        @click="
-                                                                            changeDocsData(
-                                                                                docDetails.documents
-                                                                            )
-                                                                        "
-                                                                    >
-                                                                        <span
-                                                                            class="align-middle"
-                                                                            >{{
-                                                                                new Date(docDetails.created_at).toDateString()
-                                                                            }}</span
-                                                                        >
-                                                                        <feather-icon
-                                                                            icon="CalendarIcon"
-                                                                            class="mr-50"
-                                                                        />
-                                                                    </b-button>
-                                                                </div>
-                                                                <div
-                                                                    class="progress-wrapper"
-                                                                >
-                                                                    <b-progress
-                                                                        :value="
-                                                                            docDetails.percentage
-                                                                        "
-                                                                        max="100"
-                                                                        show-value
-                                                                        height="20px"
-                                                                    />
-                                                                </div>
-                                                            </app-timeline-item>
-                                                        </app-timeline>
-                                                    </b-col>
-                                                </b-row>
-                                            </b-tab>
-                                        </b-tabs>
+                                                                <feather-icon
+                                                                    icon="CalendarIcon"
+                                                                    class="mr-50"
+                                                                />
+                                                            </b-button>
+                                                        </div>
+                                                        <div
+                                                            class="progress-wrapper"
+                                                        >
+                                                            <b-progress
+                                                                :value="
+                                                                    docDetails.percentage
+                                                                "
+                                                                max="100"
+                                                                show-value
+                                                                height="20px"
+                                                            />
+                                                        </div>
+                                                    </app-timeline-item>
+                                                </app-timeline>
+                                            </b-col>
+                                        </b-row>
                                     </div>
                                 </b-tab>
                             </b-tabs>
@@ -603,6 +559,7 @@ import {
     BTabs,
     BTab,
     BAvatar,
+    BFormRadioGroup,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import AppTimeline from "@core/components/app-timeline/AppTimeline.vue";
@@ -652,6 +609,7 @@ export default {
         BTabs,
         BTab,
         BAvatar,
+        BFormRadioGroup,
 
         ShowMap,
         ShowTitleDescription,
@@ -661,7 +619,8 @@ export default {
     },
     data() {
         return {
-            progressValue: "40%",
+            selectedContractorTab: 'legal',
+            selectedClientTab: 'legal',
 
             contractDetails: {},
             legal_client_documents: {},
@@ -697,6 +656,15 @@ export default {
             statuses_color,
 
             can,
+
+            client_options: [
+                { text: "Legal", value: "legal" },
+                { text: "Payment", value: "payment" },
+            ],
+            contractor_options: [
+                { text: "Legal", value: "legal" },
+                { text: "Payment", value: "payment" },
+            ],
         };
     },
     methods: {

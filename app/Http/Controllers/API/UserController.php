@@ -138,7 +138,7 @@ class UserController extends Controller
     }
 
     public function updateProfile(Request $request){
-
+        
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
@@ -270,8 +270,9 @@ class UserController extends Controller
 
     }
 
-    public function getUsers() {
-        $users = User::where('status', 'active')->get();
+    public function getUsers(Request $request) {
+
+        $users = User::where('status', 'active')->where('id','!=' , Auth::user()->id)->get();
 
         if(count($users) > 0) {
             $response_data = [

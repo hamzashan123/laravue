@@ -41,7 +41,7 @@
         <!-- LEgal and Payment Status -->
         <b-card v-if="!noData">
             <b-row>
-                <b-col md="6">
+                <b-col md="3">
                     <h4 class="mb-2 text-primary">
                         <feather-icon
                             icon="ChevronsUpIcon"
@@ -52,23 +52,15 @@
                     </h4>
                     <div class="form-row">
                         <div class="col">
-                            <h5 class="mb-2">Status</h5>
-                        </div>
-                        <div class="col">
-                            <b-form-input
-                                :value="legal_client_total_percentage + '%'"
-                                id="target_completion_dateto"
-                                placeholder="Date To"
-                                class="mb-2"
-                                disabled
-                            />
+                            <div class="d-flex align-items-center mb-2">
+                                <h5 class=" mr-2">Status</h5>
+                                <div class="font-large-1">{{ legal_client_total_percentage }}%</div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
                             <h5 class="mb-2">Documents</h5>
-                        </div>
-                        <div class="col">
                             <div
                                 v-for="(
                                     documentsArray, i
@@ -105,7 +97,7 @@
                         </div>
                     </div>
                 </b-col>
-                <b-col md="6">
+                <b-col md="3">
                     <h4 class="mb-2 text-primary">
                         <feather-icon
                             icon="ChevronsUpIcon"
@@ -116,23 +108,15 @@
                     </h4>
                     <div class="form-row">
                         <div class="col">
-                            <h5 class="mb-2">Status</h5>
-                        </div>
-                        <div class="col">
-                            <b-form-input
-                                :value="legal_contractor_total_percentage + '%'"
-                                id="target_completion_dateto"
-                                placeholder="Date To"
-                                class="mb-2"
-                                disabled
-                            />
+                            <div class="d-flex align-items-center mb-2">
+                                <h5 class="mr-2">Status</h5>
+                                <div class="font-large-1">{{ legal_contractor_total_percentage }}%</div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
                             <h5 class="mb-2">Documents</h5>
-                        </div>
-                        <div class="col">
                             <div
                                 v-for="(
                                     documentsArray, i
@@ -169,12 +153,7 @@
                         </div>
                     </div>
                 </b-col>
-            </b-row>
-        </b-card>
-
-        <b-card v-if="!noData">
-            <b-row>
-                <b-col md="6">
+                <b-col md="3">
                     <h4 class="mb-2 text-primary">
                         <feather-icon
                             icon="ChevronsUpIcon"
@@ -185,23 +164,15 @@
                     </h4>
                     <div class="form-row">
                         <div class="col">
-                            <h5 class="mb-2">Status</h5>
-                        </div>
-                        <div class="col">
-                            <b-form-input
-                                :value="finance_client_total_percentage + '%'"
-                                id="target_completion_dateto"
-                                placeholder="Date To"
-                                class="mb-2"
-                                disabled
-                            />
+                            <div class="d-flex align-items-center mb-2">
+                                <h5 class="mr-2">Status</h5>
+                                <div class="font-large-1">{{ finance_client_total_percentage }}%</div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
                             <h5 class="mb-2">Documents</h5>
-                        </div>
-                        <div class="col">
                             <div
                                 v-for="(
                                     documentsArray, i
@@ -238,7 +209,7 @@
                         </div>
                     </div>
                 </b-col>
-                <b-col md="6">
+                <b-col md="3">
                     <h4 class="mb-2 text-primary">
                         <feather-icon
                             icon="ChevronsUpIcon"
@@ -249,25 +220,15 @@
                     </h4>
                     <div class="form-row">
                         <div class="col">
-                            <h5 class="mb-2">Status</h5>
-                        </div>
-                        <div class="col">
-                            <b-form-input
-                                :value="
-                                    finance_contractor_total_percentage + '%'
-                                "
-                                id="target_completion_dateto"
-                                placeholder="Date To"
-                                class="mb-2"
-                                disabled
-                            />
+                            <div class="d-flex align-items-center mb-2">
+                                <h5 class="mr-2">Status</h5>
+                                <div class="font-large-1">{{ finance_contractor_total_percentage }}%</div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
                             <h5 class="mb-2">Documents</h5>
-                        </div>
-                        <div class="col">
                             <div
                                 v-for="(
                                     documentsArray, i
@@ -361,7 +322,7 @@
                                                         client_documents.percentage
                                                     "
                                                     id="Percetange"
-                                                    placeholder="Add number only"
+                                                    placeholder="%"
                                                 />
                                             </b-form-group>
                                         </b-col>
@@ -464,7 +425,7 @@
                                                         contractor_documents.percentage
                                                     "
                                                     id="Percetange"
-                                                    placeholder="Add number only"
+                                                    placeholder="%"
                                                 />
                                             </b-form-group>
                                         </b-col>
@@ -989,6 +950,7 @@ export default {
         this.loadLegalDocument({ listing_id: this.listingId })
             .then((response) => {
                 if (response.success) {
+                    console.log(response);
                     if (response.data[0].length == 0) {
                         this.noData = true;
                     } else {
