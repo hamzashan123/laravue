@@ -49,11 +49,9 @@ class ContractsController extends Controller
             ];
             return response()->json($response_data);
         }
-
         
-        $contractExist = Contracts::where(['listing_id' => $request->listing_id ,'status' => 'pre_contract'])
+        $contractExist = Contracts::where('listing_id', $request->listing_id)->whereIn('status', ['pre_contract','contract_started','contract_completed'])
                 ->exists();
-        
 
 
         if($contractExist == true){
@@ -102,7 +100,7 @@ class ContractsController extends Controller
 
     public function getContracts(Request $request)
     {
-        $contract = Contracts::where('status','pre_contract')->paginate(10);      
+        $contract = Contracts::whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
 
         if (count($contract) > 0) {            
 
@@ -154,5 +152,103 @@ class ContractsController extends Controller
             ];
             return response()->json($response_data, $this->successStatus);
         }        
+    }
+
+    public function contractStarted(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'listing_id'        => 'required',
+            'contractor_id'     => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+        
+        $contractExist = Contracts::where(['listing_id' => $request->listing_id, 'contractor_id' => $request->contractor_id, 'status' => 'pre_contract'])
+                ->exists();
+
+        if($contractExist == true) {            
+
+            Contracts::where(['listing_id' => $request->listing_id, 'contractor_id' => $request->contractor_id, 'status' => 'pre_contract'])->update(['status' => 'contract_started']);
+            Proposals::where(['listing_id' => $request->listing_id, 'user_id' => $request->contractor_id, 'status' => 'pre_contract'])->update(['status' => 'contract_started']);
+            Listing::where(['id' => $request->listing_id, 'status' => 'pre_contract'])->update(['status' => 'contract_started']);
+                        
+            $contract_data = Contracts::where('listing_id', $request->listing_id)->where('contractor_id', $request->contractor_id)->first();
+
+            if($contract_data != null) {
+                $response_data = [
+                    'success' => true,
+                    'message' => 'Contract Started successfully!',
+                    'data' => new ContractResource($contract_data),
+                ];
+                return response()->json($response_data, $this->successStatus);
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function contractCompleted(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'listing_id'        => 'required',
+            'contractor_id'     => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+        
+        $contractExist = Contracts::where(['listing_id' => $request->listing_id, 'contractor_id' => $request->contractor_id, 'status' => 'contract_started'])
+                ->exists();
+
+        if($contractExist == true) {            
+
+            Contracts::where(['listing_id' => $request->listing_id, 'contractor_id' => $request->contractor_id, 'status' => 'contract_started'])->update(['status' => 'contract_completed']);
+            Proposals::where(['listing_id' => $request->listing_id, 'user_id' => $request->contractor_id, 'status' => 'contract_started'])->update(['status' => 'contract_completed']);
+            Listing::where(['id' => $request->listing_id, 'status' => 'contract_started'])->update(['status' => 'contract_completed']);
+                        
+            $contract_data = Contracts::where('listing_id', $request->listing_id)->where('contractor_id', $request->contractor_id)->first();
+
+            if($contract_data != null) {
+                $response_data = [
+                    'success' => true,
+                    'message' => 'Contract Completed successfully!',
+                    'data' => new ContractResource($contract_data),
+                ];
+                return response()->json($response_data, $this->successStatus);
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
     }
 }
