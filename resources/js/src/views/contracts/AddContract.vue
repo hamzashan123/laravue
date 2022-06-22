@@ -18,13 +18,6 @@
                 <div class="text-right">
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="secondary"
-                        :to="{ name: 'contracts' }"
-                    >
-                        Back to Contracts
-                    </b-button>
-                    <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{
                             name: 'contracts.view',
@@ -32,6 +25,13 @@
                         }"
                     >
                         See Details
+                    </b-button>
+                    <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="secondary"
+                        :to="{ name: 'contracts' }"
+                    >
+                        Back
                     </b-button>
                 </div>
             </b-col>
@@ -72,16 +72,12 @@
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
-                                    :key="idx"
+                                    :key="doc.id"
                                 >
                                     <b-avatar
                                         variant="light-dark"
                                         square
-                                        :text="
-                                            doc.legal_document_name
-                                                .split('.')
-                                                .pop()
-                                        "
+                                        :text="docExtension(doc.legal_document_name)"
                                         size="md"
                                     />
                                     <!-- link button -->
@@ -97,7 +93,7 @@
 
                                     <!-- remove button -->
                                     <b-button
-                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
                                         class="btn-icon rounded-circle ml-1"
@@ -140,16 +136,12 @@
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
-                                    :key="idx"
+                                    :key="doc.id"
                                 >
                                     <b-avatar
                                         variant="light-dark"
                                         square
-                                        :text="
-                                            doc.legal_document_name
-                                                .split('.')
-                                                .pop()
-                                        "
+                                        :text="docExtension(doc.legal_document_name)"
                                         size="md"
                                     />
                                     <b-button
@@ -163,7 +155,7 @@
                                     </b-button>
                                     <!-- remove button -->
                                     <b-button
-                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
                                         class="btn-icon rounded-circle ml-1"
@@ -206,16 +198,12 @@
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
-                                    :key="idx"
+                                    :key="doc.id"
                                 >
                                     <b-avatar
                                         variant="light-dark"
                                         square
-                                        :text="
-                                            doc.legal_document_name
-                                                .split('.')
-                                                .pop()
-                                        "
+                                        :text="docExtension(doc.legal_document_name)"
                                         size="md"
                                     />
                                     <b-button
@@ -229,7 +217,7 @@
                                     </b-button>
                                     <!-- remove button -->
                                     <b-button
-                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
                                         class="btn-icon rounded-circle ml-1"
@@ -272,16 +260,12 @@
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
-                                    :key="idx"
+                                    :key="doc.id"
                                 >
                                     <b-avatar
                                         variant="light-dark"
                                         square
-                                        :text="
-                                            doc.legal_document_name
-                                                .split('.')
-                                                .pop()
-                                        "
+                                        :text="docExtension(doc.legal_document_name)"
                                         size="md"
                                     />
                                     <b-button
@@ -295,7 +279,7 @@
                                     </b-button>
                                     <!-- remove button -->
                                     <b-button
-                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
                                         class="btn-icon rounded-circle ml-1"
@@ -765,11 +749,16 @@ export default {
             uploadContractorDoc: "contract/uploadContractorDoc",
             loadComments: "contract/loadComments",
             addComment: "contract/addComment",
+            archiveDocuments: 'contract/archiveDocuments'
         }),
 
         // remove files
-        removeSelectedFile(index, fileUrl) {
-            console.log(fileUrl);
+        removeSelectedFile(index, receivedDoc) {
+            console.log(index);
+            this.archiveDocumentsTrigger(receivedDoc)
+
+            this.loadLegalDocumentTrigger()
+
         },
 
         // upload contractor legal or payment documents
@@ -978,6 +967,110 @@ export default {
                         },
                     });
                 });
+        },
+
+        archiveDocumentsTrigger(docObj) {
+            console.log(docObj);
+            let formData = new FormData();
+            formData.append("document_id", docObj.listing_document_id);
+            formData.append("image_url", docObj.legal_document_path);
+
+            this.archiveDocuments(formData)
+                .then((response) => {
+                    if (response.success) {
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While Adding!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        },
+
+        docExtension(docName) {
+            return docName.split('.').pop()
+
+        },
+
+        loadLegalDocumentTrigger() {
+            this.loadLegalDocument({ listing_id: this.listingId })
+            .then((response) => {
+                if (response.success) {
+                    console.log(response);
+                    if (response.data[0].length == 0) {
+                        this.noData = true;
+                    } else {
+                        this.listing = response.data[0].listing;
+                        // Docs Data
+                        this.finance_client_documents =
+                            response.data[0].finance_client_documents;
+                        this.finance_contractor_documents =
+                            response.data[0].finance_contractor_documents;
+                        this.legal_client_documents =
+                            response.data[0].legal_client_documents;
+                        this.legal_contractor_documents =
+                            response.data[0].legal_contractor_documents;
+
+                        console.log(response, "response");
+                        // Percentages
+                        this.finance_client_total_percentage =
+                            response.data[0].finance_client_total_percentage;
+                        this.finance_contractor_total_percentage =
+                            response.data[0].finance_contractor_total_percentage;
+                        this.legal_client_total_percentage =
+                            response.data[0].legal_client_total_percentage;
+                        this.legal_contractor_total_percentage =
+                            response.data[0].legal_contractor_total_percentage;
+                    }
+                } else {
+                    console.log("else");
+
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
+
         },
 
         refreshComments() {

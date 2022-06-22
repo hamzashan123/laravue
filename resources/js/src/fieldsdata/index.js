@@ -12,7 +12,7 @@ export const statuses_color = [
         // Contract
         "contract_assigned": "Contract Assigned",
         "contract_started": "Contract Started!",
-        "completed": "Completed",
+        "contract_completed": "Completed",
         // normal status
         "active": "Active",
         "inactive": "In-active",
@@ -30,7 +30,7 @@ export const statuses_color = [
         // Contract
         "contract_assigned": "primary",
         "contract_started": "info",
-        "completed": "success",
+        "contract_completed": "success",
         // status
         "active": "success",
         "inactive": "danger",
