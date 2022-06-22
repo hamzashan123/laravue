@@ -130,10 +130,10 @@
                         </b-badge>
                     </template>
                     <template #cell(location)="data">
-                            {{ ( data.item.addaddress_line1 ) ? data.item.addaddress_line1 : "" }}
-                            {{ ( data.item.district ) ? data.item.district : "" }}
-                            {{ ( data.item.state ) ? data.item.state : "" }}
-                            {{ ( data.item.country ) ? data.item.country : "" }}
+                            {{ data.item.addaddress_line1 ? data.item.addaddress_line1 : "" }}
+                            {{ data.item.district ? data.item.district : "" }}
+                            {{ data.item.state ? data.item.state : "" }}
+                            {{ data.item.country ? data.item.country : "" }}
                     </template>
                     <template #cell(created_at)="data">
                             {{ new Date(data.value).toDateString() }}

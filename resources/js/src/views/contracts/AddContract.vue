@@ -68,6 +68,7 @@
                                 :key="i"
                             >
                                 <div
+                                    class="d-flex align-items-center"
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
@@ -83,6 +84,7 @@
                                         "
                                         size="md"
                                     />
+                                    <!-- link button -->
                                     <b-button
                                         v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                         variant="outline-dark"
@@ -91,6 +93,16 @@
                                         target="_blank"
                                     >
                                         {{ doc.legal_document_name }}
+                                    </b-button>
+
+                                    <!-- remove button -->
+                                    <b-button
+                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        variant="gradient-danger"
+                                        size="sm"
+                                        class="btn-icon rounded-circle ml-1"
+                                        >
+                                        <feather-icon icon="XIcon" size="10" />
                                     </b-button>
                                 </div>
                             </div>
@@ -124,6 +136,7 @@
                                 :key="i"
                             >
                                 <div
+                                    class="d-flex align-items-center"
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
@@ -147,6 +160,15 @@
                                         target="_blank"
                                     >
                                         {{ doc.legal_document_name }}
+                                    </b-button>
+                                    <!-- remove button -->
+                                    <b-button
+                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        variant="gradient-danger"
+                                        size="sm"
+                                        class="btn-icon rounded-circle ml-1"
+                                        >
+                                        <feather-icon icon="XIcon" size="10" />
                                     </b-button>
                                 </div>
                             </div>
@@ -180,6 +202,7 @@
                                 :key="i"
                             >
                                 <div
+                                    class="d-flex align-items-center"
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
@@ -203,6 +226,15 @@
                                         target="_blank"
                                     >
                                         {{ doc.legal_document_name }}
+                                    </b-button>
+                                    <!-- remove button -->
+                                    <b-button
+                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        variant="gradient-danger"
+                                        size="sm"
+                                        class="btn-icon rounded-circle ml-1"
+                                        >
+                                        <feather-icon icon="XIcon" size="10" />
                                     </b-button>
                                 </div>
                             </div>
@@ -236,6 +268,7 @@
                                 :key="i"
                             >
                                 <div
+                                    class="d-flex align-items-center"
                                     v-for="(
                                         doc, idx
                                     ) in documentsArray.documents"
@@ -259,6 +292,15 @@
                                         :href="doc.legal_document_path"
                                     >
                                         {{ doc.legal_document_name }}
+                                    </b-button>
+                                    <!-- remove button -->
+                                    <b-button
+                                        @click="removeSelectedFile(idx, doc.legal_document_path)"
+                                        variant="gradient-danger"
+                                        size="sm"
+                                        class="btn-icon rounded-circle ml-1"
+                                        >
+                                        <feather-icon icon="XIcon" size="10" />
                                     </b-button>
                                 </div>
                             </div>
@@ -724,6 +766,11 @@ export default {
             loadComments: "contract/loadComments",
             addComment: "contract/addComment",
         }),
+
+        // remove files
+        removeSelectedFile(index, fileUrl) {
+            console.log(fileUrl);
+        },
 
         // upload contractor legal or payment documents
         uploadClientDocTrigger() {

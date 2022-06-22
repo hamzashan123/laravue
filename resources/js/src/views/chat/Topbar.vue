@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar-container d-flex align-items-center">
+  <div class="navbar-container d-flex align-items-center border-bottom">
     <!-- Nav Menu Toggler -->
     <ul class="nav navbar-nav d-xl-non">
       <li class="nav-item">
@@ -19,11 +19,8 @@
           <b-avatar
             size="40"
             variant="light-primary"
-            badge
-            :text="userAvatarText ? userAvatarText : ''"
             :src="user.avatar ? user.avatar : ''"
-            class="badge-minimal ml-1"
-            badge-variant="success"
+            class="badge-minimal ml-1 mr-1"
           />
           <p class="user-name font-weight-bolder mb-0">{{ user.first_name }} {{ user.last_name }}</p>
     </div>

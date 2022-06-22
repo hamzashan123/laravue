@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Http;
 
 Route::post('login', [App\Http\Controllers\API\UserController::class, 'login']);
 Route::post('register', [App\Http\Controllers\API\UserController::class, 'register']);
-Route::post('get-users', [App\Http\Controllers\API\UserController::class, 'getUsers']);
 
 Route::post('getlistingbyid', [App\Http\Controllers\API\ListingController::class, 'getListingById']);
 
@@ -26,9 +25,10 @@ Route::post('get-published-listings', [App\Http\Controllers\API\ListingControlle
 
 
 Route::group(['middleware' => 'auth:api'], function() {
+    Route::post('get-users', [App\Http\Controllers\API\UserController::class, 'getUsers']);
 
     Route::post('updateProfile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
-    
+
     //Listing
     Route::post('create-listings', [App\Http\Controllers\API\ListingController::class, 'createListing']);
     Route::post('update-listing', [App\Http\Controllers\API\ListingController::class, 'updateListing']);
@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     //Upload Legal Document
     Route::post('upload-legal-document', [App\Http\Controllers\API\LegalDocumentsController::class, 'uploadLegalDocument']);
     Route::post('get-legal-documents', [App\Http\Controllers\API\LegalDocumentsController::class, 'getLegalDocuments']);
-    
+
 
     //Contracts
     Route::post('assign-contract', [App\Http\Controllers\API\ContractsController::class, 'assignContract']);

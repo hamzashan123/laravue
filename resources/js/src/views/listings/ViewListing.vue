@@ -32,7 +32,7 @@
                     </b-button>
 
                     <b-button
-                        v-if="can('update', 'all-visit')"
+                        v-if="listing.status === 'contract_started' && can('update', 'all-visit')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="secondary"
                         :to="{ name: 'listings.add-visits', params:{ listingId: id } }"

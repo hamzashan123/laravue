@@ -227,6 +227,34 @@ export default {
             });
         },
 
+
+         // archive listing images while upload
+         archiveListingImages({ commit }, imageData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "archive-listing-images",
+                    data: imageData,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
         // Deleting
     },
 };

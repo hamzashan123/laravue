@@ -12,6 +12,7 @@
         <setting-tab-button> </setting-tab-button>
 
         <!-- form -->
+        <validation-observer ref="validationRules">
         <b-form class="mt-2" enctype="multipart/form-data" @submit.prevent>
             <b-row>
                 <b-col md="4">
@@ -75,11 +76,19 @@
                                     label="First Name"
                                     label-for="account-name"
                                 >
+                                    <validation-provider
+                                        #default="{ errors }"
+                                        name="First Name"
+                                        rules="required"
+                                        >
                                     <b-form-input
                                         v-model="user.first_name"
                                         name="firstname"
                                         placeholder="First Name"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="4">
@@ -87,11 +96,19 @@
                                     label="Username"
                                     label-for="user-name"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="User Name"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         v-model="user.user_name"
                                         name="username"
                                         placeholder="Username"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="4">
@@ -99,11 +116,19 @@
                                     label="Last Name"
                                     label-for="account-name"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="Last Name"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         v-model="user.last_name"
                                         name="lastname"
                                         placeholder="Last Name"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6">
@@ -111,12 +136,19 @@
                                     label="E-mail"
                                     label-for="account-e-mail"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="Email"
+                                    rules="required|email"
+                                    >
                                     <b-form-input
                                         v-model="user.email"
                                         name="email"
                                         placeholder="Email"
-                                        required
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6">
@@ -124,11 +156,19 @@
                                     label="Contact"
                                     label-for="contact"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="Contact"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         v-model="user.contact"
                                         name="contact"
                                         placeholder="Contact"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6">
@@ -136,13 +176,21 @@
                                     label="Date of Birth"
                                     label-for="dateofbirth"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="Date of Birth"
+                                    rules="required"
+                                    >
                                     <b-form-datepicker
-                                            placeholder="Date of Birth"
-                                            id="target_completion_dateto"
-                                            v-model="user.date_of_birth"
-                                            name="dateofbirth"
-                                            class="mb-1 p-0"
-                                        />
+                                        placeholder="Date of Birth"
+                                        id="target_completion_dateto"
+                                        v-model="user.date_of_birth"
+                                        name="dateofbirth"
+                                        class="mb-1 p-0"
+                                        :state="errors.length > 0 ? false:null"
+                                    />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6">
@@ -150,11 +198,19 @@
                                     label="Address"
                                     label-for="address"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="Address"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         v-model="user.address"
                                         name="address"
                                         placeholder="Address"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="4">
@@ -162,30 +218,53 @@
                                     label="Country"
                                     label-for="country"
                                 >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="Country"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         id="country"
                                         v-model="user.country"
                                         placeholder="Country"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="4">
                                 <b-form-group label="State" label-for="state">
+                                    <validation-provider
+                                    #default="{ errors }"
+                                    name="State"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         id="state"
                                         v-model="user.state"
                                         placeholder="State"
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="4">
                                 <b-form-group label="City" label-for="city">
+                                    <validation-provider
+                                    #default="{ errors }"
+                                    name="State"
+                                    rules="required"
+                                    >
                                     <b-form-input
                                         id="city"
                                         v-model="user.city"
                                         placeholder="City"
-                                        required
+                                        :state="errors.length > 0 ? false:null"
                                     />
+                                    <small class="text-danger">{{ errors[0] }}</small>
+                                    </validation-provider>
                                 </b-form-group>
                             </b-col>
 
@@ -222,6 +301,7 @@
                 </b-col>
             </b-row>
         </b-form>
+        </validation-observer>
     </div>
 </template>
 
@@ -247,6 +327,8 @@ import {
     BAvatar,
     BFormDatepicker,
 } from "bootstrap-vue";
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { required, email } from '@validations'
 import Ripple from "vue-ripple-directive";
 import SettingTabButton from "./SettingTabButton.vue";
 import { mapActions, mapGetters } from "vuex";
@@ -274,6 +356,9 @@ export default {
         BSpinner,
         BAvatar,
         BFormDatepicker,
+        // validations
+        ValidationProvider,
+        ValidationObserver,
     },
     directives: {
         Ripple,
@@ -287,6 +372,10 @@ export default {
             newAvatar: null,
             imageFileUploader: null,
             imageShowWhileUpload: null,
+
+            // validation
+            required,
+            email,
         };
     },
     computed: {
@@ -316,46 +405,50 @@ export default {
         }),
 
         UpdateProfileTrigger() {
+            this.$refs.validationRules.validate().then(success => {
+                if (success) {
 
-            var ProfileData = new FormData();
-            ProfileData.append('first_name', this.user.first_name);
-            ProfileData.append('user_name', this.user.user_name);
-            ProfileData.append('last_name', this.user.last_name);
-            ProfileData.append('email', this.user.email);
-            ProfileData.append('contact', this.user.contact);
-            ProfileData.append('address', this.user.address) ;
-            ProfileData.append('date_of_birth', this.user.date_of_birth);
-            ProfileData.append('country', this.user.country);
-            ProfileData.append('state', this.user.state);
-            ProfileData.append('city', this.user.city);
-            ProfileData.append('avatar', this.newAvatar);
+                var ProfileData = new FormData();
+                ProfileData.append('first_name', this.user.first_name);
+                ProfileData.append('user_name', this.user.user_name);
+                ProfileData.append('last_name', this.user.last_name);
+                ProfileData.append('email', this.user.email);
+                ProfileData.append('contact', this.user.contact);
+                ProfileData.append('address', this.user.address) ;
+                ProfileData.append('date_of_birth', this.user.date_of_birth);
+                ProfileData.append('country', this.user.country);
+                ProfileData.append('state', this.user.state);
+                ProfileData.append('city', this.user.city);
+                ProfileData.append('avatar', this.newAvatar);
 
-            this.updateProfile(ProfileData)
-                .then((response) => {
-                    if( response.success ) {
+                this.updateProfile(ProfileData)
+                    .then((response) => {
+                        if( response.success ) {
 
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: { title: response.message, icon: "EditIcon", variant: "success" },
+                            });
+                        } else {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: { title: response.message, icon: "EditIcon", variant: "danger" },
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err, "e");
                         this.$toast({
                             component: ToastificationContent,
-                            props: { title: response.message, icon: "EditIcon", variant: "success" },
+                            props: {
+                                title: "Error while updating!",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
                         });
-                    } else {
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: { title: response.message, icon: "EditIcon", variant: "danger" },
-                        });
-                    }
-                })
-                .catch((err) => {
-                    console.log(err, "e");
-                    this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                            title: "Error while updating!",
-                            icon: "EditIcon",
-                            variant: "danger",
-                        },
                     });
-                });
+                 }
+            })
         },
         onFileUpload(e) {
             let reader = new FileReader();

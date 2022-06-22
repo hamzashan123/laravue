@@ -137,7 +137,7 @@
                                     :key="idx"
                                 >
                                     <b-button
-                                        @click="removeSelectedImage(idx)"
+                                        @click="removeSelectedImage(idx, image)"
                                         variant="gradient-danger"
                                         class="btn-icon rounded-circle position-absolute z-index"
                                         >
@@ -146,7 +146,7 @@
                                     <b-img
                                         fluid
                                         thumbnail
-                                        class="w-100"
+                                        class="w-100 listing-image-fixed-height"
                                         :src="image"
                                     />
 
@@ -417,15 +417,20 @@ export default {
             this.isFileUploaderFull = false;
         },
 
-        removeSelectedImage(index) {
+        removeSelectedImage(index, imageUrl) {
             this.imagesShowWhileUpload.splice(index, 1);
             this.newImages.splice(index, 1);
             this.imagesFileUploader.splice(index, 1);
+            // checking if it is image url
+            if( /(jpg|gif|png|JPG|GIF|PNG|JPEG|jpeg)$/.test(imageUrl) ) {
+                this.archiveListingImagesTrigger(imageUrl)
+            }
         },
 
         ...mapActions({
             updateListing: "listing/updateListing",
             loadListing: "listing/loadListing",
+            archiveListingImages: "listing/archiveListingImages"
         }),
 
         async updateListingTrigger() {
@@ -500,6 +505,47 @@ export default {
                         });
                 }
             });
+        },
+
+        archiveListingImagesTrigger(imageUrl) {
+            let imageData = new FormData();
+            imageData.append("listing_id", this.id);
+            imageData.append("image_url", imageUrl);
+
+            this.archiveListingImages(imageData)
+                .then((response) => {
+                    if (response.success) {
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While Adding!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
         },
 
         // Initialize Google Map on focus

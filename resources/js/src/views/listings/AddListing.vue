@@ -106,6 +106,7 @@
                                         <b-form-input
                                             v-model="listing.min_budget"
                                             class="mb-1"
+                                            type="number"
                                             placeholder="Minimum Budget"
                                             :state="
                                                 errors.length > 0 ? false : null
@@ -119,13 +120,16 @@
                                 <div class="col">
                                     <validation-provider
                                         #default="{ errors }"
-                                        name="Maximum budget"
+                                        name="Max budget"
                                         rules="required"
                                     >
                                         <b-form-input
                                             v-model="listing.max_budget"
                                             placeholder="Maximum Budget"
+                                            type="number"
                                             class="mb-1"
+                                            ref="maxbudget"
+                                            @blur="checkMaxBudget"
                                             :state="
                                                 errors.length > 0 ? false : null
                                             "
@@ -163,7 +167,7 @@
                                     <b-img
                                         fluid
                                         thumbnail
-                                        class="w-100"
+                                        class="w-100 listing-image-fixed-height"
                                         :src="image"
                                     />
 
@@ -315,7 +319,7 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { ValidationProvider, ValidationObserver  } from "vee-validate";
 import {
     BCard,
     BRow,
@@ -384,8 +388,8 @@ export default {
                 address_line1: "",
                 address_line2: "",
                 country: "",
-                state: null,
-                district: null,
+                state: "",
+                district: "",
             },
             draftListingId: "",
             //   Validation
@@ -437,6 +441,20 @@ export default {
             this.imagesShowWhileUpload.splice(index, 1);
             this.newImages.splice(index, 1);
             this.imagesFileUploader.splice(index, 1);
+        },
+
+        checkMaxBudget() {
+            if( this.listing.max_budget <= this.listing.min_budget ) {
+                this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Max budget should great then min budget",
+                            icon: "EditIcon",
+                            variant: "warning",
+                        },
+                    });
+                    this.$refs.maxbudget.focus()
+            }
         },
 
         ...mapActions({
@@ -594,7 +612,7 @@ export default {
 
                 switch (componentType) {
                     case "street_number": {
-                        this.listing.address_line1 = `${component.long_name} ${address1}`;
+                        this.listing.address_line1 = `${component.long_name} ${component.address1}`;
                         break;
                     }
 
