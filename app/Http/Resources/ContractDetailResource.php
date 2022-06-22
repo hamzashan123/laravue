@@ -27,7 +27,7 @@ class ContractDetailResource extends JsonResource
         
         $proposal = Proposals::where('listing_id', $this->getListing->id)
                              ->where('user_id', $this->getContract->contractor_id)
-                             ->where('status', 'pre_contract')->first();
+                             ->whereIn('status' , ['pre_contract','contract_started','contract_completed'])->first();
         
         return [
             'listing'=> new ListingResource($this->getListing),

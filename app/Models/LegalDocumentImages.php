@@ -21,7 +21,8 @@ class LegalDocumentImages extends Model
     ];
 
     public function getLegalDocuments() {
-        return $this->hasMany(LegalDocuments::class,'id','listing_document_id')            
+        return $this->hasMany(LegalDocuments::class,'id','listing_document_id')
+            ->where('status', 'active')
             ->select('listing_documents.*');
     }
 }

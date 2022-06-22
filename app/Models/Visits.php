@@ -36,6 +36,7 @@ class Visits extends Model
 
     public function getImages() {
         return $this->hasMany(VisitImages::class,'visit_id','id')
+            ->where('status', 'active')
             ->select('visit_images.*');
     }
 
