@@ -150,5 +150,64 @@ class LegalDocumentsController extends Controller
         }
     }
 
+    public function archiveLegalDocuments(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'document_id'     => 'required',
+            'image_url'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $image_url = explode('/', $request->image_url);
+        $image_ = $image_url[count($image_url) - 1];
+
+        $user = Auth::user();
+        $legalDocuments = LegalDocumentImages::where('listing_document_id', $request->document_id)->where('status','active')
+                                             ->where('legal_document_path', $image_);
+
+        if($user->role_id == 1 || $user->role_id == 2) {
+            $userType = ($user->role_id == 1 ? 'client' : 'contractor');
+
+            $legalDocuments = $legalDocuments->with('getLegalDocuments')->whereHas('getLegalDocuments', function($query) use($userType) {
+                $query->where('user_type', $userType);
+            });        
+        }
+
+        $legalDocuments = $legalDocuments->get();
+        if(count($legalDocuments) > 0) {
+            
+            $rows_affect = LegalDocumentImages::where(['listing_document_id' => $request->document_id, 'legal_document_path' => $image_, 'status' => 'active'])
+                ->update(['status' => 'delete']);
+
+            if($rows_affect > 0) {
+                $response_data = [
+                    'success' => true,
+                    'message' => 'Legal Document archive successfully!',                    
+                ];
+                return response()->json($response_data, $this->successStatus);
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+
+    }
+
 }
 

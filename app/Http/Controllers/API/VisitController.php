@@ -57,7 +57,7 @@ class VisitController extends Controller
             return response()->json($response_data);
         }
 
-        $data = Listing::where('id',$request->listing_id)->where('status', 'pre_contract')->first();
+        $data = Listing::where('id',$request->listing_id)->whereIn('status' , ['pre_contract','contract_started','contract_completed'])->first();
 
         if ($data != null) {
             $input = $request->all();
@@ -169,6 +169,58 @@ class VisitController extends Controller
                 'data' => new VisitResource($data),
             ];
             return response()->json($response_data, $this->successStatus);
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function archiveVisitDocuments(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'visit_id'     => 'required',
+            'image_url'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $image_url = explode('/', $request->image_url);
+        $image_ = $image_url[count($image_url) - 1];
+
+        $user = Auth::user();
+
+
+        $visitImages = Visits::with('getImages')->whereHas('getImages', function($query) use($image_) {
+            $query->where('image', $image_);
+        })->where('id', $request->visit_id)->first();
+
+        if($visitImages != null) {
+
+            $rows_affect = VisitImages::where(['visit_id' => $request->visit_id, 'image' => $image_, 'status' => 'active'])
+            ->update(['status' => 'delete']);
+
+            if($rows_affect > 0) {
+                $response_data = [
+                    'success' => true,
+                    'message' => 'Visit Document archive successfully!',                    
+                ];
+                return response()->json($response_data, $this->successStatus);
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
         } else {
             $response_data = [
                 'success' => false,

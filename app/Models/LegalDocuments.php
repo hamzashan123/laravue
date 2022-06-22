@@ -65,6 +65,7 @@ class LegalDocuments extends Model
 
     public function getLegalDocumentImages() {
         return $this->hasMany(LegalDocumentImages::class,'listing_document_id','id')
+            ->where('status', 'active')
             ->select('listing_document_images.*');
     }
 

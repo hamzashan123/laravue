@@ -52,16 +52,19 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);
     Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
     Route::post('get-visit-details', [App\Http\Controllers\API\VisitController::class, 'getVisitDetails']);
+    Route::post('archive-visit-documents', [App\Http\Controllers\API\VisitController::class, 'archiveVisitDocuments']);
 
     //Upload Legal Document
     Route::post('upload-legal-document', [App\Http\Controllers\API\LegalDocumentsController::class, 'uploadLegalDocument']);
     Route::post('get-legal-documents', [App\Http\Controllers\API\LegalDocumentsController::class, 'getLegalDocuments']);
-    
+    Route::post('archive-legal-documents', [App\Http\Controllers\API\LegalDocumentsController::class, 'archiveLegalDocuments']);
 
     //Contracts
     Route::post('assign-contract', [App\Http\Controllers\API\ContractsController::class, 'assignContract']);
     Route::post('get-contracts', [App\Http\Controllers\API\ContractsController::class, 'getContracts']);
     Route::post('get-contract-detail', [App\Http\Controllers\API\ContractsController::class, 'getContractDetail']);
+    Route::post('contract-started', [App\Http\Controllers\API\ContractsController::class, 'contractStarted']);
+    Route::post('contract-completed', [App\Http\Controllers\API\ContractsController::class, 'contractCompleted']);
 
     //Chat
     Route::post('post-comment', [App\Http\Controllers\API\ChatController::class, 'postComment']);
