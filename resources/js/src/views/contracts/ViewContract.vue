@@ -14,9 +14,18 @@
             <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
-                        v-if="can('create', 'all-contract')"
+                        v-if="can('create', 'all-contract') && listing.status == 'contract_started'"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="success"
+                        @click="completeContractTrigger"
+                    >
+                        Complete Contract
+                    </b-button>
+                    <b-button
+                        v-if="can('create', 'all-contract') && listing.status == 'pre_contract'"
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="info"
+                        @click="startContractTrigger"
                     >
                         Start Contract
                     </b-button>
@@ -369,7 +378,7 @@
                                         </b-form-group>
 
                                         <b-row v-if="selectedContractorTab == 'legal'">
-                                            
+
                                             <!-- timeline -->
                                             <b-col md="12" class="mb-2">
 
@@ -668,12 +677,98 @@ export default {
         };
     },
     methods: {
-        ...mapActions({ loadContractDetails: "contract/loadContractDetails" }),
+        ...mapActions({ loadContractDetails: "contract/loadContractDetails", startContract: 'contract/startContract', completeContract: 'contract/completeContract' }),
 
         changeDocsData(documents) {
             this.isShowingDocuments = true;
             this.showingCurrentDocs = documents;
         },
+
+        // start contract
+        startContractTrigger() {
+            let formData = new FormData();
+            formData.append("listing_id", this.id);
+            formData.append("contractor_id", this.contractor.id);
+
+            this.startContract(formData)
+                .then((response) => {
+                    if (response.success) {
+                        this.listing.status = response.data.status
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While sending!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        },
+
+        // complete contract
+        completeContractTrigger() {
+            let formData = new FormData();
+            formData.append("listing_id", this.id);
+            formData.append("contractor_id", this.contractor.id);
+
+            this.completeContract(formData)
+                .then((response) => {
+                    if (response.success) {
+                        this.listing.status = response.data.status
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While sending!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        }
     },
     computed: {
         ...mapGetters({
@@ -733,7 +828,8 @@ export default {
                         variant: "danger",
                     },
                 });
-            });
+            })
+
     },
     directives: {
         Ripple,
