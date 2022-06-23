@@ -270,9 +270,11 @@ class UserController extends Controller
 
     }
 
-    public function getUsers(Request $request) {
+    public function getUsers() {
 
-        $users = User::where('status', 'active')->where('id','!=' , Auth::user()->id)->get();
+        //$user = Auth::user();
+        
+        $users = User::where('status', 'active')->get();
 
         if(count($users) > 0) {
             $response_data = [

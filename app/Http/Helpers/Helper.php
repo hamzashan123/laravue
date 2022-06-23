@@ -12,12 +12,11 @@ use PHPMailer\PHPMailer\Exception;
 use App\Models\User;
 use App\Http\Helpers\ExpoNotifications\ExpoMessage;
 use App\Http\Helpers\ExpoNotifications\Expo;
+use App\Models\Notifications;
 use DB;
 
 class Helper
 {
-
-
     public static function generateRandomString($firstname, $lastname, $email) {
         $emailaddress = str_replace('.','', $email);
         $emailstring = explode('@', $emailaddress);
@@ -32,6 +31,20 @@ class Helper
 
         $randomString = ($randomString . $random_number);
         return $randomString;
+    }
+
+    public static function saveNotification($user_id, $type, $title, $message) {
+
+        Notifications::create([
+            'user_id' => $user_id,
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'seen' => '0',
+            'status' => 'active'
+        ]);
+
+        return true;
     }
 
 }
