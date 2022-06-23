@@ -132,6 +132,9 @@ class ProposalController extends Controller
             $data->rejected_by = null;
             $data->save();
 
+            $isSucess = Helper::saveNotification($data->user_id, 'proposal', 'Proposal Approved', 'Your ' . $data->getListing->title . ' Proposal Approved Sucessfully');
+
+
             $listing = Listing::where('id',$data->listing_id)->first();
 
             if($listing != null && !($listing['status'] == 'pre_contract' || $listing['status'] == 'contract_started' || $listing['status'] == 'contract_completed')) {
@@ -177,6 +180,8 @@ class ProposalController extends Controller
             $data->approved_by = null;
             $data->rejected_by = Auth::user()->id;
             $data->save();
+
+            $isSucess = Helper::saveNotification($data->user_id, 'proposal', 'Proposal Reject', 'Your ' . $data->getListing->title . ' proposal has been rejected');
 
             $listing = Listing::where('id', $data->listing_id)->first();
             if($listing != null) {
