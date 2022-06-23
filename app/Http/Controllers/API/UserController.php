@@ -271,6 +271,9 @@ class UserController extends Controller
     }
 
     public function getUsers() {
+
+        //$user = Auth::user();
+        
         $users = User::where('status', 'active')->get();
 
         if(count($users) > 0) {

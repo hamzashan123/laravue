@@ -65,7 +65,20 @@ class ChatController extends Controller
 
     public function getComments(Request $request)
     {
-        $comments_data = Comments::orderBy('created_at','desc');
+        $validator = Validator::make($request->all(), [
+            'listing_id'        => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $comments_data = Comments::where('listing_id', $request->listing_id)->orderBy('created_at','desc');
 
         if($comments_data)
         {

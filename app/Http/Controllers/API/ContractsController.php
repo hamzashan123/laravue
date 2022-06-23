@@ -78,6 +78,8 @@ class ContractsController extends Controller
             $listing->status = 'pre_contract';
             $listing->save();
 
+            $isSucess = Helper::saveNotification($input['contractor_id'], 'contract', 'Contract Assign', 'Contract Assigned successfully');
+
             $contract_data = Contracts::find($contract->id);
 
             Proposals::where(['listing_id' => $request->listing_id, 'user_id' => $request->contractor_id])->update(['status' => 'pre_contract']);    
@@ -180,6 +182,8 @@ class ContractsController extends Controller
                         
             $contract_data = Contracts::where('listing_id', $request->listing_id)->where('contractor_id', $request->contractor_id)->first();
 
+            $isSucess = Helper::saveNotification($contract_data->contractor_id, 'contract', 'Contract Started', 'Contract Started');
+
             if($contract_data != null) {
                 $response_data = [
                     'success' => true,
@@ -228,6 +232,8 @@ class ContractsController extends Controller
             Listing::where(['id' => $request->listing_id, 'status' => 'contract_started'])->update(['status' => 'contract_completed']);
                         
             $contract_data = Contracts::where('listing_id', $request->listing_id)->where('contractor_id', $request->contractor_id)->first();
+
+            $isSucess = Helper::saveNotification($contract_data->contractor_id, 'contract', 'Contract Completed', 'Contract Completed');
 
             if($contract_data != null) {
                 $response_data = [

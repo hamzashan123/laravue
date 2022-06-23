@@ -27,6 +27,7 @@ Route::post('get-published-listings', [App\Http\Controllers\API\ListingControlle
 
 Route::group(['middleware' => 'auth:api'], function() {
 
+    
     Route::post('updateProfile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
     
     //Listing
@@ -72,6 +73,11 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::post('send-message', [App\Http\Controllers\API\ChatController::class, 'sendMessage']);
     Route::post('get-messages', [App\Http\Controllers\API\ChatController::class, 'getMessages']);
+
+    //Notifications
+    Route::post('get-notification', [App\Http\Controllers\API\NotificationController::class, 'getNotification']);
+    Route::post('seen-notification', [App\Http\Controllers\API\NotificationController::class, 'seenNotification']);
+    
 
     //Dashboard
     Route::post('get-dashboard', [App\Http\Controllers\API\UserController::class, 'getDashboard']);
