@@ -185,10 +185,6 @@ export default {
     },
     data() {
         return {
-            progressValue: "40%",
-            // map
-            latLng: { lat: 20.5937, lng: 78.9629 },
-
             swiperOptions: {
                 navigation: {
                     nextEl: '.swiper-button-next',
@@ -214,14 +210,6 @@ export default {
             this.listing.images = this.listingVisit[index].images
             this.listing.description = this.listingVisit[index].visit_detail
         },
-
-        // Initialize map
-        // initMap() {
-        //     let map = new google.maps.Map(document.getElementById("map"), {
-        //         center: this.latLng,
-        //         zoom: 12,
-        //     });
-        // },
     },
     computed: {
         ...mapGetters({
@@ -229,7 +217,6 @@ export default {
         }),
     },
     mounted() {
-        // this.initMap();
 
         this.id = this.$route.params.listingId;
 
