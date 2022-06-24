@@ -1,189 +1,151 @@
 <template>
-  <b-nav-item-dropdown
-    class="dropdown-notification mr-25"
-    menu-class="dropdown-menu-media"
-    right
-  >
-    <template #button-content>
-      <feather-icon
-        badge="6"
-        badge-classes="bg-danger"
-        class="text-body"
-        icon="BellIcon"
-        size="21"
-      />
-    </template>
-
-    <!-- Header -->
-    <li class="dropdown-menu-header">
-      <div class="dropdown-header d-flex">
-        <h4 class="notification-title mb-0 mr-auto">
-          Notifications
-        </h4>
-        <b-badge
-          pill
-          variant="light-primary"
-        >
-          6 New
-        </b-badge>
-      </div>
-    </li>
-
-    <!-- Notifications -->
-    <vue-perfect-scrollbar
-      v-once
-      :settings="perfectScrollbarSettings"
-      class="scrollable-container media-list scroll-area"
-      tagname="li"
+    <b-nav-item-dropdown
+        class="dropdown-notification mr-25"
+        menu-class="dropdown-menu-media"
+        right
     >
-      <!-- Account Notification -->
-      <b-link
-        v-for="notification in notifications"
-        :key="notification.subtitle"
-      >
-        <b-media>
-          <template #aside>
-            <b-avatar
-              size="32"
-              :src="notification.avatar"
-              :text="notification.avatar"
-              :variant="notification.type"
+        <template #button-content>
+            <feather-icon
+                :badge="newNotifisCount"
+                badge-classes="bg-danger"
+                class="text-body"
+                icon="BellIcon"
+                size="21"
             />
-          </template>
-          <p class="media-heading">
-            <span class="font-weight-bolder">
-              {{ notification.title }}
-            </span>
-          </p>
-          <small class="notification-text">{{ notification.subtitle }}</small>
-        </b-media>
-      </b-link>
+        </template>
 
-      <!-- System Notification Toggler -->
-      <div class="media d-flex align-items-center">
-        <h6 class="font-weight-bolder mr-auto mb-0">
-          System Notifications
-        </h6>
-        <b-form-checkbox
-          :checked="true"
-          switch
-        />
-      </div>
+        <!-- Header -->
+        <li class="dropdown-menu-header">
+            <div class="dropdown-header d-flex">
+                <h4 class="notification-title mb-0 mr-auto">Notifications</h4>
+                <b-badge pill variant="light-primary">
+                    {{ newNotifisCount }} New
+                </b-badge>
+            </div>
+        </li>
 
-      <!-- System Notifications -->
-      <b-link
-        v-for="notification in systemNotifications"
-        :key="notification.subtitle"
-      >
-        <b-media>
-          <template #aside>
-            <b-avatar
-              size="32"
-              :variant="notification.type"
+        <!-- Notifications -->
+        <vue-perfect-scrollbar
+            :settings="perfectScrollbarSettings"
+            class="scrollable-container media-list scroll-area"
+            tagname="li"
+        >
+            <!-- Account Notification -->
+            <b-link
+                v-for="ntf in notifications"
+                :key="ntf.id"
+
             >
-              <feather-icon :icon="notification.icon" />
-            </b-avatar>
-          </template>
-          <p class="media-heading">
-            <span class="font-weight-bolder">
-              {{ notification.title }}
-            </span>
-          </p>
-          <small class="notification-text">{{ notification.subtitle }}</small>
-        </b-media>
-      </b-link>
-    </vue-perfect-scrollbar>
+                <b-media @click.prevent="seenNotificationTrigger(ntf.id)" :class=" ntf.seen === 1 ? '' : 'bg-primary bg-lighten-5'">
+                    <template #aside>
+                        <b-avatar
+                            size="32"
+                            variant="light-primary"
+                        />
+                    </template>
+                    <p class="media-heading">
+                        <span class="font-weight-bolder">
+                            {{ ntf.title }}
+                        </span>
+                    </p>
+                    <small class="notification-text"> {{ ntf.message }}</small>
+                </b-media>
+            </b-link>
+        </vue-perfect-scrollbar>
 
-    <!-- Cart Footer -->
-    <li class="dropdown-menu-footer"><b-button
+        <!-- Cart Footer -->
+        <!-- <li class="dropdown-menu-footer"><b-button
       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
       variant="primary"
       block
     >Read all notifications</b-button>
-    </li>
-  </b-nav-item-dropdown>
+    </li> -->
+    </b-nav-item-dropdown>
 </template>
 
 <script>
 import {
-  BNavItemDropdown, BBadge, BMedia, BLink, BAvatar, BButton, BFormCheckbox,
-} from 'bootstrap-vue'
-import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import Ripple from 'vue-ripple-directive'
-
-export default {
-  components: {
     BNavItemDropdown,
     BBadge,
     BMedia,
     BLink,
     BAvatar,
-    VuePerfectScrollbar,
     BButton,
     BFormCheckbox,
-  },
-  directives: {
-    Ripple,
-  },
-  setup() {
-    /* eslint-disable global-require */
-    const notifications = [
-      {
-        title: 'Congratulation Sam 🎉',
-        avatar: require('@/assets/images/avatars/6-small.png'),
-        subtitle: 'Won the monthly best seller badge',
-        type: 'light-success',
-      },
-      {
-        title: 'New message received',
-        avatar: require('@/assets/images/avatars/9-small.png'),
-        subtitle: 'You have 10 unread messages',
-        type: 'light-info',
-      },
-      {
-        title: 'Revised Order 👋',
-        avatar: 'MD',
-        subtitle: 'MD Inc. order updated',
-        type: 'light-danger',
-      },
-    ]
-    /* eslint-disable global-require */
+} from "bootstrap-vue";
+import VuePerfectScrollbar from "vue-perfect-scrollbar";
+import Ripple from "vue-ripple-directive";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { mapActions, mapGetters } from "vuex";
 
-    const systemNotifications = [
-      {
-        title: 'Server down',
-        subtitle: 'USA Server is down due to hight CPU usage',
-        type: 'light-danger',
-        icon: 'XIcon',
-      },
-      {
-        title: 'Sales report generated',
-        subtitle: 'Last month sales report generated',
-        type: 'light-success',
-        icon: 'CheckIcon',
-      },
-      {
-        title: 'High memory usage',
-        subtitle: 'BLR Server using high memory',
-        type: 'light-warning',
-        icon: 'AlertTriangleIcon',
-      },
-    ]
+export default {
+    data() {
+        return {
+            perfectScrollbarSettings: {
+                maxScrollbarLength: 60,
+                wheelPropagation: false,
+            },
+        };
+    },
+    components: {
+        BNavItemDropdown,
+        BBadge,
+        BMedia,
+        BLink,
+        BAvatar,
+        VuePerfectScrollbar,
+        BButton,
+        BFormCheckbox,
+    },
+    directives: {
+        Ripple,
+    },
+    computed: {
+        ...mapGetters({
+            isLoading: "dashboard/getIsLoading",
+            isDataLoading: "dashboard/getIsDataLoading",
+            notifications: "dashboard/getNotifications",
+            newNotifisCount: "dashboard/getNewNotifications",
+        }),
+    },
+    methods: {
+        ...mapActions({ loadNotifications: "dashboard/loadNotifications", seenNotifications: "dashboard/seenNotifications", }),
 
-    const perfectScrollbarSettings = {
-      maxScrollbarLength: 60,
-      wheelPropagation: false,
-    }
+        seenNotificationTrigger( notiId ) {
+            this.seenNotifications({ id: notiId })
+                .then((response) => {
+                    console.log(response);
+                    if (response.success) {
+                        this.loadNotifications();
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: { title: response.message, icon: "EditIcon", variant: "success" },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: { title: response.message,icon: "EditIcon",variant: "danger" },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: { title: "Error While Adding!", icon: "EditIcon", variant: "danger" },
+                    });
+                });
 
-    return {
-      notifications,
-      systemNotifications,
-      perfectScrollbarSettings,
-    }
-  },
-}
+        },
+
+
+    },
+    mounted() {
+        //    getting notifications
+        this.loadNotifications();
+    },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

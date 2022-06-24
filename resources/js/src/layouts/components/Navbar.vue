@@ -76,8 +76,6 @@ export default {
             user: {},
             userRole: {},
             can
-
-
         }
     },
   components: {
