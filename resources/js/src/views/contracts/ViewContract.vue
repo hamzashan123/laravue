@@ -52,7 +52,7 @@
 
         <!-- Summary -->
         <b-row class="h-100">
-            <b-col md="4">
+            <b-col lg="4" md="6" class="equal">
                 <b-card class="bg-lighten-5 border-primary">
                     <div class="mb-1">
                         <b-badge pill variant="primary" class="text-center">
@@ -67,20 +67,20 @@
                         </b-card-title>
                     </div>
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between flex-wrap"
                     >
                         <div class="font-small-5 text-uppercase">Budget</div>
-                        <div class="font-large-1">${{ listing.min_budget }} - ${{ listing.max_budget }}</div>
+                        <div class="h3">${{ listing.min_budget }} - ${{ listing.max_budget }}</div>
                     </div>
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between flex-wrap"
                     >
                         <div class="font-small-5 text-uppercase">
                             Date
                         </div>
-                        <div class="font-large-1">{{ listing.target_completion_datefrom }} - {{ listing.target_completion_dateto }}</div>
+                        <div class="h3">{{ listing.target_completion_datefrom }} - {{ listing.target_completion_dateto }}</div>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center flex-wrap mt-1">
                         <feather-icon
                             icon="CalendarIcon"
                             size="24"
@@ -94,7 +94,7 @@
                     </div>
                 </b-card>
             </b-col>
-            <b-col md="4">
+            <b-col lg="4" md="6" class="equal">
                 <b-card class="bg-lighten-5 border-warning">
                     <div class="mb-1">
                         <b-badge pill variant="warning" class="text-center">
@@ -109,20 +109,20 @@
                         </b-card-title>
                     </div>
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between flex-wrap"
                     >
                         <div class="font-small-5 text-uppercase">Budget</div>
-                        <div class="font-large-1">${{ proposal.min_budget }} - ${{ proposal.max_budget }}</div>
+                        <div class="h3">${{ proposal.min_budget }} - ${{ proposal.max_budget }}</div>
                     </div>
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between flex-wrap"
                     >
                         <div class="font-small-5 text-uppercase">
                             Date
                         </div>
-                        <div class="font-large-1">{{ proposal.target_startdate }} - {{ proposal.target_enddate }}</div>
+                        <div class="h3">{{ proposal.target_startdate }} - {{ proposal.target_enddate }}</div>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center flex-wrap mt-1">
                         <feather-icon
                             icon="CalendarIcon"
                             size="24"
@@ -136,8 +136,8 @@
                     </div>
                 </b-card>
             </b-col>
-            <b-col md="4">
-                <b-card class="bg-lighten-5 border-success pb-2">
+            <b-col lg="4" md="6" class="equal">
+                <b-card class="bg-lighten-5 border-success">
                     <div class="mb-1">
                         <b-badge pill variant="success" class="text-center">
                             <feather-icon
@@ -151,11 +151,11 @@
                         </b-card-title>
                     </div>
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between flex-wrap mb-1"
                     >
-                        <div class="font-small-5 text-uppercase">Legal</div>
-                        <div class="font-large-1">{{ legal_client_total_percentage }}%</div>
-                        <div class="d-flex align-items-center">
+                        <div class="font-small-5 text-uppercase mr-1">Legal</div>
+                        <div class="h3">{{ legal_client_total_percentage }}%</div>
+                        <div class="d-flex align-items-center flex-wrap">
                             <feather-icon
                                 icon="CalendarIcon"
                                 size="24"
@@ -169,11 +169,11 @@
                         </div>
                     </div>
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between flex-wrap"
                     >
-                        <div class="font-small-5 text-uppercase">Payment</div>
-                        <div class="font-large-1">{{ finance_client_total_percentage }}%</div>
-                        <div class="d-flex align-items-center">
+                        <div class="font-small-5 text-uppercase mr-1">Payment</div>
+                        <div class="h3">{{ finance_client_total_percentage }}%</div>
+                        <div class="d-flex align-items-center flex-wrap">
                             <feather-icon
                                 icon="CalendarIcon"
                                 size="24"

@@ -101,6 +101,7 @@
                                     <validation-provider
                                         #default="{ errors }"
                                         name="Minimum budget"
+                                        vid="min_budget"
                                         rules="required"
                                     >
                                         <b-form-input
@@ -120,16 +121,15 @@
                                 <div class="col">
                                     <validation-provider
                                         #default="{ errors }"
+                                        vid="max_budget"
                                         name="Max budget"
-                                        rules="required"
+                                        rules="required|minVal:@min_budget"
                                     >
                                         <b-form-input
                                             v-model="listing.max_budget"
                                             placeholder="Maximum Budget"
                                             type="number"
                                             class="mb-1"
-                                            ref="maxbudget"
-                                            @blur="checkMaxBudget"
                                             :state="
                                                 errors.length > 0 ? false : null
                                             "
@@ -319,7 +319,16 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver  } from "vee-validate";
+import { ValidationProvider, ValidationObserver, extend  } from "vee-validate";
+
+extend('minVal', {
+  params: ['target'],
+  validate(value, { target }) {
+    return value > target;
+  },
+  message: 'The {_field_} should be greater then {target}'
+});
+
 import {
     BCard,
     BRow,
@@ -394,6 +403,12 @@ export default {
             draftListingId: "",
             //   Validation
             required,
+
+            exampleRules: [
+                v => !!v || "This field is required",
+                v => ( v && v >= 5000 ) || "Loan should be above £5000",
+                v => ( v && v <= 50000 ) || "Max should not be above £50,000",
+            ],
         };
     },
     methods: {
@@ -441,20 +456,6 @@ export default {
             this.imagesShowWhileUpload.splice(index, 1);
             this.newImages.splice(index, 1);
             this.imagesFileUploader.splice(index, 1);
-        },
-
-        checkMaxBudget() {
-            if( this.listing.max_budget <= this.listing.min_budget ) {
-                this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                            title: "Max budget should great then min budget",
-                            icon: "EditIcon",
-                            variant: "warning",
-                        },
-                    });
-                    this.$refs.maxbudget.focus()
-            }
         },
 
         ...mapActions({

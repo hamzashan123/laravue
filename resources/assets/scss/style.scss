@@ -5,6 +5,15 @@ NOTE:
 PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
 WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
 
+.equal {
+    display: -ms-inline-grid;
+    display: inline-grid;
+ }
+
+ .ml-3px {
+    margin-left: 3px;
+ }
+
 .listing-image-fixed-height {
     height: 250px;
     object-fit: cover;
