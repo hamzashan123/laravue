@@ -59,7 +59,6 @@ export default {
             return new Promise((resolve, reject) => {
                 axios({ url: 'get-contracts', method: "POST" })
                     .then((response) => {
-                        console.log(response);
                         commit("setIsDataLoading", false);
                         commit("setContracts", response.data.data);
                         resolve(response.data);
@@ -103,7 +102,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsLoading", false);
                             return resolve(response.data);
@@ -132,7 +130,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
 
                             commit("setIsLoading", false);
                             return resolve(response.data);
@@ -151,11 +148,12 @@ export default {
         },
 
         // getting all comments
-        loadComments({ commit }) {
+        loadComments({ commit }, listingId) {
             commit("setIsDataLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "get-comments", method: "POST" })
+                axios({ url: "get-comments", data: listingId, method: "POST" })
                     .then((response) => {
+                        console.log(response);
                         commit("setIsDataLoading", false);
                         commit("setComments", response.data.data);
                         return resolve(response.data);
@@ -180,7 +178,6 @@ export default {
                 })
                     .then((response) => {
                         if (response.data.success) {
-                            console.log(response);
                             // state.comments.unshift(response.data.data)
                             dispatch('loadComments')
                             commit("setIsLoading", false);
@@ -219,9 +216,6 @@ export default {
 
          // archive legal payment documents
          archiveDocuments({ commit }, docsData) {
-            for (const value of docsData.values()) {
-                console.log(value);
-              }
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({

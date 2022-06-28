@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { BImg, BModal, } from "bootstrap-vue";
+import { BImg, BModal, VBModal } from "bootstrap-vue";
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
@@ -58,7 +58,10 @@ export default {
                 },
             },
         }
-    }
+    },
+    directives: {
+    'b-modal': VBModal,
+  },
 };
 </script>
 

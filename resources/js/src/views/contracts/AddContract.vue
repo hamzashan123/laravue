@@ -96,7 +96,7 @@
                                         @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
-                                        class="btn-icon rounded-circle ml-1"
+                                        class="btn-icon rounded-circle ml-3px"
                                         >
                                         <feather-icon icon="XIcon" size="10" />
                                     </b-button>
@@ -158,7 +158,7 @@
                                         @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
-                                        class="btn-icon rounded-circle ml-1"
+                                        class="btn-icon rounded-circle ml-3px"
                                         >
                                         <feather-icon icon="XIcon" size="10" />
                                     </b-button>
@@ -220,7 +220,7 @@
                                         @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
-                                        class="btn-icon rounded-circle ml-1"
+                                        class="btn-icon rounded-circle ml-3px"
                                         >
                                         <feather-icon icon="XIcon" size="10" />
                                     </b-button>
@@ -282,7 +282,7 @@
                                         @click="removeSelectedFile(idx, doc)"
                                         variant="gradient-danger"
                                         size="sm"
-                                        class="btn-icon rounded-circle ml-1"
+                                        class="btn-icon rounded-circle ml-3px"
                                         >
                                         <feather-icon icon="XIcon" size="10" />
                                     </b-button>
@@ -301,7 +301,8 @@
                     <!-- Tabs -->
                     <b-col md="6" class="mb-2">
                         <b-tabs>
-                            <b-tab active>
+                            <!-- client -->
+                            <b-tab active v-if="userRole == 1 || userRole == 3">
                                 <template #title>
                                     <feather-icon icon="HomeIcon" />
                                     <span>Client</span>
@@ -404,7 +405,8 @@
                                     </b-col>
                                 </div>
                             </b-tab>
-                            <b-tab>
+                            <!-- Contractor -->
+                            <b-tab  v-if="userRole == 2 || userRole == 3">
                                 <template #title>
                                     <feather-icon icon="ToolIcon" />
                                     <span>Conractor</span>
@@ -507,6 +509,7 @@
                                     </b-col>
                                 </div>
                             </b-tab>
+                            <!-- comments -->
                             <b-tab @click="refreshComments">
                                 <template #title>
                                     <feather-icon icon="MessageCircleIcon" />
@@ -564,7 +567,7 @@
                                                             ? 'border-primary '
                                                             : '' ||
                                                               comment.user_role ==
-                                                                  'EB Staff'
+                                                                  'EBStaff'
                                                             ? 'border-warning '
                                                             : '' ||
                                                               comment.user_role ==
@@ -593,13 +596,14 @@
                                                         </small>
 
                                                         <b-badge
+                                                            class="ml-3px"
                                                             :variant="
                                                                 comment.user_role ==
                                                                 'Contractor'
                                                                     ? 'primary '
                                                                     : '' ||
                                                                       comment.user_role ==
-                                                                          'EB Staff'
+                                                                          'EBStaff'
                                                                     ? 'warning '
                                                                     : '' ||
                                                                       comment.user_role ==
@@ -615,7 +619,7 @@
                                                     </div>
 
                                                     <p
-                                                        class="card-text h4 mt-1"
+                                                        class="card-text h4 mt-1 font-italic"
                                                     >
                                                         {{ comment.message }}
                                                     </p>
@@ -699,6 +703,7 @@ export default {
             finance_contractor_total_percentage: 0,
 
             comment: "",
+            userRole: '',
 
             statuses_color,
 
@@ -754,7 +759,6 @@ export default {
 
         // remove files
         removeSelectedFile(index, receivedDoc) {
-            console.log(index);
             this.archiveDocumentsTrigger(receivedDoc)
 
             this.loadLegalDocumentTrigger()
@@ -788,7 +792,6 @@ export default {
             this.uploadClientDoc(clientData)
                 .then((response) => {
                     if (response.success) {
-                        console.log(response.user);
 
                         this.legalDocuments = response.user[0];
 
@@ -869,7 +872,6 @@ export default {
             this.uploadContractorDoc(contractorData)
                 .then((response) => {
                     if (response.success) {
-                        console.log(response.data);
 
                         this.legalDocuments = response.user[0];
 
@@ -934,7 +936,6 @@ export default {
             this.addComment(commentData)
                 .then((response) => {
                     if (response.success) {
-                        console.log(response.data);
                         this.comment = "";
                         this.$toast({
                             component: ToastificationContent,
@@ -970,7 +971,6 @@ export default {
         },
 
         archiveDocumentsTrigger(docObj) {
-            console.log(docObj);
             let formData = new FormData();
             formData.append("document_id", docObj.listing_document_id);
             formData.append("image_url", docObj.legal_document_path);
@@ -1020,7 +1020,6 @@ export default {
             this.loadLegalDocument({ listing_id: this.listingId })
             .then((response) => {
                 if (response.success) {
-                    console.log(response);
                     if (response.data[0].length == 0) {
                         this.noData = true;
                     } else {
@@ -1035,7 +1034,6 @@ export default {
                         this.legal_contractor_documents =
                             response.data[0].legal_contractor_documents;
 
-                        console.log(response, "response");
                         // Percentages
                         this.finance_client_total_percentage =
                             response.data[0].finance_client_total_percentage;
@@ -1074,7 +1072,7 @@ export default {
         },
 
         refreshComments() {
-            this.loadComments();
+            this.loadComments( { listing_id: this.listingId } );
         },
     },
     computed: {
@@ -1083,14 +1081,18 @@ export default {
             isDataLoading: "contract/getIsDataLoading",
             comments: "contract/getComments",
         }),
+
+
     },
     created() {
+
+        this.userRole = JSON.parse(localStorage.getItem("userData")).user_role.id
+
         this.listingId = this.$route.params.listingId;
 
         this.loadLegalDocument({ listing_id: this.listingId })
             .then((response) => {
                 if (response.success) {
-                    console.log(response);
                     if (response.data[0].length == 0) {
                         this.noData = true;
                     } else {
@@ -1105,7 +1107,6 @@ export default {
                         this.legal_contractor_documents =
                             response.data[0].legal_contractor_documents;
 
-                        console.log(response, "response");
                         // Percentages
                         this.finance_client_total_percentage =
                             response.data[0].finance_client_total_percentage;
@@ -1141,7 +1142,7 @@ export default {
                 });
             });
 
-        this.loadComments();
+        this.loadComments({ listing_id: this.listingId });
     },
     directives: {
         Ripple,
