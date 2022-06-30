@@ -5,18 +5,18 @@ export default [
         route: "dashboard",
         icon: "HomeIcon",
     },
-    //   ... can('create', 'user') ? [
-    //     {
-    //         title: 'Customers',
-    //         route: 'customers',
-    //         icon: 'UsersIcon',
-    //     },
-    //   ] : [],
+    ... can('create', 'all-user') ? [
     {
-        title: "Customers",
-        route: "customers",
-        icon: "UsersIcon",
+        title: 'Customers',
+        route: 'customers',
+        icon: 'UsersIcon',
     },
+    ] : [],
+    // {
+    //     title: "Customers",
+    //     route: "customers",
+    //     icon: "UsersIcon",
+    // },
     {
         title: "Listings",
         route: "listings",
@@ -27,8 +27,8 @@ export default [
             route: "proposals",
             icon: "ShoppingBagIcon",
     },
-  
-   
+
+
     {
         title : can('create', 'contract') ? "My Contracts" :  can('read', 'all-contract') ? "All Contracts": "Contracts",
         route: "contracts",
@@ -40,18 +40,18 @@ export default [
         route: "chat",
         icon: "MessageSquareIcon",
     },
-    //   ... can('create', 'account') ? [
-    //     {
-    //         title: 'Accounts',
-    //         route: 'accounts',
-    //         icon: 'UserPlusIcon',
-    //     },
-    //   ] : [],
+    ... can('create', 'all-account') ? [
     {
-        title: "Accounts",
-        route: "accounts",
-        icon: "UserPlusIcon",
+        title: 'Accounts',
+        route: 'accounts',
+        icon: 'UserPlusIcon',
     },
+    ] : [],
+    // {
+    //     title: "Accounts",
+    //     route: "accounts",
+    //     icon: "UserPlusIcon",
+    // },
     {
         title: "Settings",
         route: "settings",

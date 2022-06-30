@@ -15,7 +15,7 @@
                                 v-for="chatUser in chatUsers"
                                 :key="chatUser.id"
                             >
-                                <div @click="startChat(chatUser.id, chatUser)">
+                                <div @click="startChat(chatUser)">
                                     <b-avatar
                                         size="32"
                                         :variant=" chatUser.id === userSelected ? 'light-default' : 'light-primary'"
@@ -198,13 +198,13 @@ export default {
             sendMessage: "chat/sendMessage",
         }),
 
-        startChat(userId, toUser) {
+        startChat(ChatThisUser) {
+            console.log(ChatThisUser.id);
             this.isChartStarted = true;
-            this.userSelected = userId
-            this.loadChats({ to_user_id: userId });
-            this.toUserId = userId;
-            this.toUser = toUser;
-            console.log(toUser);
+            this.userSelected = ChatThisUser.id
+            this.loadChats();
+            this.toUserId = ChatThisUser.id;
+            this.toUser = ChatThisUser;
         },
 
         // Add commments
