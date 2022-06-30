@@ -142,7 +142,7 @@ class ChatController extends Controller
 
     public function getMessages(Request $request)
     {
-        $messages = Messages::where('from_user_id', Auth::user()->id)->paginate(20);
+        $messages = Messages::where('from_user_id', Auth::user()->id)->orWhere('to_user_id', Auth::user()->id)->paginate(20);
 
         if(count($messages) > 0) {
             $response_data = [
