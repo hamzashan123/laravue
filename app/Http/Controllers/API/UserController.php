@@ -19,6 +19,7 @@ use Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Listing;
+use App\Models\Messages;
 
 
 class UserController extends Controller
@@ -272,9 +273,21 @@ class UserController extends Controller
 
     public function getUsers() {
 
-        //$user = Auth::user();
-        
-        $users = User::where('status', 'active')->get();
+        $user = Auth::user();
+        $users = User::where('status', 'active')->whereNotIn('id',[$user->id]);        
+
+        if($user->role_id == 3) {
+            $users = $users->get();
+        } else {
+            $messages = Messages::where('status', 'active');
+            $messages = $messages->where('from_user_id', $user->id)->orWhere('to_user_id', $user->id);
+
+            $fromUser = $messages->pluck('from_user_id');
+            $toUser = $messages->pluck('to_user_id');                       
+
+            $users = $users->whereIn('id', $fromUser)->orWhereIn('id', $toUser);
+            $users = $users->whereNotIn('id',[$user->id])->get();
+        }        
 
         if(count($users) > 0) {
             $response_data = [
