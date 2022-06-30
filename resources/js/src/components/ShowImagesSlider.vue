@@ -8,60 +8,39 @@
                 thumbnail
                 class="w-50 listing-image-fixed-height"
                 :src="image"
-                v-b-modal.modal-listing-images
+                @click="index = idx"
             />
         </div>
         <div v-if="!listing.images">No images found</div>
 
-        <!-- modal -->
-        <b-modal id="modal-listing-images" ok-only centered size="lg">
-            <swiper
-                class="swiper-navigations"
-                :options="swiperOptions"
-                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-            >
-                <swiper-slide
-                    v-for="(image, index) in listing.images"
-                    :key="index"
-                >
-                    <b-img :src="image" fluid  class="slider-images-height"/>
-                </swiper-slide>
+        <CoolLightBox
+        :items="listing.images"
+        :index="index"
+        @close="index = null">
+        </CoolLightBox>
 
-                <!-- Add Arrows -->
-                <div slot="button-next" class="swiper-button-next" />
-                <div slot="button-prev" class="swiper-button-prev" />
-            </swiper>
-        </b-modal>
     </div>
 </template>
 
 <script>
-import { BImg, BModal, VBModal } from "bootstrap-vue";
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
+import { BImg } from "bootstrap-vue";
+
+import CoolLightBox from 'vue-cool-lightbox'
+import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 
 export default {
     props: ["listing"],
     components: {
         BImg,
-        BModal,
 
-        Swiper,
-        SwiperSlide,
+        CoolLightBox,
     },
     data() {
         return {
-            swiperOptions: {
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-            },
+            index: null,
+
         }
     },
-    directives: {
-    'b-modal': VBModal,
-  },
 };
 </script>
 
