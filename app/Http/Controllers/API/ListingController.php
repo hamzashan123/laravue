@@ -246,7 +246,7 @@ class ListingController extends Controller
 
     public function getListing(Request $request)
     {       
-        $data = Listing::orderBy('id','asc')->paginate(10);
+        $data = Listing::orderBy('created_at','desc')->paginate(10);
 
         if(count($data) > 0)
         {
@@ -267,7 +267,7 @@ class ListingController extends Controller
 
     public function myListings(Request $request)
     {        
-        $data = Listing::where('user_id', Auth::user()->id)->orderBy('id','asc')->paginate(10);
+        $data = Listing::where('user_id', Auth::user()->id)->orderBy('created_at','desc')->paginate(10);
 
         if(count($data) > 0)
         {
@@ -288,7 +288,7 @@ class ListingController extends Controller
 
     public function getPublishedListings(Request $request)
     {
-        $data = Listing::whereNotIn('status', ['draft'])->orderBy('id','asc')->paginate(10);
+        $data = Listing::whereNotIn('status', ['draft'])->orderBy('created_at','desc')->paginate(10);
 
         if(count($data) > 0)
         {

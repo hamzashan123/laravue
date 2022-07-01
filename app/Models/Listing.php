@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ListingImages;
 use App\Models\Proposals;
+use App\Models\Contracts;
+use App\Models\LegalDocuments;
 //use App\Models\Auth;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,5 +52,34 @@ class Listing extends Model
     public function getListingProposals() {
         return $this->hasMany(Proposals::class,'listing_id','id')
             ->select('proposals.*');
+    }
+
+    public function getContracts() {
+        return $this->hasOne(Contracts::class,'listing_id','id')
+            ->select('contracts.*');
+    }
+
+    public function getLegalClientDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','id')
+            ->where('user_type','client')->where('document_type','legal')
+            ->select('listing_documents.*');
+    }
+
+    public function getLegalContractorDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','id')
+            ->where('user_type','contractor')->where('document_type','legal')
+            ->select('listing_documents.*');
+    }
+
+    public function getFinanceClientDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','id')
+            ->where('user_type','client')->where('document_type','finance')
+            ->select('listing_documents.*');
+    }
+
+    public function getFinanceContractorDocuments() {
+        return $this->hasMany(LegalDocuments::class,'listing_id','id')
+            ->where('user_type','contractor')->where('document_type','finance')
+            ->select('listing_documents.*');
     }
 }

@@ -25,13 +25,16 @@ class ContractDetailResource extends JsonResource
     {              
         //$document = URL::to('/') . Storage::disk('local')->url('public/ListingDocuments/' .$this->listing_id . '/' . $this->user_type . '/' . $this->legal_document_path);
         
-        $proposal = Proposals::where('listing_id', $this->getListing->id)
-                             ->where('user_id', $this->getContract->contractor_id)
+        $proposal = Proposals::where('listing_id', $this->id)
+                             ->where('user_id', $this->getContracts->contractor_id)
                              ->whereIn('status' , ['pre_contract','contract_started','contract_completed'])->first();
+
+        $legal_total_percentage = round(($this->getLegalClientDocuments->sum('percentage') + $this->getLegalContractorDocuments->sum('percentage'))/2) ;
+        $finance_total_percentage = round(($this->getFinanceClientDocuments->sum('percentage') + $this->getFinanceContractorDocuments->sum('percentage'))/2) ;
         
         return [
-            'listing'=> new ListingResource($this->getListing),
-            'contract'=> new ContractResource($this->getContract),
+            'listing'=> new ListingResource($this),
+            'contract'=> new ContractResource($this->getContracts),
             'proposal'=> new ProposalsResource($proposal) ? new ProposalsResource($proposal) : 'No proposal yet!',
             'legal_client_documents'=> LegalDocumentsResource::collection($this->getLegalClientDocuments),
             'legal_contractor_documents'=> LegalDocumentsResource::collection($this->getLegalContractorDocuments),
@@ -45,6 +48,8 @@ class ContractDetailResource extends JsonResource
             'legal_contractor_last_update_on'=> $this->getLegalContractorDocuments->max('created_at') ? $this->getLegalContractorDocuments->max('created_at') : 'No last update' ,
             'finance_client_last_update_on'=> $this->getFinanceClientDocuments->max('created_at') ? $this->getFinanceClientDocuments->max('created_at') : 'No last update' ,
             'finance_contractor_last_update_on'=> $this->getFinanceContractorDocuments->max('created_at') ? $this->getFinanceContractorDocuments->max('created_at') : 'No last update',
+            'legal_total_percentage' => $legal_total_percentage,
+            'finance_total_percentage' => $finance_total_percentage,
         ];
     }
 }

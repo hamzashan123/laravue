@@ -102,7 +102,28 @@ class ContractsController extends Controller
 
     public function getContracts(Request $request)
     {
-        $contract = Contracts::whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+
+        $user = Auth::user();
+
+        if($user->role_id == 1 ) {
+            $contract = Contracts::with('getListing')->whereHas('getListing', function($query) use($user){
+                $query->where('user_id', $user->id);
+            })->whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+        }else if ($user->role_id == 2){
+            $contract = Contracts::where('contractor_id', $user->id)->whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+        }else{
+            $contract = Contracts::whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+        }
+         
+
+        // $visitImages = Contracts::with('getImages')->whereHas('getImages', function($query) use($image_) {
+        //     $query->where('image', $image_);
+        // })->where('id', $request->visit_id)->first();
+
+
+       
+
+
 
         if (count($contract) > 0) {            
 
@@ -137,8 +158,7 @@ class ContractsController extends Controller
             return response()->json($response_data);
         }
 
-        $data = LegalDocuments::select('listing_id')->where('listing_id', $request->listing_id)
-        ->distinct()->get();
+        $data = Listing::where('id', $request->listing_id)->get();
         
         if(count($data) >= 0) {
             $response_data = [
