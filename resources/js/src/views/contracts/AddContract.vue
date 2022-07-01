@@ -409,7 +409,7 @@
                             <b-tab  v-if="userRole == 2 || userRole == 3">
                                 <template #title>
                                     <feather-icon icon="ToolIcon" />
-                                    <span>Conractor</span>
+                                    <span>Contractor</span>
                                 </template>
 
                                 <div class="mt-2">

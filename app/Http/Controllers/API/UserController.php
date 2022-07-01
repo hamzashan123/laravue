@@ -299,7 +299,7 @@ class UserController extends Controller
         } else {
             $response_data = [
                 'success' => false,
-                'message' => 'Data Not Found',
+                'message' => 'No Communication yet!',
             ];
             return response()->json($response_data, $this->successStatus);
         }

@@ -154,7 +154,7 @@
                         class="d-flex align-items-center justify-content-between flex-wrap mb-1"
                     >
                         <div class="font-small-5 text-uppercase mr-1">Legal</div>
-                        <div class="h3">{{ legal_client_total_percentage }}%</div>
+                        <div class="h3">{{ legal_total_percentage }}%</div>
                         <div class="d-flex align-items-center flex-wrap">
                             <feather-icon
                                 icon="CalendarIcon"
@@ -172,7 +172,7 @@
                         class="d-flex align-items-center justify-content-between flex-wrap"
                     >
                         <div class="font-small-5 text-uppercase mr-1">Payment</div>
-                        <div class="h3">{{ finance_client_total_percentage }}%</div>
+                        <div class="h3">{{ finance_total_percentage }}%</div>
                         <div class="d-flex align-items-center flex-wrap">
                             <feather-icon
                                 icon="CalendarIcon"
@@ -640,6 +640,8 @@ export default {
             legal_contractor_total_percentage: 0,
             finance_client_total_percentage: 0,
             finance_contractor_total_percentage: 0,
+            legal_total_percentage:0,
+            finance_total_percentage:0,
 
             finance_client_last_update_on: '',
             legal_client_last_update_on: '',
@@ -802,6 +804,10 @@ export default {
                         response.data[0].finance_contractor_total_percentage;
                     this.legal_contractor_total_percentage =
                         response.data[0].legal_contractor_total_percentage;
+                    this.legal_total_percentage =
+                        response.data[0].legal_total_percentage;
+                    this.finance_total_percentage =
+                        response.data[0].finance_total_percentage; 
 
                     this.finance_client_last_update_on = response.data[0].finance_client_last_update_on;
                     this.legal_client_last_update_on = response.data[0].legal_client_last_update_on;
