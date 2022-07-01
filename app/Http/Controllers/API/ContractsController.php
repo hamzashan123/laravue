@@ -115,15 +115,9 @@ class ContractsController extends Controller
             $contract = Contracts::whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
         }
          
-
         // $visitImages = Contracts::with('getImages')->whereHas('getImages', function($query) use($image_) {
         //     $query->where('image', $image_);
         // })->where('id', $request->visit_id)->first();
-
-
-       
-
-
 
         if (count($contract) > 0) {            
 
