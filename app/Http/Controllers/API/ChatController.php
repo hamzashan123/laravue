@@ -142,7 +142,25 @@ class ChatController extends Controller
 
     public function getMessages(Request $request)
     {
-        $messages = Messages::where('from_user_id', Auth::user()->id)->orWhere('to_user_id', Auth::user()->id)->paginate(20);
+        $validator = Validator::make($request->all(), [
+            'to_user_id'     => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+       
+        $messages = Messages::where(function($query) use ($request) {
+            $query->where('from_user_id', Auth::user()->id)->where('to_user_id', $request->to_user_id);
+        })->orWhere(function ($query) use ($request) {
+            $query->where('from_user_id', $request->to_user_id)->where('to_user_id', Auth::user()->id);
+        })->orderBy('created_at', 'DESC')->limit(10)->get();
 
         if(count($messages) > 0) {
             $response_data = [
@@ -154,7 +172,7 @@ class ChatController extends Controller
         } else {
             $response_data = [
                 'success' => false,
-                'message' => 'Data Not Found',
+                'message' => 'No Messages Found!',
             ];
             return response()->json($response_data, $this->successStatus);
         }
