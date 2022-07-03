@@ -179,7 +179,6 @@ export default {
                     .then((response) => {
                         if (response.data.success) {
                             // state.comments.unshift(response.data.data)
-                            dispatch('loadComments')
                             commit("setIsLoading", false);
                             return resolve(response.data);
                         } else {

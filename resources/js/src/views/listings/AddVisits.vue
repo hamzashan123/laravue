@@ -140,7 +140,7 @@
                                     placeholder="Add Pictures"
                                     drop-placeholder="Drop file here..."
                                     multiple
-                                    accept=".jpg, .png,"
+                                    accept=".jpg, .png, .pdf"
                                     :disabled="isFileUploaderFull"
                                     :file-name-formatter="formatNames"
                                 />

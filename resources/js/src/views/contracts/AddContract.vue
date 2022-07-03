@@ -937,6 +937,7 @@ export default {
                 .then((response) => {
                     if (response.success) {
                         this.comment = "";
+                        this.loadComments( { listing_id: this.listingId } );
                         this.$toast({
                             component: ToastificationContent,
                             props: {

@@ -55,7 +55,6 @@
                                         size="32"
                                         variant="light-primary"
                                         class="mr-1"
-                                        :src="loggedinUserAvatar"
                                     />
                                     <div
                                         class="chat-info col shadow p-1 bg-white rounded"
@@ -201,9 +200,9 @@ export default {
         startChat(ChatThisUser) {
             console.log(ChatThisUser.id);
             this.isChartStarted = true;
-            this.userSelected = ChatThisUser.id
-            this.loadChats();
-            this.toUserId = ChatThisUser.id;
+            this.userSelected = ChatThisUser.id // changing message data
+            this.toUserId = ChatThisUser.id; // sending for message
+            this.loadChats( { to_user_id: ChatThisUser.id } );
             this.toUser = ChatThisUser;
         },
 
@@ -216,6 +215,7 @@ export default {
             this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
+                        this.loadChats( { to_user_id: this.toUserId } );
                         console.log(response.data);
                         this.message = "";
                     } else {
