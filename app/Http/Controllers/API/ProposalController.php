@@ -341,4 +341,61 @@ class ProposalController extends Controller
         }
     }
 
+    public function editProposal(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'proposal_id'     => 'required',
+        ]);
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $user = Auth::user();
+        if($user->role_id == Helper::$contractor || $user->role_id == Helper::$staff) {
+            
+            $proposal = Proposals::where('id', $request->proposal_id)->whereNotIn('status' , ['contract_started','contract_completed'])->first();
+            if($proposal != null) { 
+                if($user->role_id == Helper::$contractor && $proposal->user_id != $user->id) {
+                    $response_data = [
+                        'success' => false,
+                        'message' => 'Data Not Found',
+                    ];
+                    return response()->json($response_data, $this->successStatus);
+                } else {
+                    $proposal->min_budget = $request->min_budget ?? $proposal->min_budget;
+                    $proposal->max_budget = $request->max_budget ?? $proposal->max_budget;
+                    $proposal->target_startdate = $request->target_startdate ?? $proposal->target_startdate;
+                    $proposal->target_enddate = $request->target_enddate ?? $proposal->target_enddate;
+                    $proposal->save();
+
+                    $response_data = [
+                        'success' => true,
+                        'message' => 'Proposal update successfully!',
+                        'data' => new ProposalsResource($proposal),
+                    ];
+                    return response()->json($response_data, $this->successStatus);
+                }
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
+
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Permission denied, You cannot edit proposal',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+
+    }
+
 }

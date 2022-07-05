@@ -16,6 +16,7 @@ use App\Notifications\EmailVerification;
 use URL;
 use Validator;
 use Mail;
+use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Listing;
@@ -271,13 +272,13 @@ class UserController extends Controller
 
     }
 
-    public function getUsers() {
+    public function getUsers(Request $request) {
 
         $user = Auth::user();
         $users = User::where('status', 'active')->whereNotIn('id',[$user->id]);        
 
         if($user->role_id == 3) {
-            $users = $users->get();
+            $users = $users;
         } else {
             $messages = Messages::where('status', 'active');
             $messages = $messages->where('from_user_id', $user->id)->orWhere('to_user_id', $user->id);
@@ -286,8 +287,15 @@ class UserController extends Controller
             $toUser = $messages->pluck('to_user_id');                       
 
             $users = $users->whereIn('id', $fromUser)->orWhereIn('id', $toUser);
-            $users = $users->whereNotIn('id',[$user->id])->get();
+            $users = $users->whereNotIn('id',[$user->id]);
         }        
+
+        if($request->filter != null) {
+            $users = $users->where(DB::raw("CONCAT(first_name,' ',last_name)"), 'LIKE', '%' . $request->filter . '%');
+        }
+        
+        $users = $users->get();
+
 
         if(count($users) > 0) {
             $response_data = [
