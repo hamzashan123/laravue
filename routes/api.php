@@ -48,6 +48,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('get-proposals', [App\Http\Controllers\API\ProposalController::class, 'getProposals']);
     Route::post('get-listing-proposals', [App\Http\Controllers\API\ProposalController::class, 'getListingProposals']);
     Route::post('get-proposal-details', [App\Http\Controllers\API\ProposalController::class, 'getProposalDetails']);
+    Route::post('edit-proposal', [App\Http\Controllers\API\ProposalController::class, 'editProposal']);
 
     //Visits
     Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);
