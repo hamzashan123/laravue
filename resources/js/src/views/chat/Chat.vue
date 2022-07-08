@@ -1,18 +1,24 @@
 <template>
-    <div>
+    <div style="height: 60vh">
         <!-- -->
         <b-row>
             <b-col sm="3">
                 <b-card>
+                    <b-form-input
+                        id="searchUser"
+                        v-model="searchUser"
+                        type="search"
+                        placeholder="Search Users"
+                    />
                     <vue-perfect-scrollbar
                         :settings="perfectScrollbarSettings"
                         class="scroll-area mb-0"
                     >
-                        <div class="position-relative">
+                        <div class="position-relative" style="height: 60vh">
                             <div
                                 class="d-flex align-item-center cursor-pointer rounded users-list"
                                 :class="{ active: chatUser.id === userSelected}"
-                                v-for="chatUser in chatUsers"
+                                v-for="chatUser in filteredUsers"
                                 :key="chatUser.id"
                             >
                                 <div @click="startChat(chatUser)">
@@ -37,15 +43,18 @@
                         <vue-perfect-scrollbar
                             :settings="perfectScrollbarSettings"
                             class="user-chats scroll-area p-1 mb-0"
+                            id="chat-continer"
                         >
-                            <div v-if="!isChartStarted" class="start-chat" style="height: 60vh">
+                            <div v-if="!isChartStarted" class="start-chat position-relative" style="height: 60vh">
                                 Start chat
                             </div>
                             <div
-                                class="chats position-relative"
+                                class="position-relative"
                                 v-if="isChartStarted"
                                 style="height: 60vh"
                             >
+
+                                <infinite-loading @distance="1" @infinite="handleLoadMore"></infinite-loading>
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
                                     v-for="chat in chats"
@@ -144,15 +153,16 @@ import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import Topbar from "./Topbar.vue";
 import { mapActions, mapGetters } from "vuex";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import InfiniteLoading from 'vue-infinite-loading'
+import axios from "axios";
 
 export default {
     data() {
         return {
-            chatUsers: {},
+            chatUsers: [],
             isChartStarted: false,
             isChatLoading: false,
             userSelected: false,
-
 
             message: "",
             toUserId: 0,
@@ -162,6 +172,9 @@ export default {
                 maxScrollbarLength: 60,
                 height: 10,
             },
+
+            searchUser: '',
+            page: 1,
         };
     },
     components: {
@@ -189,8 +202,28 @@ export default {
         BBadge,
         VuePerfectScrollbar,
         Topbar,
+        InfiniteLoading,
     },
     methods: {
+
+        handleLoadMore($state) {
+            this.page = this.page + 1;
+
+            this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
+                .then((response) => {
+                    // console.log("response", response);
+                    if(response.success) {
+                            $state.loaded();
+                    } else {
+                            $state.complete();
+                    }
+                })
+                .catch((error) => {
+                    $state.error();
+                    console.log("chat loadmore error" + error);
+                });
+
+        },
         ...mapActions({
             loadAccounts: "account/loadAccounts",
             loadChats: "chat/loadChats",
@@ -202,8 +235,10 @@ export default {
             this.isChartStarted = true;
             this.userSelected = ChatThisUser.id // changing message data
             this.toUserId = ChatThisUser.id; // sending for message
-            this.loadChats( { to_user_id: ChatThisUser.id } );
+            this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } );
             this.toUser = ChatThisUser;
+
+            this.scrollToEnd()
         },
 
         // Add commments
@@ -215,9 +250,10 @@ export default {
             this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
-                        this.loadChats( { to_user_id: this.toUserId } );
+                        this.loadChats( { toUserId: this.toUserId, pageNo: this.page } );
                         console.log(response.data);
                         this.message = "";
+                        this.scrollToEnd()
                     } else {
                         console.log(response);
                         this.$toast({
@@ -243,9 +279,9 @@ export default {
                     });
                 });
         },
-        scrollToEnd: function () {
-            // scroll to the start of the last message
-            this.$el.scrollTop = this.$el.lastElementChild.offsetTop;
+        scrollToEnd: function() {
+            var container = this.$el.querySelector("#chat-continer");
+            container.scrollTop = container.scrollHeight;
         },
     },
     computed: {
@@ -262,6 +298,12 @@ export default {
         reverseChat() {
             return this.chats.slice().reverse();
         },
+
+        filteredUsers() {
+            return this.chatUsers.filter(user => {
+                return user.first_name.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1
+            })
+        }
     },
     created() {
         // getting lsiting
@@ -292,9 +334,6 @@ export default {
                     },
                 });
             });
-    },
-    updated() {
-        this.$nextTick(() => this.scrollToEnd());
     },
     directives: {
         Ripple,

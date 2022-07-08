@@ -142,19 +142,22 @@
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
+                            size="sm"
                             :class="data.value"
                             :to="{
                                 name: 'listings.view',
                                 params: { listingId: data.item.id },
                             }"
                         >
+                            <!-- <feather-icon icon="EyeIcon" size="15" /> -->
                             See Details
                         </b-button>
 
                         <b-button
                             v-if="can('update', 'listing') || can('update', 'all-listing')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="primary"
+                            variant="warning"
+                            size="sm"
                             :class="data.value"
                             :to="{
                                 name: 'listings.edit',
@@ -162,6 +165,20 @@
                             }"
                         >
                             <feather-icon icon="EditIcon" size="15" />
+                        </b-button>
+                        <!-- delete -->
+                        <b-button
+                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            :class="data.value"
+                            :to="{
+                                name: 'listings.edit',
+                                params: { listingId: data.item.id },
+                            }"
+                        >
+                            <feather-icon icon="XIcon" size="15" />
                         </b-button>
                     </template>
                 </b-table>

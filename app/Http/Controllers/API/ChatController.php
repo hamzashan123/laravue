@@ -155,18 +155,19 @@ class ChatController extends Controller
             return response()->json($response_data);
         }
 
-       
+
         $messages = Messages::where(function($query) use ($request) {
             $query->where('from_user_id', Auth::user()->id)->where('to_user_id', $request->to_user_id);
         })->orWhere(function ($query) use ($request) {
             $query->where('from_user_id', $request->to_user_id)->where('to_user_id', Auth::user()->id);
-        })->orderBy('created_at', 'DESC')->limit(10)->get();
+        })->orderBy('created_at', 'ASC')->paginate(5);
 
         if(count($messages) > 0) {
             $response_data = [
                 'success' => true,
                 'message' => 'Message List',
                 'data' => MessageResource::collection($messages),
+                // 'data' => $messages,
             ];
             return response()->json($response_data, $this->successStatus);
         } else {

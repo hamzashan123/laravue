@@ -117,7 +117,8 @@
                 >
 
                     <template #cell(contractor)="data">
-                        {{ data.item.contractor.first_name + " " + data.item.contractor.last_name  }}
+                        {{ data.item.contractor ? data.item.contractor.first_name +" " : '' }}
+                        {{ data.item.contractor ? data.item.contractor.last_name : '' }}
                     </template>
                     <template #cell(title)="data">
                         <b-media vertical-align="center">
@@ -191,14 +192,32 @@
                         </b-button> -->
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="success"
-                            class="mb-1"
+                            variant="primary"
+                            size="sm"
                             :to="{
                                 name: 'contracts.view',
                                 params: { listingId: data.item.listing.id },
                             }"
                         >
                             See Details
+                        </b-button>
+
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="warning"
+                            size="sm"
+                            to=""
+                        >
+                            <feather-icon icon="EditIcon" size="15" />
+                        </b-button>
+                        <!-- delete -->
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            to=""
+                        >
+                            <feather-icon icon="XIcon" size="15" />
                         </b-button>
                     </template>
                 </b-table>

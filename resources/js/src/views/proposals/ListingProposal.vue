@@ -210,10 +210,21 @@
                          {{ new Date(data.item.listing.created_at).toDateString() }}
                     </template>
                     <template #cell(actions)="data">
+
+                        <b-button
+                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') || data.item.status === 'approved' && can('create', 'precontract') ) "
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="success"
+                            size="sm"
+                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
+                        >
+                            Assign
+                        </b-button>
+
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
-                            class="mb-1"
+                            size="sm"
                             :to="{
                                 name: 'proposals.view',
                                 params: { proposalId: data.item.id },
@@ -223,14 +234,26 @@
                         </b-button>
 
                         <b-button
-                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') || data.item.status === 'approved' && can('create', 'precontract') ) "
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="success"
-                            class="mb-1"
-                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
+                            variant="warning"
+                            size="sm"
+                            :to="{
+                                name: 'proposals.edit',
+                                params: { proposalId: data.item.id },
+                            }"
                         >
-                            Assign
+                            <feather-icon icon="EditIcon" size="15" />
                         </b-button>
+                        <!-- delete -->
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            to=""
+                        >
+                            <feather-icon icon="XIcon" size="15" />
+                        </b-button>
+
                     </template>
                 </b-table>
 

@@ -17,6 +17,10 @@ use DB;
 
 class Helper
 {
+    public static $client = 1;
+    public static $contractor = 2;
+    public static $staff = 3;
+
     public static function generateRandomString($firstname, $lastname, $email) {
         $emailaddress = str_replace('.','', $email);
         $emailstring = explode('@', $emailaddress);
