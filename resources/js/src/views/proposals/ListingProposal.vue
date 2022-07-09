@@ -249,7 +249,7 @@
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="danger"
                             size="sm"
-                            to=""
+                            @click="deleteTrigger( data.item.id, data.index )"
                         >
                             <feather-icon icon="XIcon" size="15" />
                         </b-button>
@@ -441,7 +441,7 @@ export default {
         this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract' }),
+        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract', deleteListingsProposal: "proposal/deleteListingsProposal" }),
 
         assignContractTrigger(listingId, contractortId) {
             console.log(listingId, contractortId);
@@ -485,6 +485,39 @@ export default {
                         },
                     });
                 });
+
+        },
+
+        deleteTrigger( id, index ) {
+            if( confirm("Are you sure?") ) {
+
+                this.deleteListingsProposal({ id: id })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "danger",
+                                },
+                            });
+                            this.items.splice(index, 1)
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
 
         },
 

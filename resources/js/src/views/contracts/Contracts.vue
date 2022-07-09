@@ -215,7 +215,7 @@
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="danger"
                             size="sm"
-                            to=""
+                            @click="deleteTrigger( data.item.id, data.index )"
                         >
                             <feather-icon icon="XIcon" size="15" />
                         </b-button>
@@ -402,7 +402,40 @@ export default {
         this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadContracts: "contract/loadContracts" }),
+        ...mapActions({ loadContracts: "contract/loadContracts", deleteContracts: "contract/deleteContracts", }),
+
+        deleteTrigger( id, index ) {
+            if( confirm("Are you sure?") ) {
+
+                this.deleteContracts({ id: id })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "danger",
+                                },
+                            });
+                            this.items.splice(index, 1)
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
+
+        },
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering

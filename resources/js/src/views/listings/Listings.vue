@@ -328,7 +328,37 @@ export default {
     mounted() {
 
         // getting lsiting
-        this.loadListingsFunc()
+        this.loadListings()
+            .then((response) => {
+                if( response.success ) {
+                    this.items = response.data
+                    // Set the initial number of items
+                    this.totalRows = response.data.length;
+
+                } else {
+                    this.noData = true,
+                    this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: response.message,
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error while loading",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
 
     },
     methods: {
@@ -365,41 +395,6 @@ export default {
                     });
             }
 
-        },
-
-        // function to load listings
-        loadListingsFunc() {
-            this.loadListings()
-            .then((response) => {
-                if( response.success ) {
-                    this.items = response.data
-                    // Set the initial number of items
-                    this.totalRows = response.data.length;
-
-                } else {
-                    this.noData = true,
-                    this.$toast({
-                    component: ToastificationContent,
-                    props: {
-                        title: response.message,
-                        icon: "EditIcon",
-                        variant: "danger",
-                    },
-                });
-
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                this.$toast({
-                    component: ToastificationContent,
-                    props: {
-                        title: "Error while loading",
-                        icon: "EditIcon",
-                        variant: "danger",
-                    },
-                });
-            });
         },
 
         onFiltered(filteredItems) {
