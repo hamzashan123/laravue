@@ -160,7 +160,7 @@ class ChatController extends Controller
             $query->where('from_user_id', Auth::user()->id)->where('to_user_id', $request->to_user_id);
         })->orWhere(function ($query) use ($request) {
             $query->where('from_user_id', $request->to_user_id)->where('to_user_id', Auth::user()->id);
-        })->orderBy('created_at', 'ASC')->paginate(5);
+        })->orderBy('created_at', 'DESC')->paginate(5);
 
         if(count($messages) > 0) {
             $response_data = [

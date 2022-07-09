@@ -53,8 +53,8 @@
                                 v-if="isChartStarted"
                                 style="height: 60vh"
                             >
-
                                 <infinite-loading @distance="1" @infinite="handleLoadMore"></infinite-loading>
+
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
                                     v-for="chat in chats"
@@ -235,10 +235,12 @@ export default {
             this.isChartStarted = true;
             this.userSelected = ChatThisUser.id // changing message data
             this.toUserId = ChatThisUser.id; // sending for message
-            this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } );
-            this.toUser = ChatThisUser;
+            this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } )
+                .then((response) => {
+                    this.scrollToEnd()
+                })
 
-            this.scrollToEnd()
+            this.toUser = ChatThisUser;
         },
 
         // Add commments
@@ -250,10 +252,12 @@ export default {
             this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
-                        this.loadChats( { toUserId: this.toUserId, pageNo: this.page } );
+                        this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
+                            .then((response) => {
+                                this.scrollToEnd()
+                            })
                         console.log(response.data);
                         this.message = "";
-                        this.scrollToEnd()
                     } else {
                         console.log(response);
                         this.$toast({

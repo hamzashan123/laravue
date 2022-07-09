@@ -43,7 +43,8 @@ export default {
             state.isCreated = isCreated;
         },
         setChats(state, chats) {
-            state.chats.push(...chats) ;
+            chats.reverse();
+            state.chats.unshift(...chats) ;
         },
     },
     actions: {
@@ -52,7 +53,7 @@ export default {
         loadChats({ commit }, chatData) {
             commit("setIsDataLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "get-messages?page=" + chatData.pageNo, data: { to_user_id: chatData.toUserId}, method: "POST" })
+                axios({ url: "get-messages?page=" + chatData.pageNo, data: { to_user_id: chatData.toUserId }, method: "POST" })
                     .then((response) => {
                         commit("setIsDataLoading", false);
                         if(response.data.success) {
