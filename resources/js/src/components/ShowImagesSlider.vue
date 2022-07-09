@@ -14,7 +14,7 @@
         <div v-if="!listing.images">No images found</div>
 
         <CoolLightBox
-        :items="listing.images"
+        :items="listing.images ? listing.images : []"
         :index="index"
         @close="index = null">
         </CoolLightBox>

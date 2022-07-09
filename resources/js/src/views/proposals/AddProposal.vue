@@ -138,6 +138,7 @@
                                     <div class="col p-0 mr-1">
                                         <validation-provider
                                             #default="{ errors }"
+                                            vid="min_budget"
                                             name="Min Budget"
                                             rules="required"
                                         >
@@ -153,8 +154,9 @@
                                     <div class="col p-0">
                                         <validation-provider
                                             #default="{ errors }"
+                                            vid="max_budget"
                                             name="Max Budget"
-                                            rules="required"
+                                            rules="required|minVal:@min_budget"
                                         >
                                         <b-form-input
                                         v-model="proposal.max_budget"
@@ -237,7 +239,7 @@ import {
     BInputGroupPrepend,
     BSpinner,
 } from "bootstrap-vue";
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 import { required } from '@validations'
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
@@ -249,6 +251,14 @@ import ShowMap from '@/components/ShowMap.vue'
 import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
 import ShowAddress from '@/components/ShowAddress.vue'
 import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
+
+extend('minVal', {
+  params: ['target'],
+  validate(value, { target }) {
+    return value > target;
+  },
+  message: 'The {_field_} should be greater then {target}'
+});
 
 export default {
     components: {
