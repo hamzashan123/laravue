@@ -48,44 +48,45 @@
                             <div v-if="!isChartStarted" class="start-chat position-relative" style="height: 60vh">
                                 Start chat
                             </div>
+
                             <div
                                 class="position-relative"
                                 v-if="isChartStarted"
                                 style="height: 60vh"
                             >
-                                <infinite-loading @distance="1" @infinite="handleLoadMore"></infinite-loading>
+                                <infinite-loading @distance="1"  direction="top" @infinite="handleLoadMore"></infinite-loading>
 
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
+                                    :class="loggedinUser.user_name == chat.from_user ? 'my-chat flex-row-reverse text-right' : ''"
                                     v-for="chat in chats"
                                     :key="chat.id"
                                 >
                                     <b-avatar
                                         size="32"
                                         variant="light-primary"
-                                        class="mr-1"
+                                        :class="loggedinUser.user_name == chat.from_user ? 'ml-1' : 'mr-1'"
                                     />
-                                    <div
-                                        class="chat-info col shadow p-1 bg-white rounded"
-                                        :class="
-                                            chat.my_message
-                                                ? 'bg-primary bg-lighten-5'
-                                                : ''
-                                        "
-                                    >
-                                        <h5 class="mb-0 p-0 mr-2 d-inline">
-                                            {{ chat.from_user }}
-                                        </h5>
-                                        <small>
-                                            {{
-                                                new Date(
-                                                    chat.created_at
-                                                ).toDateString()
-                                            }}
-                                        </small>
+                                    <div>
+                                    <div class="chat-info col shadow p-1 bg-white rounded">
+                                        <div :class="loggedinUser.user_name == chat.from_user ? 'd-flex flex-row-reverse' : ''">
+                                            <h5 class="mb-0 p-0 d-inline"
+                                                :class="loggedinUser.user_name == chat.from_user ? 'ml-2' : 'mr-2'"
+                                            >
+                                                {{ chat.from_user }}
+                                            </h5>
+                                            <span class="text-muted font-small-2">
+                                                {{
+                                                    new Date(
+                                                        chat.created_at
+                                                    ).toDateString()
+                                                }}
+                                            </span>
+                                        </div>
                                         <p class="card-text">
                                             {{ chat.message }}
                                         </p>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -159,11 +160,14 @@ import axios from "axios";
 export default {
     data() {
         return {
+            loggedinUserRole: '',
+            loggedinUser: '',
             chatUsers: [],
             isChartStarted: false,
             isChatLoading: false,
             userSelected: false,
 
+            chats: [],
             message: "",
             toUserId: 0,
             toUser: {},
@@ -207,19 +211,23 @@ export default {
     methods: {
 
         handleLoadMore($state) {
-            this.page = this.page + 1;
 
             this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
                 .then((response) => {
-                    // console.log("response", response);
                     if(response.success) {
-                            $state.loaded();
+                        // this.chats = response.data;
+                        console.log(this.chats);
+                        this.chats.unshift(...response.data)
+                        $state.loaded();
+
+                        this.page = this.page + 1;
+
                     } else {
-                            $state.complete();
+                        $state.complete();
                     }
+                    this.scrollToEnd()
                 })
                 .catch((error) => {
-                    $state.error();
                     console.log("chat loadmore error" + error);
                 });
 
@@ -231,14 +239,23 @@ export default {
         }),
 
         startChat(ChatThisUser) {
-            console.log(ChatThisUser.id);
+            this.chats = [] // empty chat on selection/change of user
+            this.page = 1
             this.isChartStarted = true;
             this.userSelected = ChatThisUser.id // changing message data
             this.toUserId = ChatThisUser.id; // sending for message
-            this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } )
-                .then((response) => {
-                    this.scrollToEnd()
-                })
+            // load messages of selected user
+            // this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } )
+            //     .then((response) => {
+            //         if(response.success) {
+            //             this.chats = response.data;
+            //             console.log(this.chats);
+            //             // this.chats.unshift(...this.newChats)
+            //         }
+            //         this.scrollToEnd()
+            //     })
+            //     .catch( error => console.log(error) );
+            this.handleLoadMore()
 
             this.toUser = ChatThisUser;
         },
@@ -252,10 +269,11 @@ export default {
             this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
-                        this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
-                            .then((response) => {
-                                this.scrollToEnd()
-                            })
+                        // this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
+                        //     .then((response) => {
+                        //         this.scrollToEnd()
+                        //     })
+                        // this.handleLoadMore()
                         console.log(response.data);
                         this.message = "";
                     } else {
@@ -292,7 +310,7 @@ export default {
         ...mapGetters({
             isLoading: "chat/getIsLoading",
             isDataLoading: "chat/getIsDataLoading",
-            chats: "chat/getChats",
+            // chats: "chat/getChats",
         }),
 
         loggedinUserAvatar() {
@@ -309,7 +327,15 @@ export default {
             })
         }
     },
-    created() {
+    mounted() {
+        // getting loggedin user
+        const getUser = JSON.parse(localStorage.getItem("userData"));
+        this.loggedinUser = getUser
+        const userRole = getUser.user_role;
+        this.loggedinUserRole = userRole
+
+        console.log(this.loggedinUserRole);
+
         // getting lsiting
         this.loadAccounts()
             .then((response) => {
