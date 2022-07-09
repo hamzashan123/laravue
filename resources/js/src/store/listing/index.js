@@ -256,5 +256,31 @@ export default {
         },
 
         // Deleting
+        deleteListing({ commit }, id) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "delete-listings",
+                    data: id,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
     },
 };
