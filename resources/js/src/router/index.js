@@ -156,6 +156,14 @@ const router = new VueRouter({
             navActiveLink: 'proposals'
         },
     },
+    {
+        path: '/proposals/edit/:proposalId',
+        name: 'proposals.edit',
+        component: () => import('@/views/proposals/EditProposal.vue'),
+        meta: {
+            navActiveLink: 'proposals'
+        },
+    },
     // {
     //     path: '/proposals/detail/:id',
     //     name: 'proposals.detail',

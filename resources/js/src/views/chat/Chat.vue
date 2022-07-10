@@ -1,18 +1,24 @@
 <template>
-    <div>
+    <div style="height: 60vh">
         <!-- -->
         <b-row>
             <b-col sm="3">
                 <b-card>
+                    <b-form-input
+                        id="searchUser"
+                        v-model="searchUser"
+                        type="search"
+                        placeholder="Search Users"
+                    />
                     <vue-perfect-scrollbar
                         :settings="perfectScrollbarSettings"
                         class="scroll-area mb-0"
                     >
-                        <div class="position-relative">
+                        <div class="position-relative" style="height: 60vh">
                             <div
                                 class="d-flex align-item-center cursor-pointer rounded users-list"
                                 :class="{ active: chatUser.id === userSelected}"
-                                v-for="chatUser in chatUsers"
+                                v-for="chatUser in filteredUsers"
                                 :key="chatUser.id"
                             >
                                 <div @click="startChat(chatUser)">
@@ -37,46 +43,51 @@
                         <vue-perfect-scrollbar
                             :settings="perfectScrollbarSettings"
                             class="user-chats scroll-area p-1 mb-0"
+                            id="chat-container"
+                            infinite-wrapper
                         >
-                            <div v-if="!isChartStarted" class="start-chat" style="height: 60vh">
+                            <div v-if="!isChartStarted" class="start-chat position-relative" style="height: 60vh">
                                 Start chat
                             </div>
+
                             <div
-                                class="chats position-relative"
+                                class="position-relative"
                                 v-if="isChartStarted"
                                 style="height: 60vh"
                             >
+                                <infinite-loading @distance="1"  direction="top" :identifier="infiniteId" @infinite="handleLoadMore"></infinite-loading>
+
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
+                                    :class="loggedinUser.user_name == chat.from_user ? 'my-chat flex-row-reverse text-right' : ''"
                                     v-for="chat in chats"
                                     :key="chat.id"
                                 >
                                     <b-avatar
                                         size="32"
                                         variant="light-primary"
-                                        class="mr-1"
+                                        :class="loggedinUser.user_name == chat.from_user ? 'ml-1' : 'mr-1'"
                                     />
-                                    <div
-                                        class="chat-info col shadow p-1 bg-white rounded"
-                                        :class="
-                                            chat.my_message
-                                                ? 'bg-primary bg-lighten-5'
-                                                : ''
-                                        "
-                                    >
-                                        <h5 class="mb-0 p-0 mr-2 d-inline">
-                                            {{ chat.from_user }}
-                                        </h5>
-                                        <small>
-                                            {{
-                                                new Date(
-                                                    chat.created_at
-                                                ).toDateString()
-                                            }}
-                                        </small>
+                                    <div>
+                                    <div class="chat-info col shadow p-1 bg-white rounded">
+                                        <div :class="loggedinUser.user_name == chat.from_user ? 'd-flex flex-row-reverse' : ''">
+                                            <h5 class="mb-0 p-0 d-inline"
+                                                :class="loggedinUser.user_name == chat.from_user ? 'ml-2' : 'mr-2'"
+                                            >
+                                                {{ chat.from_user }}
+                                            </h5>
+                                            <span class="text-muted font-small-2">
+                                                {{
+                                                    new Date(
+                                                        chat.created_at
+                                                    ).toDateString()
+                                                }}
+                                            </span>
+                                        </div>
                                         <p class="card-text">
                                             {{ chat.message }}
                                         </p>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -144,16 +155,20 @@ import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import Topbar from "./Topbar.vue";
 import { mapActions, mapGetters } from "vuex";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import InfiniteLoading from 'vue-infinite-loading'
+import axios from "axios";
 
 export default {
     data() {
         return {
-            chatUsers: {},
+            loggedinUserRole: '',
+            loggedinUser: '',
+            chatUsers: [],
             isChartStarted: false,
             isChatLoading: false,
             userSelected: false,
 
-
+            chats: [],
             message: "",
             toUserId: 0,
             toUser: {},
@@ -162,6 +177,10 @@ export default {
                 maxScrollbarLength: 60,
                 height: 10,
             },
+
+            searchUser: '',
+            page: 1,
+            infiniteId: +new Date(),
         };
     },
     components: {
@@ -189,8 +208,27 @@ export default {
         BBadge,
         VuePerfectScrollbar,
         Topbar,
+        InfiniteLoading,
     },
     methods: {
+
+        handleLoadMore($state) {
+            this.page = this.page + 1;
+
+            this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
+                .then((response) => {
+                    if(response.success) {
+                        this.chats.unshift(...response.data)
+                        $state.loaded();
+                    } else {
+                        $state.complete();
+                    }
+                })
+                .catch((error) => {
+                    console.log("chat loadmore error" + error);
+                });
+
+        },
         ...mapActions({
             loadAccounts: "account/loadAccounts",
             loadChats: "chat/loadChats",
@@ -198,11 +236,20 @@ export default {
         }),
 
         startChat(ChatThisUser) {
-            console.log(ChatThisUser.id);
+            this.chats = [] // empty chat on selection/change of user
+            this.page = 1
+             this.infiniteId += 1
             this.isChartStarted = true;
             this.userSelected = ChatThisUser.id // changing message data
             this.toUserId = ChatThisUser.id; // sending for message
-            this.loadChats( { to_user_id: ChatThisUser.id } );
+            // load messages of selected user
+            this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } )
+                .then((response) => {
+                    if(response.success) { this.chats = response.data }
+                    this.scrollToEnd()
+                })
+                .catch( error => console.log(error) );
+
             this.toUser = ChatThisUser;
         },
 
@@ -215,8 +262,7 @@ export default {
             this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
-                        this.loadChats( { to_user_id: this.toUserId } );
-                        console.log(response.data);
+                        this.chats.push(response.data)
                         this.message = "";
                     } else {
                         console.log(response);
@@ -230,6 +276,10 @@ export default {
                         });
                         this.message = "";
                     }
+                    this.$nextTick(() => {
+                        // this.startChat(this.toUser)
+                     this.scrollToEnd()
+                    });
                 })
                 .catch((error) => {
                     console.log(error);
@@ -243,16 +293,17 @@ export default {
                     });
                 });
         },
-        scrollToEnd: function () {
-            // scroll to the start of the last message
-            this.$el.scrollTop = this.$el.lastElementChild.offsetTop;
+        scrollToEnd() {
+            var container = this.$el.querySelector("#chat-container");
+            console.log(container.scrollHeight);
+            container.scrollTop = container.scrollHeight;
         },
     },
     computed: {
         ...mapGetters({
             isLoading: "chat/getIsLoading",
             isDataLoading: "chat/getIsDataLoading",
-            chats: "chat/getChats",
+            // chats: "chat/getChats",
         }),
 
         loggedinUserAvatar() {
@@ -262,8 +313,22 @@ export default {
         reverseChat() {
             return this.chats.slice().reverse();
         },
+
+        filteredUsers() {
+            return this.chatUsers.filter(user => {
+                return user.first_name.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1
+            })
+        }
     },
-    created() {
+    mounted() {
+        // getting loggedin user
+        const getUser = JSON.parse(localStorage.getItem("userData"));
+        this.loggedinUser = getUser
+        const userRole = getUser.user_role;
+        this.loggedinUserRole = userRole
+
+        console.log(this.loggedinUserRole);
+
         // getting lsiting
         this.loadAccounts()
             .then((response) => {
@@ -292,9 +357,6 @@ export default {
                     },
                 });
             });
-    },
-    updated() {
-        this.$nextTick(() => this.scrollToEnd());
     },
     directives: {
         Ripple,

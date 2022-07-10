@@ -210,10 +210,21 @@
                          {{ new Date(data.item.listing.created_at).toDateString() }}
                     </template>
                     <template #cell(actions)="data">
+
+                        <b-button
+                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') || data.item.status === 'approved' && can('create', 'precontract') ) "
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="success"
+                            size="sm"
+                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
+                        >
+                            Assign
+                        </b-button>
+
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
-                            class="mb-1"
+                            size="sm"
                             :to="{
                                 name: 'proposals.view',
                                 params: { proposalId: data.item.id },
@@ -223,14 +234,26 @@
                         </b-button>
 
                         <b-button
-                         v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') || data.item.status === 'approved' && can('create', 'precontract') ) "
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="success"
-                            class="mb-1"
-                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
+                            variant="warning"
+                            size="sm"
+                            :to="{
+                                name: 'proposals.edit',
+                                params: { proposalId: data.item.id },
+                            }"
                         >
-                            Assign
+                            <feather-icon icon="EditIcon" size="15" />
                         </b-button>
+                        <!-- delete -->
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            @click="deleteTrigger( data.item.id, data.index )"
+                        >
+                            <feather-icon icon="XIcon" size="15" />
+                        </b-button>
+
                     </template>
                 </b-table>
 
@@ -418,7 +441,7 @@ export default {
         this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract' }),
+        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract', deleteListingsProposal: "proposal/deleteListingsProposal" }),
 
         assignContractTrigger(listingId, contractortId) {
             console.log(listingId, contractortId);
@@ -462,6 +485,39 @@ export default {
                         },
                     });
                 });
+
+        },
+
+        deleteTrigger( id, index ) {
+            if( confirm("Are you sure?") ) {
+
+                this.deleteListingsProposal({ id: id })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "danger",
+                                },
+                            });
+                            this.items.splice(index, 1)
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
 
         },
 

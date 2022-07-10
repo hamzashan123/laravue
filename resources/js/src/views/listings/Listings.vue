@@ -142,19 +142,22 @@
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
+                            size="sm"
                             :class="data.value"
                             :to="{
                                 name: 'listings.view',
                                 params: { listingId: data.item.id },
                             }"
                         >
+                            <!-- <feather-icon icon="EyeIcon" size="15" /> -->
                             See Details
                         </b-button>
 
                         <b-button
                             v-if="can('update', 'listing') || can('update', 'all-listing')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="primary"
+                            variant="warning"
+                            size="sm"
                             :class="data.value"
                             :to="{
                                 name: 'listings.edit',
@@ -162,6 +165,16 @@
                             }"
                         >
                             <feather-icon icon="EditIcon" size="15" />
+                        </b-button>
+                        <!-- delete -->
+                        <b-button
+                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            @click="deleteTrigger( data.item.id, data.index )"
+                        >
+                            <feather-icon icon="XIcon" size="15" />
                         </b-button>
                     </template>
                 </b-table>
@@ -319,7 +332,6 @@ export default {
             .then((response) => {
                 if( response.success ) {
                     this.items = response.data
-                    // console.log(response.data.length);
                     // Set the initial number of items
                     this.totalRows = response.data.length;
 
@@ -348,10 +360,42 @@ export default {
                 });
             });
 
-
     },
     methods: {
-        ...mapActions({ loadListings: "listing/loadListings" }),
+        ...mapActions({ loadListings: "listing/loadListings", deleteListing: "listing/deleteListing" }),
+
+        deleteTrigger( id, index ) {
+            if( confirm("Are you sure?") ) {
+
+                this.deleteListing({ id: id })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "danger",
+                                },
+                            });
+                            this.items.splice(index, 1)
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
+
+        },
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering

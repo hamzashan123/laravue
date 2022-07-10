@@ -155,6 +155,7 @@
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
                             :class="data.value"
+                            size="sm"
                             :to="{
                                 name: 'proposals.listing',
                                 params: { listingId: data.item.id },
@@ -162,6 +163,7 @@
                         >
                             See Details
                         </b-button>
+
                     </template>
                 </b-table>
 

@@ -10,7 +10,7 @@ export default {
         isCreated: false,
         isUpdated: false,
         isDeleted: false,
-        chats: {},
+        chats: [],
     },
     getters: {
         getIsLoading: (state) => state.isLoading,
@@ -43,19 +43,22 @@ export default {
             state.isCreated = isCreated;
         },
         setChats(state, chats) {
-            state.chats = chats;
+            chats.reverse();
+            state.chats.unshift(...chats) ;
         },
     },
     actions: {
 
         // getting all chats
-        loadChats({ commit }, toUserId) {
+        loadChats({ commit }, chatData) {
             commit("setIsDataLoading", true);
             return new Promise((resolve, reject) => {
-                axios({ url: "get-messages", data: toUserId, method: "POST" })
+                axios({ url: "get-messages?page=" + chatData.pageNo, data: { to_user_id: chatData.toUserId }, method: "POST" })
                     .then((response) => {
                         commit("setIsDataLoading", false);
-                        commit("setChats", response.data.data);
+                        if(response.data.success) {
+                            commit("setChats", response.data.data);
+                        }
                         return resolve(response.data);
                     })
                     .catch((error) => {

@@ -149,6 +149,7 @@
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="primary"
                             :class="data.value"
+                            size="sm"
                             :to="{
                                 name: 'accounts.view',
                                 params: { accountId: data.item.id },
@@ -158,16 +159,24 @@
                         </b-button>
 
                         <b-button
-                            v-if="can('update', 'account') || can('update', 'all-account')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="primary"
-                            :class="data.value"
+                            variant="warning"
+                            size="sm"
                             :to="{
                                 name: 'accounts.edit',
                                 params: { accountId: data.item.id },
                             }"
                         >
                             <feather-icon icon="EditIcon" size="15" />
+                        </b-button>
+                        <!-- delete -->
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            to=""
+                        >
+                            <feather-icon icon="XIcon" size="15" />
                         </b-button>
                     </template>
                 </b-table>

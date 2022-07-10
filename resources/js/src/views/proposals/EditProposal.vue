@@ -4,7 +4,7 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Send your proposal to {{ listing.title }}</h1>
+                    <h1>Edit your proposal on {{ listing.title }}</h1>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
@@ -178,9 +178,9 @@
                             <b-button
                                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                 variant="primary"
-                                @click="sendProposalTrigger"
+                                @click="updateProposalTrigger"
                             >
-                                Send Proposal
+                                Update Proposal
                                 <b-spinner small v-if="isLoading" />
                             </b-button>
                         </div>
@@ -296,7 +296,7 @@ export default {
     },
     data() {
         return {
-            listingId: "",
+            proposalId: '',
             listing: {},
             proposal: {},
             statuses_color,
@@ -312,20 +312,20 @@ export default {
         };
     },
     methods: {
-        ...mapActions({ loadListing: "listing/loadListing", sendProposal: 'proposal/sendProposal' }),
+        ...mapActions({ loadProposal: "proposal/loadProposal", updateProposal: 'proposal/updateProposal' }),
 
         // publish listing
-        sendProposalTrigger() {
+        updateProposalTrigger() {
             this.$refs.validationRules.validate().then(success => {
                 if (success) {
                 let proposalData = new FormData();
-                proposalData.append( "listing_id", this.listingId );
+                proposalData.append( "proposal_id", this.proposalId );
                 proposalData.append( "min_budget", this.proposal.min_budget );
                 proposalData.append( "max_budget", this.proposal.max_budget );
                 proposalData.append( "target_startdate", this.proposal.target_startdate );
                 proposalData.append( "target_enddate", this.proposal.target_enddate );
 
-                this.sendProposal(proposalData)
+                this.updateProposal(proposalData)
                     .then((response) => {
                         if (response.success) {
                             this.$toast({
@@ -336,7 +336,7 @@ export default {
                                     variant: "success",
                                 },
                             });
-                            this.$router.push({ name: 'proposals' })
+                            this.$router.push({ name: 'proposals.view', params: { proposalId: this.proposalId } })
                         } else {
                             console.log(response);
                             this.$toast({
@@ -370,17 +370,14 @@ export default {
         ...mapGetters({ isLoading: "listing/getIsLoading"  }),
     },
     created() {
-        this.listingId = this.$route.params.listingId;
+        this.proposalId = this.$route.params.proposalId;
 
-        const getUser = JSON.parse(localStorage.getItem("userData")) || ''
-        const user_Role = getUser.user_role || '';
-        const userRoleID = user_Role.id || ''
-
-
-        this.loadListing({ id: this.listingId, role_id: userRoleID })
+        this.loadProposal({ id: this.proposalId })
             .then((response) => {
                 if (response.success) {
-                    this.listing = response.data[0];
+                    this.proposal = response.data;
+                    this.listing = response.data.listing;
+                    this.contractor = response.data.contractor;
                 } else {
                     this.$toast({
                         component: ToastificationContent,

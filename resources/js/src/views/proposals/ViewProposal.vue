@@ -91,7 +91,8 @@
                                 label-for="target-date"
                                 label-cols-md="3"
                             >
-                            <div class="form-inline">
+                            <div class="form-row">
+                                <div class="col p-0 mr-1">
 
                                 <b-form-datepicker
                                     placeholder="Select From Date"
@@ -101,6 +102,8 @@
                                     name="target_startdate"
                                     disabled
                                 />
+                                </div>
+                                <div class="col p-0">
                                 <b-form-datepicker
                                     placeholder="Select End Date"
                                     id="target_enddate"
@@ -110,6 +113,7 @@
                                     name="target_enddate"
                                     disabled
                                 />
+                                </div>
                             </div>
                             </b-form-group>
                         </b-col>
@@ -119,7 +123,8 @@
                                 label-for="target-budget"
                                 label-cols-md="3"
                             >
-                            <div class="form-inline">
+                            <div class="form-row">
+                                <div class="col p-0 mr-1">
 
                                 <b-form-input
                                     v-model="proposal.min_budget"
@@ -127,12 +132,15 @@
                                     placeholder="Minimum Budget"
                                     disabled
                                 />
+                                </div>
+                                <div class="col p-0">
                                 <b-form-input
                                     v-model="proposal.max_budget"
                                     class="mb-1"
                                     placeholder="Maximum Budget"
                                     disabled
                                 />
+                                </div>
                             </div>
                             </b-form-group>
                         </b-col>
@@ -140,21 +148,21 @@
                     <b-col>
                         <div class="text-right">
                             <b-button
-                                v-if="can('create', 'all-proposal') && proposal.status == 'pending'" 
+                                v-if="can('create', 'all-proposal') && proposal.status == 'pending'"
                                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                 variant="danger"
                                 @click="rejectProposalTrigger"
-                               
+
                             >
                                 Reject
                                 <b-spinner small v-if="isRejectLoading" />
                             </b-button>
                             <b-button
-                                 v-if="can('create', 'all-proposal') && proposal.status == 'pending'" 
+                                 v-if="can('create', 'all-proposal') && proposal.status == 'pending'"
                                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                 variant="primary"
                                 @click="approveProposalTrigger"
-                                
+
                             >
                                 Approve
                                 <b-spinner small v-if="isLoading" />

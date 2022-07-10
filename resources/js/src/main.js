@@ -17,6 +17,7 @@ import '@/libs/toastification'
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
+// axios.defaults.baseURL = "https://acme.thenexus.education/api/";
 // axios.defaults.headers.post['Content-Type'] = 'application/json;'
 
 axios.interceptors.request.use(function (config) {
