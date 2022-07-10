@@ -43,7 +43,8 @@
                         <vue-perfect-scrollbar
                             :settings="perfectScrollbarSettings"
                             class="user-chats scroll-area p-1 mb-0"
-                            id="chat-continer"
+                            id="chat-container"
+                            infinite-wrapper
                         >
                             <div v-if="!isChartStarted" class="start-chat position-relative" style="height: 60vh">
                                 Start chat
@@ -54,7 +55,7 @@
                                 v-if="isChartStarted"
                                 style="height: 60vh"
                             >
-                                <infinite-loading @distance="1"  direction="top" @infinite="handleLoadMore"></infinite-loading>
+                                <infinite-loading @distance="1"  direction="top" :identifier="infiniteId" @infinite="handleLoadMore"></infinite-loading>
 
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
@@ -179,6 +180,7 @@ export default {
 
             searchUser: '',
             page: 1,
+            infiniteId: +new Date(),
         };
     },
     components: {
@@ -211,21 +213,16 @@ export default {
     methods: {
 
         handleLoadMore($state) {
+            this.page = this.page + 1;
 
             this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
                 .then((response) => {
                     if(response.success) {
-                        // this.chats = response.data;
-                        console.log(this.chats);
                         this.chats.unshift(...response.data)
                         $state.loaded();
-
-                        this.page = this.page + 1;
-
                     } else {
                         $state.complete();
                     }
-                    this.scrollToEnd()
                 })
                 .catch((error) => {
                     console.log("chat loadmore error" + error);
@@ -241,21 +238,17 @@ export default {
         startChat(ChatThisUser) {
             this.chats = [] // empty chat on selection/change of user
             this.page = 1
+             this.infiniteId += 1
             this.isChartStarted = true;
             this.userSelected = ChatThisUser.id // changing message data
             this.toUserId = ChatThisUser.id; // sending for message
             // load messages of selected user
-            // this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } )
-            //     .then((response) => {
-            //         if(response.success) {
-            //             this.chats = response.data;
-            //             console.log(this.chats);
-            //             // this.chats.unshift(...this.newChats)
-            //         }
-            //         this.scrollToEnd()
-            //     })
-            //     .catch( error => console.log(error) );
-            this.handleLoadMore()
+            this.loadChats( { toUserId: ChatThisUser.id, pageNo: this.page } )
+                .then((response) => {
+                    if(response.success) { this.chats = response.data }
+                    this.scrollToEnd()
+                })
+                .catch( error => console.log(error) );
 
             this.toUser = ChatThisUser;
         },
@@ -269,12 +262,7 @@ export default {
             this.sendMessage(chatData)
                 .then((response) => {
                     if (response.success) {
-                        // this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
-                        //     .then((response) => {
-                        //         this.scrollToEnd()
-                        //     })
-                        // this.handleLoadMore()
-                        console.log(response.data);
+                        this.chats.push(response.data)
                         this.message = "";
                     } else {
                         console.log(response);
@@ -288,6 +276,10 @@ export default {
                         });
                         this.message = "";
                     }
+                    this.$nextTick(() => {
+                        // this.startChat(this.toUser)
+                     this.scrollToEnd()
+                    });
                 })
                 .catch((error) => {
                     console.log(error);
@@ -301,8 +293,9 @@ export default {
                     });
                 });
         },
-        scrollToEnd: function() {
-            var container = this.$el.querySelector("#chat-continer");
+        scrollToEnd() {
+            var container = this.$el.querySelector("#chat-container");
+            console.log(container.scrollHeight);
             container.scrollTop = container.scrollHeight;
         },
     },
