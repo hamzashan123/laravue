@@ -39,6 +39,8 @@ class User extends Authenticatable //implements MustVerifyEmail
         'status',
         'role_id',
         'avatar',
+        'reset_password_code',
+        'reset_password_expiry',
         'updated_at',
         'created_at',
     ];
