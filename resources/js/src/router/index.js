@@ -39,7 +39,7 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/reset',
+        path: '/resetpassword',
         name: 'reset',
         component: () => import('@/views/auth/ResetPassword.vue'),
         meta: {
@@ -279,7 +279,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/', '/register', '/reset', '/forgot', '/error-404'];
+    const publicPages = ['/', '/register', '/resetpassword', '/forgot', '/error-404'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('userData');
     const accessToken = localStorage.getItem('accessToken');

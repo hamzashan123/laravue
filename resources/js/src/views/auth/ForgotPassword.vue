@@ -52,7 +52,7 @@
           <validation-observer ref="simpleRules">
             <b-form
               class="auth-forgot-password-form mt-2"
-              @submit.prevent="validationForm"
+              @submit.prevent="resetPasswordTrigger"
             >
               <b-form-group
                 label="Email"
@@ -80,6 +80,7 @@
                 block
               >
                 Send reset link
+                <b-spinner small v-if="isLoading" />
               </b-button>
             </b-form>
           </validation-observer>
@@ -100,10 +101,11 @@
 /* eslint-disable global-require */
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
-import { BRow, BCol, BLink, BCardTitle, BCardText, BImg, BForm, BFormGroup, BFormInput, BButton } from 'bootstrap-vue'
+import { BRow, BCol, BLink, BCardTitle, BCardText, BImg, BForm, BFormGroup, BFormInput, BButton, BSpinner } from 'bootstrap-vue'
 import { required, email } from '@validations'
 import store from '@/store/index'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -120,6 +122,7 @@ export default {
     BCardText,
     ValidationProvider,
     ValidationObserver,
+    BSpinner,
   },
   data() {
     return {
@@ -131,6 +134,8 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({ isLoading: 'auth/isLoading'}),
+
     imgUrl() {
       if (store.state.appConfig.layout.skin === 'dark') {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -141,20 +146,55 @@ export default {
     },
   },
   methods: {
-    validationForm() {
-      this.$refs.simpleRules.validate().then(success => {
+    ...mapActions({ resetPassword: "auth/resetPassword" }),
+
+    resetPasswordTrigger() {
+      this.$refs.simpleRules.validate().then( (success) => {
         if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: 'Form Submitted',
-              icon: 'EditIcon',
-              variant: 'success',
-            },
-          })
+
+          var authData = { email: this.userEmail };
+
+          this.resetPassword(authData)
+            .then((response) => {
+                if (response.success) {
+
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "success",
+                        },
+                    });
+                    this.$router.push({ name: "login" });
+                } else {
+                    console.log(response);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error While Adding!",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
         }
-      })
+
+      });
     },
+
   },
 }
 </script>

@@ -21,7 +21,33 @@
 
       <!-- Reset password-->
       <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
-        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
+        <!-- code verify column -->
+        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto" v-if="!isCodeVerified">
+          <b-card-title title-tag="h2" class="font-weight-bold mb-1">
+            <b-spinner
+                class="mr-1"
+                variant="primary"
+                v-if="!errorInVerifying"
+            />
+            Verifying...
+
+          </b-card-title>
+          <b-card-text class="mb-2">
+            Please wait while we're verifying your link...
+          </b-card-text>
+          <b-button
+            v-if="errorInVerifying"
+            type="submit"
+            variant="primary"
+            block
+            :to="{ name: 'forgot' }"
+            >
+                Send link again!
+              </b-button>
+        </b-col>
+
+        <!-- form column -->
+        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto" v-if="isCodeVerified">
           <b-card-title title-tag="h2" class="font-weight-bold mb-1">
             Reset Password 🔒
           </b-card-title>
@@ -34,7 +60,7 @@
             <b-form
               class="auth-reset-password-form mt-2"
               method="POST"
-              @submit.prevent="validationForm"
+              @submit.prevent="changePasswordTrigger"
             >
               <!-- password -->
               <b-form-group label="New Password" label-for="reset-password-new">
@@ -107,12 +133,13 @@
               <!-- submit button -->
               <b-button block type="submit" variant="primary">
                 Set New Password
+                <b-spinner small v-if="isLoading" />
               </b-button>
             </b-form>
           </validation-observer>
 
           <p class="text-center mt-2">
-            <b-link :to="{ name: 'login' }">
+            <b-link :to="{ name:'login' }">
               <feather-icon icon="ChevronLeftIcon" /> Back to login
             </b-link>
           </p>
@@ -140,10 +167,12 @@ import {
   BFormInput,
   BButton,
   BImg,
+  BSpinner,
 } from "bootstrap-vue";
 import { required } from "@validations";
 import store from "@/store/index";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -162,12 +191,15 @@ export default {
     BInputGroupAppend,
     ValidationProvider,
     ValidationObserver,
+    BSpinner,
   },
   data() {
     return {
       userEmail: "",
       cPassword: "",
       password: "",
+      isCodeVerified: false,
+      errorInVerifying: false,
       sideImg: require("@/assets/images/pages/reset-password-v2.svg"),
       // validation
       required,
@@ -178,6 +210,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({ isLoading: 'auth/isLoading'}),
+
     passwordToggleIcon() {
       return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
     },
@@ -197,6 +231,8 @@ export default {
     },
   },
   methods: {
+    ...mapActions({ changePassword: "auth/changePassword", verifyCode: "auth/verifyCode" }),
+
     togglePassword1Visibility() {
       this.password1FieldType =
         this.password1FieldType === "password" ? "text" : "password";
@@ -205,22 +241,109 @@ export default {
       this.password2FieldType =
         this.password2FieldType === "password" ? "text" : "password";
     },
-    validationForm() {
-      this.$refs.simpleRules.validate().then((success) => {
+
+    changePasswordTrigger() {
+        let pEmail = this.$route.query.email
+
+      this.$refs.simpleRules.validate().then( (success) => {
         if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: "Form Submitted",
-              icon: "EditIcon",
-              variant: "success",
-            },
-          });
+
+
+          var authData = { email: pEmail, password: this.password, confirm_password: this.cPassword };
+
+          this.changePassword(authData)
+            .then((response) => {
+                if (response.success) {
+
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "success",
+                        },
+                    });
+                    this.$router.push({ name: "login" });
+                } else {
+                    console.log(response);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: response.message,
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: "Error While Adding!",
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+            });
         }
       });
     },
+
+    verifyCodeTrigger() {
+
+        let pEmail = this.$route.query.email
+        let pCode = this.$route.query.code
+
+        var authData = { email: pEmail, code: pCode };
+
+        this.verifyCode(authData)
+        .then((response) => {
+            if (response.success) {
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: response.message,
+                        icon: "EditIcon",
+                        variant: "success",
+                    },
+                });
+
+                this.isCodeVerified = true
+
+            } else {
+                console.log(response);
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: response.message,
+                        icon: "EditIcon",
+                        variant: "danger",
+                    },
+                });
+                this.errorInVerifying = true
+            }
+        })
+        .catch((error) => {
+            this.errorInVerifying = true
+            console.log(error);
+            this.$toast({
+                component: ToastificationContent,
+                props: {
+                    title: "Error While Adding!",
+                    icon: "EditIcon",
+                    variant: "danger",
+                },
+            });
+        });
+    },
   },
-};
+  mounted() {
+    this.verifyCodeTrigger()
+  },
+
+}
 </script>
 
 <style lang="scss">

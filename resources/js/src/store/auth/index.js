@@ -113,6 +113,88 @@ export default {
             localStorage.removeItem("accessToken");
             localStorage.removeItem("userData");
             await commit('logout')
-        }
+        },
+
+
+        // forgot password send email
+        resetPassword({ commit }, data) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "reset-password",
+                    data: data,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
+        // verify code form email
+        verifyCode({ commit }, data) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "verify-reset-password-code",
+                    data: data,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
+        // forgot password send email
+        changePassword({ commit }, data) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "change-password",
+                    data: data,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
     },
 };
