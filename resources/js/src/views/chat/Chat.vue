@@ -327,8 +327,6 @@ export default {
         const userRole = getUser.user_role;
         this.loggedinUserRole = userRole
 
-        console.log(this.loggedinUserRole);
-
         // getting lsiting
         this.loadAccounts()
             .then((response) => {

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Http;
 
 Route::post('login', [App\Http\Controllers\API\UserController::class, 'login']);
 Route::post('register', [App\Http\Controllers\API\UserController::class, 'register']);
+Route::post('reset-password', [App\Http\Controllers\API\UserController::class, 'resetPassword']);
+Route::post('verify-reset-password-code', [App\Http\Controllers\API\UserController::class, 'verifyResetPasswordCode']);
+Route::post('change-password', [App\Http\Controllers\API\UserController::class, 'changePassword']);
 
 Route::post('getlistingbyid', [App\Http\Controllers\API\ListingController::class, 'getListingById']);
 
@@ -49,6 +52,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('get-listing-proposals', [App\Http\Controllers\API\ProposalController::class, 'getListingProposals']);
     Route::post('get-proposal-details', [App\Http\Controllers\API\ProposalController::class, 'getProposalDetails']);
     Route::post('edit-proposal', [App\Http\Controllers\API\ProposalController::class, 'editProposal']);
+    Route::post('withdraw-proposal', [App\Http\Controllers\API\ProposalController::class, 'withdrawProposal']);
 
     //Visits
     Route::post('upload-listing-visit', [App\Http\Controllers\API\VisitController::class, 'uploadListingVisit']);

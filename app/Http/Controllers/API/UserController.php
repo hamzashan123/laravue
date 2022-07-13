@@ -312,5 +312,140 @@ class UserController extends Controller
             return response()->json($response_data, $this->successStatus);
         }
     }
+
+    public function resetPassword(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $user = User::where('email', $request->email)->where('status','active')->first();
+        
+        if($user != null) {
+            $code = rand(999, 9999999999);
+            $date = Carbon::parse(Carbon::now());
+
+            $user->reset_password_code = $code;
+            $user->reset_password_expiry = $date->addhour(1)->toDateTimeString();
+            $user->save();
+
+            Helper::sendEmailForgot($user, $code);
+
+            $response_data = [
+                'success' => true,
+                'message' => 'Please check your email for a link to reset your password.',
+                //'code' => $code
+            ];
+            return response()->json($response_data);
+
+        } else {
+            $response_data=[
+                'success' => false,
+                'message' => 'Email Not Exist.'
+            ];
+            return response()->json($response_data,  $this->successStatus);
+        }
+    }
+
+    public function verifyResetPasswordCode(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'code' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $user = User::where('email', $request->email)->where('status','active')->where('reset_password_code', '!=', null)
+                    ->where('reset_password_code', '!=', '')->where('reset_password_code', $request->code)->first();
+
+        if($user != null) {
+            $date = Carbon::parse(Carbon::now());
+            if($date <= $user->reset_password_expiry) {
+                $response_data=[
+                    'success' => true,
+                    'message' => 'Code verify successfully'
+                ];
+                return response()->json($response_data,  $this->successStatus);
+            } else {
+                $response_data=[
+                    'success' => false,
+                    'message' => 'Reset password code has been expired'
+                ];
+                return response()->json($response_data,  $this->successStatus);
+            }
+        } else {
+            $response_data=[
+                'success' => false,
+                'message' => 'Code not matched.'
+            ];
+            return response()->json($response_data,  $this->successStatus);
+        }
+    }
+
+    public function changePassword(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        if ($request->password != $request->confirm_password) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Password and confirm password mismatched.',
+            ];
+            return response()->json($response_data);
+        } else if (Str::length($request->password) < 8) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Password length must be greater than or equal to 8 character',
+            ];
+            return response()->json($response_data);
+        } else {
+            $user = User::where('email', $request->email)->where('status','active')->first();
+            if($user != null) {
+
+                $user->password = bcrypt($request->password);
+                $user->save();
+
+                $response_data = [
+                    'success' => true,
+                    'message' => 'Password change successfully',
+                ];
+                return response()->json($response_data);
+
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data not found',
+                ];
+                return response()->json($response_data);
+            }
+        }
+    }
 }
 
