@@ -5,6 +5,7 @@
             <b-col sm="3">
                 <b-card>
                     <b-form-input
+                        v-if="loggedinUser.user_role.id == 3"
                         id="searchUser"
                         v-model="searchUser"
                         type="search"
@@ -55,7 +56,11 @@
                                 v-if="isChartStarted"
                                 style="height: 60vh"
                             >
-                                <infinite-loading @distance="1"  direction="top" :identifier="infiniteId" @infinite="handleLoadMore"></infinite-loading>
+                                <infinite-loading @distance="1"  direction="top" :identifier="infiniteId" @infinite="handleLoadMore">
+                                    <div slot="spinner">Loading...</div>
+                                    <div slot="no-more">No more messages!</div>
+                                    <div slot="no-results">No messages!</div>
+                                </infinite-loading>
 
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
@@ -84,7 +89,7 @@
                                                 }}
                                             </span>
                                         </div>
-                                        <p class="card-text">
+                                        <p class="card-text text-break">
                                             {{ chat.message }}
                                         </p>
                                     </div>
@@ -221,6 +226,7 @@ export default {
                         this.chats.unshift(...response.data)
                         $state.loaded();
                     } else {
+
                         $state.complete();
                     }
                 })
@@ -265,7 +271,6 @@ export default {
                         this.chats.push(response.data)
                         this.message = "";
                     } else {
-                        console.log(response);
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -295,7 +300,6 @@ export default {
         },
         scrollToEnd() {
             var container = this.$el.querySelector("#chat-container");
-            console.log(container.scrollHeight);
             container.scrollTop = container.scrollHeight;
         },
     },
@@ -330,7 +334,6 @@ export default {
         // getting lsiting
         this.loadAccounts()
             .then((response) => {
-                console.log(response);
                 if (response.success) {
                     this.chatUsers = response.user;
                 } else {
