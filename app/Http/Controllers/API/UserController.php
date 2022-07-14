@@ -52,7 +52,13 @@ class UserController extends Controller
                 return response()->json($response_data, $this->successStatus);
 
             }
-
+            else {
+                $response_data = [
+                'success' => false,
+                'message' => 'User not found'
+            ];
+            return response()->json($response_data,  $this->successStatus);
+            }
         } else {
             $response_data = [
                 'success' => false,
@@ -446,6 +452,44 @@ class UserController extends Controller
                 return response()->json($response_data);
             }
         }
+    }
+
+    public function baneUser(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $auth = Auth::user();
+        $user = User::where('status', 'active')->where('id', $request->id)->where('id', '!=', $auth->id)->first();
+        
+        if($user != null) {
+            User::where(['id' => $request->id, 'status' => 'active'])->update(['status' => 'in_active']);
+
+            $response_data = [
+                'success' => true,
+                'message' => 'User bane successfully',
+            ];
+            return response()->json($response_data, $this->successStatus);
+
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'User Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        
+
     }
 }
 

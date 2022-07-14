@@ -52,9 +52,10 @@ class ContractsController extends Controller
         
         $contractExist = Contracts::where('listing_id', $request->listing_id)->whereIn('status', ['pre_contract','contract_started','contract_completed'])
                 ->exists();
+        
+        $proposalCount = Proposals::where('listing_id', $request->listing_id)->whereNotIn('status' , ['pending','withdraw','reject'])->count('id');
 
-
-        if($contractExist == true){
+        if($contractExist == true && $proposalCount > 0){
             $response_data = [
                 'success' => false,
                 'message' => 'Someone already assigned pre_contract!',
@@ -79,6 +80,9 @@ class ContractsController extends Controller
             $listing->save();
 
             $isSucess = Helper::saveNotification($input['contractor_id'], 'contract', 'Contract Assign', 'Contract Assigned successfully');
+            
+            $user = User::where('id', $input['contractor_id'])->first();            
+            Helper::sendEmailToNotify($user, "Contract Assign", "");
 
             $contract_data = Contracts::find($contract->id);
 
@@ -198,6 +202,9 @@ class ContractsController extends Controller
 
             $isSucess = Helper::saveNotification($contract_data->contractor_id, 'contract', 'Contract Started', 'Contract Started');
 
+            $user = User::where('id', $request->contractor_id)->first();
+            Helper::sendEmailToNotify($user, "Contract Started", "");
+
             if($contract_data != null) {
                 $response_data = [
                     'success' => true,
@@ -248,6 +255,9 @@ class ContractsController extends Controller
             $contract_data = Contracts::where('listing_id', $request->listing_id)->where('contractor_id', $request->contractor_id)->first();
 
             $isSucess = Helper::saveNotification($contract_data->contractor_id, 'contract', 'Contract Completed', 'Contract Completed');
+
+            $user = User::where('id', $request->contractor_id)->first();
+            Helper::sendEmailToNotify($user, "Contract Completed", "");
 
             if($contract_data != null) {
                 $response_data = [

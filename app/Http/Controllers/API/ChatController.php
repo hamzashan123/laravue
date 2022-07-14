@@ -155,19 +155,18 @@ class ChatController extends Controller
             return response()->json($response_data);
         }
 
-
+       
         $messages = Messages::where(function($query) use ($request) {
             $query->where('from_user_id', Auth::user()->id)->where('to_user_id', $request->to_user_id);
         })->orWhere(function ($query) use ($request) {
             $query->where('from_user_id', $request->to_user_id)->where('to_user_id', Auth::user()->id);
-        })->orderBy('created_at', 'DESC')->paginate(5);
+        })->orderBy('created_at', 'DESC')->paginate(2);
 
         if(count($messages) > 0) {
             $response_data = [
                 'success' => true,
                 'message' => 'Message List',
                 'data' => MessageResource::collection($messages),
-                // 'data' => $messages,
             ];
             return response()->json($response_data, $this->successStatus);
         } else {
@@ -177,6 +176,58 @@ class ChatController extends Controller
             ];
             return response()->json($response_data, $this->successStatus);
         }
+    }
+
+    public function seenMessage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'to_user_id'     => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $to_user = User::where('id', $request->to_user_id)->first();
+
+        if($to_user == null) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Provided user not found!'
+            ];
+            return response()->json($response_data);
+        }
+        $user = Auth::user();
+        Messages::where(['from_user_id' => $user->id, 'to_user_id' => $request->to_user_id])->update(['seen' => '1']);
+
+        $response_data = [
+            'success' => true,
+            'message' => 'Message seen successfully',
+        ];
+        return response()->json($response_data, $this->successStatus);
+    }
+
+    public function sendMessageEmail() {
+        $message = Messages::where('seen','0')->where('is_email_sent','0')->get();
+
+        foreach ($message as $message) {
+            $fromUser = User::where('id', $message->from_user_id)->first();
+            $toUser = User::where('id', $message->to_user_id)->first();
+
+            Helper::sendMessageEmail($fromUser, $toUser, $message->message);
+            Messages::where(['id' => $message->id])->update(['is_email_sent' => '1']);
+        }
+
+        $response_data = [
+            'success' => true,
+            'message' => 'Email send successfully',
+        ];
+        return response()->json($response_data, $this->successStatus);
     }
 }
 

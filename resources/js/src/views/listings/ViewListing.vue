@@ -23,7 +23,7 @@
                     </b-button>
 
                     <b-button
-                        v-if=" ( listing.status === 'publish' && can('create', 'proposal') ) || ( listing.status === 'publish' && can('create', 'all-proposal') )"
+                        v-if=" ( listing.status === 'publish' || listing.status === 'waiting_assignment' && can('create', 'proposal') ) || ( listing.status === 'publish' || listing.status === 'waiting_assignment'  && can('create', 'all-proposal') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
                         :to="{ name: 'proposals.add', params: { listingId: id } }"
@@ -46,6 +46,13 @@
                         :to="{ name: 'listings.detail', params:{ listingId: id } }"
                     >
                         Visits Updates
+                    </b-button>
+                     <b-button
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="secondary"
+                        :to="{ name: 'listings'}"
+                    >
+                        Back
                     </b-button>
                 </div>
             </b-col>

@@ -174,7 +174,7 @@
                                 />
                             </template>
                             <span class="font-weight-bold d-block text-nowrap mt-1">
-                                {{ data.item.contractor.first_name }}
+                                {{ data.item.contractor.user_name }}
                             </span>
                             </b-media>
                     </template>

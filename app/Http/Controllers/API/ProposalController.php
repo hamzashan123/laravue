@@ -49,6 +49,7 @@ class ProposalController extends Controller
             ];
             return response()->json($response_data);
         }
+        
 
         if(Auth::user()->role_id != 2) {
             $response_data = [
@@ -58,7 +59,7 @@ class ProposalController extends Controller
             return response()->json($response_data);
         }
 
-        $proposal = Proposals::where('listing_id',$request->listing_id)->where('user_id', Auth::user()->id)->first();
+        $proposal = Proposals::where('listing_id',$request->listing_id)->where('user_id', Auth::user()->id)->whereNotIn('status' , ['withdraw'])->first();
         if($proposal != null) {
             $response_data = [
                 'success' => false,
@@ -68,7 +69,7 @@ class ProposalController extends Controller
         }
 
 
-        $data = Listing::where('id',$request->listing_id)->where('status', 'publish')->first();
+        $data = Listing::where('id',$request->listing_id)->whereIn('status' , ['publish' ,'waiting_assignment'])->first();
 
         if ($data != null) {
             $input = $request->all();
@@ -113,7 +114,7 @@ class ProposalController extends Controller
             return response()->json($response_data);
         }
 
-        $data = Proposals::where('id',$request->id)->first();
+        $data = Proposals::where('id',$request->id)->whereNotIn('status' , ['withdraw'])->first();
         if ($data != null) {
             if(!($data['status'] == 'reject' || $data['status'] == 'pending')) {
                 $response_data = [
@@ -134,6 +135,8 @@ class ProposalController extends Controller
 
             $isSucess = Helper::saveNotification($data->user_id, 'proposal', 'Proposal Approved', 'Your ' . $data->getListing->title . ' Proposal Approved Sucessfully');
 
+            $user = User::where('id', $data->user_id)->first();
+            Helper::sendEmailToNotify($user, "Proposal Approved", $data->getListing->title);
 
             $listing = Listing::where('id',$data->listing_id)->first();
 
@@ -173,7 +176,7 @@ class ProposalController extends Controller
             return response()->json($response_data);
         }
 
-        $data = Proposals::where('id',$request->id)->first();
+        $data = Proposals::where('id',$request->id)->whereNotIn('status' , ['withdraw'])->first();
 
         if ($data != null) {
             $data->status = 'reject';
@@ -182,6 +185,9 @@ class ProposalController extends Controller
             $data->save();
 
             $isSucess = Helper::saveNotification($data->user_id, 'proposal', 'Proposal Reject', 'Your ' . $data->getListing->title . ' proposal has been rejected');
+
+            $user = User::where('id', $data->user_id)->first();
+            Helper::sendEmailToNotify($user, "Proposal Reject", $data->getListing->title);
 
             $listing = Listing::where('id', $data->listing_id)->first();
             if($listing != null) {
@@ -221,7 +227,7 @@ class ProposalController extends Controller
         }
 
        
-        $data = Proposals::where('id',$request->id)->first();        
+        $data = Proposals::where('id',$request->id)->first();
 
         if ($data != null) {
             $response_data = [
@@ -273,11 +279,14 @@ class ProposalController extends Controller
         } else if (Auth::user()->role_id == 2) {
             //Contractor
             $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
-                $query->where(['user_id'=> Auth::user()->id]);
+                $query->where(['user_id'=> Auth::user()->id])->whereNotIn('status' , ['withdraw']);
             });
         } else if (Auth::user()->role_id == 3) {
             //EB Staff
-            $data = Listing::whereNotIn('status', ['draft']);
+            //$data = Listing::whereNotIn('status', ['draft']);
+            $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
+                $query->whereNotIn('status' , ['withdraw']);
+            })->whereNotIn('status', ['draft']);
         }            
 
         $data = $data->paginate(10);    
@@ -318,9 +327,9 @@ class ProposalController extends Controller
             $data = Proposals::where(['listing_id' => $request->listing_id])->whereIn('status' , ['approved','pre_contract','contract_started','contract_completed'])->paginate(10);
         //contractor can see only his proposal
         }else if(Auth::user()->role_id == 2){
-            $data = Proposals::where(['listing_id' => $request->listing_id , 'user_id' => Auth::user()->id])->paginate(10);
+            $data = Proposals::where(['listing_id' => $request->listing_id, 'user_id' => Auth::user()->id])->whereNotIn('status', ['withdraw'])->paginate(10);
         }else{
-            $data = Proposals::where('listing_id', $request->listing_id)->paginate(10);
+            $data = Proposals::where('listing_id', $request->listing_id)->whereNotIn('status', ['withdraw'])->paginate(10);
         }
                
 
@@ -358,8 +367,8 @@ class ProposalController extends Controller
         $user = Auth::user();
         if($user->role_id == Helper::$contractor || $user->role_id == Helper::$staff) {
             
-            $proposal = Proposals::where('id', $request->proposal_id)->whereNotIn('status' , ['contract_started','contract_completed'])->first();
-            if($proposal != null) { 
+            $proposal = Proposals::where('id', $request->proposal_id)->whereIn('status' , ['pending','approved'])->first();
+            if($proposal != null) {
                 if($user->role_id == Helper::$contractor && $proposal->user_id != $user->id) {
                     $response_data = [
                         'success' => false,
@@ -398,4 +407,61 @@ class ProposalController extends Controller
 
     }
 
+    public function withdrawProposal(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'proposal_id'     => 'required',
+        ]);
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+        $user = Auth::user();
+        if($user->role_id == Helper::$contractor || $user->role_id == Helper::$staff) {
+            
+            $proposal = Proposals::where('id', $request->proposal_id)->whereIn('status' , ['pending','approved','pre_contract'])->first();
+            if($proposal != null) {
+                if($user->role_id == Helper::$contractor && $proposal->user_id != $user->id) {
+                    $response_data = [
+                        'success' => false,
+                        'message' => 'Data Not Found',
+                    ];
+                    return response()->json($response_data, $this->successStatus);
+                } else {
+                    $proposal->status = 'withdraw';
+                    $proposal->save();
+
+
+                    $proposalCount = Proposals::where('listing_id', $proposal->listing_id)->whereNotIn('status' , ['pending','withdraw','reject'])->count('id');
+                    if($proposalCount <= 0) {
+                        $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
+                                        ->update(['status' => 'publish']);
+                    }
+
+                    $response_data = [
+                        'success' => true,
+                        'message' => 'Proposal update successfully!',
+                        'data' => new ProposalsResource($proposal),
+                    ];
+                    return response()->json($response_data, $this->successStatus);
+                }
+            } else {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'Data Not Found',
+                ];
+                return response()->json($response_data, $this->successStatus);
+            }
+
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Permission denied, You cannot edit proposal',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
 }
