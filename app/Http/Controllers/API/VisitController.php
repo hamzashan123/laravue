@@ -229,5 +229,40 @@ class VisitController extends Controller
             return response()->json($response_data, $this->successStatus);
         }
     }
+
+    public function deleteVisit(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'visit_id'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        //$visit = Visits::where('id', $request->visit_id)->first();
+        $response = Visits::where('id', $request->visit_id)->delete();
+        $imageResponse = VisitImages::where('visit_id', $request->visit_id)->delete();
+
+        if($response > 0 || $imageResponse > 0)
+        {
+            $response_data = [
+                'success' => true,
+                'message' => 'Visit delete successfully!',                    
+            ];
+            return response()->json($response_data, $this->successStatus);
+        } else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        
+    }
 }
 

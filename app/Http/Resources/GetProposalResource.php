@@ -37,9 +37,9 @@ class GetProposalResource extends JsonResource
         if(Auth::user()->role_id == 1) {
             $proposalCount = $this->getListingProposals->where('status', 'approved')->count();
         } else if(Auth::user()->role_id == 2) { 
-            $proposalCount = $this->getListingProposals->where('user_id', Auth::user()->id)->count();           
+            $proposalCount = $this->getListingProposals->where('user_id', Auth::user()->id)->whereNotIn('status', ['withdraw'])->count();           
         } else {
-            $proposalCount = $this->getListingProposals->count();
+            $proposalCount = $this->getListingProposals->whereNotIn('status', ['withdraw'])->count();
         }
 
         return [

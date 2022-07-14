@@ -102,6 +102,7 @@
                                     rules="required"
                                     >
                                     <b-form-input
+                                        
                                         v-model="user.user_name"
                                         name="username"
                                         placeholder="Username"
@@ -142,6 +143,7 @@
                                     rules="required|email"
                                     >
                                     <b-form-input
+                                        disabled
                                         v-model="user.email"
                                         name="email"
                                         placeholder="Email"

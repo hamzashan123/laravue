@@ -21,6 +21,8 @@ Route::post('reset-password', [App\Http\Controllers\API\UserController::class, '
 Route::post('verify-reset-password-code', [App\Http\Controllers\API\UserController::class, 'verifyResetPasswordCode']);
 Route::post('change-password', [App\Http\Controllers\API\UserController::class, 'changePassword']);
 
+Route::post('send-message-email', [App\Http\Controllers\API\ChatController::class, 'sendMessageEmail']);
+
 Route::post('getlistingbyid', [App\Http\Controllers\API\ListingController::class, 'getListingById']);
 
 Route::post('get-listing', [App\Http\Controllers\API\ListingController::class, 'getListing']);
@@ -29,6 +31,7 @@ Route::post('get-published-listings', [App\Http\Controllers\API\ListingControlle
 
 Route::group(['middleware' => 'auth:api'], function() {
     Route::post('get-users', [App\Http\Controllers\API\UserController::class, 'getUsers']);
+    Route::post('bane-user', [App\Http\Controllers\API\UserController::class, 'baneUser']);
 
     
     Route::post('updateProfile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
@@ -59,6 +62,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
     Route::post('get-visit-details', [App\Http\Controllers\API\VisitController::class, 'getVisitDetails']);
     Route::post('archive-visit-documents', [App\Http\Controllers\API\VisitController::class, 'archiveVisitDocuments']);
+    Route::post('delete-visit', [App\Http\Controllers\API\VisitController::class, 'deleteVisit']);
 
     //Upload Legal Document
     Route::post('upload-legal-document', [App\Http\Controllers\API\LegalDocumentsController::class, 'uploadLegalDocument']);
@@ -78,6 +82,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::post('send-message', [App\Http\Controllers\API\ChatController::class, 'sendMessage']);
     Route::post('get-messages', [App\Http\Controllers\API\ChatController::class, 'getMessages']);
+    Route::post('seen-message', [App\Http\Controllers\API\ChatController::class, 'seenMessage']);
 
     //Notifications
     Route::post('get-notification', [App\Http\Controllers\API\NotificationController::class, 'getNotification']);

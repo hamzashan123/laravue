@@ -4,7 +4,7 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Send your proposal to {{ listing.title }}</h1>
+                    <h1>Submit your proposal for {{ listing.title }}</h1>
                 </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
@@ -14,7 +14,7 @@
                         variant="secondary"
                         :to="{ name: 'listings.view', params: { listingId: listing.id } }"
                     >
-                        Back
+                        Back 
                     </b-button>
                 </div>
             </b-col>
@@ -180,7 +180,7 @@
                                 variant="primary"
                                 @click="sendProposalTrigger"
                             >
-                                Send Proposal
+                                Submit Proposal
                                 <b-spinner small v-if="isLoading" />
                             </b-button>
                         </div>

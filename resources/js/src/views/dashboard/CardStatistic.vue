@@ -25,7 +25,8 @@
 
     <!-- Stats Card Vertical -->
     <b-row class="match-height">
-      <b-col
+      <b-col 
+        
         xl="3"
         md="4"
         sm="6"
@@ -33,11 +34,12 @@
         <statistic-card-vertical
           icon="LockIcon"
           :statistic="dashboard.totallistings"
-          statistic-title="Listings"
+          statistic-title="Total Listings"
           color="info"
         />
       </b-col>
       <b-col
+        v-if="loggedinUser.user_role.id == 3"
         xl="3"
         md="4"
         sm="6"
@@ -46,10 +48,11 @@
           color="warning"
           icon="UsersIcon"
           :statistic="dashboard.totalclients"
-          statistic-title="Clients"
+          statistic-title="Total Clients"
         />
       </b-col>
       <b-col
+        v-if="loggedinUser.user_role.id == 3"
         xl="3"
         md="4"
         sm="6"
@@ -58,10 +61,11 @@
           color="danger"
           icon="BriefcaseIcon"
           :statistic="dashboard.totalcontractors"
-          statistic-title="Contractors"
+          statistic-title="Total Contractors"
         />
       </b-col>
       <b-col
+        v-if="loggedinUser.user_role.id == 3"
         xl="3"
         md="4"
         sm="6"
@@ -70,10 +74,11 @@
           color="primary"
           icon="HeartIcon"
           :statistic="dashboard.totalstaff"
-          statistic-title="Eb Staff"
+          statistic-title="Total Eb Staff"
         />
       </b-col>
       <b-col
+        v-if="loggedinUser.user_role.id == 3"
         xl="3"
         md="4"
         sm="6"
@@ -82,7 +87,7 @@
           color="primary"
           icon="UsersIcon"
           :statistic="dashboard.totalusers"
-          statistic-title="Users"
+          statistic-title="Total Users"
         />
       </b-col>
     </b-row>
@@ -117,6 +122,8 @@ export default {
   },
   data() {
     return {
+       loggedinUserRole: '',
+       loggedinUser: '',
       // Area charts
       subscribersGained: {},
       revenueGenerated: {},
@@ -140,6 +147,11 @@ export default {
         }),
     },
   mounted() {
+        // getting loggedin user
+        const getUser = JSON.parse(localStorage.getItem("userData"));
+        this.loggedinUser = getUser
+        const userRole = getUser.user_role;
+        this.loggedinUserRole = userRole
 
        // getting dashboard
         this.getDashboard()

@@ -13,7 +13,9 @@ class Messages extends Model
         'id',
         'from_user_id',
         'to_user_id',
-        'message',        
+        'message',
+        'seen',
+        'is_email_sent',
         'status',
         'created_at',
         'updated_at'
