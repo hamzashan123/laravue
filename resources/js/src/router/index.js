@@ -111,9 +111,9 @@ const router = new VueRouter({
         },
     },
     {
-        path: '/listings/detail/:listingId',
-        name: 'listings.detail',
-        component: () => import('@/views/listings/DetailListing.vue'),
+        path: '/listings/:listingId/visits',
+        name: 'listings.visit',
+        component: () => import('@/views/listings/ListingsVisits.vue'),
         meta: {
             navActiveLink: 'listings'
         },
@@ -124,6 +124,14 @@ const router = new VueRouter({
         component: () => import('@/views/listings/AddVisits.vue'),
         meta: {
             navActiveLink: 'listings'
+        },
+    },
+    {
+        path: '/listings/visits/edit/:visitId',
+        name: 'listings.visit.edit',
+        component: () => import('@/views/listings/EditVisit.vue'),
+        meta: {
+            navActiveLink: 'proposals'
         },
     },
     {

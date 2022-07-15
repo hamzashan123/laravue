@@ -5,13 +5,13 @@ export default [
         route: "dashboard",
         icon: "HomeIcon",
     },
-    ... can('create', 'all-user') ? [
-    {
-        title: 'Customers',
-        route: 'customers',
-        icon: 'UsersIcon',
-    },
-    ] : [],
+    // ... can('create', 'all-user') ? [
+    // {
+    //     title: 'Customers',
+    //     route: 'customers',
+    //     icon: 'UsersIcon',
+    // },
+    // ] : [],
     // {
     //     title: "Customers",
     //     route: "customers",

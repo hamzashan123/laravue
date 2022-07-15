@@ -234,6 +234,17 @@
                             See Details
                         </b-button>
 
+                        <!-- delete -->
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            @click="withdrawProposalTrigger( data.item.id, data.index )"
+                        >
+                            Withdraw
+                            <!-- <feather-icon icon="XIcon" size="15" /> -->
+                        </b-button>
+
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="warning"
@@ -244,15 +255,6 @@
                             }"
                         >
                             <feather-icon icon="EditIcon" size="15" />
-                        </b-button>
-                        <!-- delete -->
-                        <b-button
-                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="danger"
-                            size="sm"
-                            @click="deleteTrigger( data.item.id, data.index )"
-                        >
-                            <feather-icon icon="XIcon" size="15" />
                         </b-button>
 
                     </template>
@@ -446,7 +448,7 @@ export default {
         this.totalRows = this.items.length;
     },
     methods: {
-        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract', deleteListingsProposal: "proposal/deleteListingsProposal" }),
+        ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract', withdrawProposal: "proposal/withdrawProposal" }),
 
         assignContractTrigger(listingId, contractortId, clickedIndex) {
             this.clickedIndex = clickedIndex
@@ -497,10 +499,10 @@ export default {
 
         },
 
-        deleteTrigger( id, index ) {
+        withdrawProposalTrigger( id, index ) {
             if( confirm("Are you sure, you want to withdraw your proposal?") ) {
 
-                this.deleteListingsProposal({ proposal_id: id })
+                this.withdrawProposal({ proposal_id: id })
                     .then((response) => {
                         if(response.success) {
                             this.$toast({

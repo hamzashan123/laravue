@@ -259,7 +259,7 @@ export default {
         },
 
         // Deleting
-        deleteListingsProposal({ commit }, id) {
+        withdrawProposal({ commit }, id) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({

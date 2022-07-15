@@ -160,11 +160,11 @@
 
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                            variant="danger"
+                            variant="info"
                             size="sm"
-                            @click="banUserTrigger( data.item.id, data.index )"
+                            @click="banUserTrigger( data.item.id, banUserValue(data.item.status), data.index )"
                         >
-                            Ban
+                            {{ banUserValue(data.item.status) == 'banned' ? 'Ban' : 'Unban' }}
                         </b-button>
 
                         <b-button
@@ -179,14 +179,14 @@
                             <feather-icon icon="EditIcon" size="15" />
                         </b-button>
                         <!-- delete -->
-                        <b-button
+                        <!-- <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="danger"
                             size="sm"
                             to=""
                         >
                             <feather-icon icon="XIcon" size="15" />
-                        </b-button>
+                        </b-button> -->
                     </template>
                 </b-table>
 
@@ -321,9 +321,11 @@ export default {
             statuses_color,
             // check user
             can,
+
         };
     },
     computed: {
+
         sortOptions() {
             // Create an options list from our fields
             return this.fields
@@ -337,9 +339,65 @@ export default {
         }),
     },
     mounted() {
+        // getting accounts
+        this.loadAccountsTrigger()
+    },
+    methods: {
+        ...mapActions({ loadAccounts: "account/loadAccounts", banUser: "account/banUser" }),
 
-        // getting lsiting
-        this.loadAccounts()
+        banUserValue( value ) {
+            if( value == 'active') {
+                return 'banned'
+            } else {
+                return 'unbanned'
+            }
+        },
+
+        onFiltered(filteredItems) {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            this.totalRows = filteredItems.length;
+            this.currentPage = 1;
+        },
+
+        banUserTrigger( id, banVal, index ) {
+            console.log(banVal);
+            if( confirm("Are you sure?") ) {
+
+                this.banUser({ id: id, status: banVal })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "success",
+                                },
+                            });
+                            // this.items.splice(index, 1)
+                            this.loadAccountsTrigger()
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
+
+        },
+
+        // load Accounts
+        loadAccountsTrigger() {
+
+            this.loadAccounts()
             .then((response) => {
                 console.log(response);
                 if( response.success ) {
@@ -371,50 +429,7 @@ export default {
                     },
                 });
             });
-
-
-    },
-    methods: {
-        ...mapActions({ loadAccounts: "account/loadAccounts", banUser: "account/banUser" }),
-
-        onFiltered(filteredItems) {
-            // Trigger pagination to update the number of buttons/pages due to filtering
-            this.totalRows = filteredItems.length;
-            this.currentPage = 1;
-        },
-
-        banUserTrigger( id, index ) {
-            if( confirm("Are you sure?") ) {
-
-                this.banUser({ id: id })
-                    .then((response) => {
-                        if(response.success) {
-                            this.$toast({
-                                component: ToastificationContent,
-                                props: {
-                                    title: response.message,
-                                    icon: "EditIcon",
-                                    variant: "success",
-                                },
-                            });
-                            this.items.splice(index, 1)
-                        }
-
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
-                                title: "Error while loading",
-                                icon: "EditIcon",
-                                variant: "danger",
-                            },
-                        });
-                    });
-            }
-
-        },
+        }
     },
     directives: {
         Ripple,

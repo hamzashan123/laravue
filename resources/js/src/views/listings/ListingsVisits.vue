@@ -68,6 +68,7 @@
                                             variant="warning"
                                             class="mr-1"
                                             size="sm"
+                                            :to="{ name: 'listings.visit.edit', params: { visitId: visit.id } }"
                                         >
                                             <feather-icon icon="EditIcon" size="15" />
                                         </b-button>
