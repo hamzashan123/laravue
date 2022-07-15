@@ -807,7 +807,7 @@ export default {
                     this.legal_total_percentage =
                         response.data[0].legal_total_percentage;
                     this.finance_total_percentage =
-                        response.data[0].finance_total_percentage; 
+                        response.data[0].finance_total_percentage;
 
                     this.finance_client_last_update_on = response.data[0].finance_client_last_update_on;
                     this.legal_client_last_update_on = response.data[0].legal_client_last_update_on;

@@ -4,7 +4,7 @@
         <b-row class="mb-4">
             <b-col md="6" sm="12">
                 <b-card-text>
-                    <h1>Add Visit Details on {{ listing.title }}</h1>
+                    <h1>Edit Visit of {{ listing.title }}</h1>
 
                     <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
                         {{ statuses_color[0][listing.status] }}
@@ -162,9 +162,9 @@
                                     "
                                     type="submit"
                                     variant="primary"
-                                    @click="uploadVisitTrigger"
+                                    @click="updateVisitTrigger"
                                 >
-                                    Save Visit
+                                    Update Visit
                                     <b-spinner small v-if="isLoading" />
                                 </b-button>
                             </b-col>
@@ -254,7 +254,7 @@ export default {
             imagesFileUploader: [],
             newImages: [],
             isFileUploaderFull: false,
-            id: "",
+            visitId: "",
             listing: {},
             listingVisit: {},
             //   Validation
@@ -310,15 +310,15 @@ export default {
         },
 
         ...mapActions({
-            uploadVisit: "listing/uploadVisit",
-            loadListing: "listing/loadListing",
+            loadVisit: "listing/loadVisit",
+            updateVisit: "listing/updateVisit",
         }),
 
-        uploadVisitTrigger() {
+        updateVisitTrigger() {
             this.$refs.validationRules.validate().then((success) => {
                 if (success) {
                     let visitData = new FormData();
-                    visitData.append("listing_id", this.id)
+                    visitData.append("visit_id", this.visitId)
                     visitData.append("visit_date", this.listingVisit.visit_date)
                     visitData.append("percentage", this.listingVisit.percentage)
                     visitData.append("visit_summary", this.listingVisit.visit_summary)
@@ -328,7 +328,7 @@ export default {
                         visitData.append("images[]", newImage);
                     });
 
-                    this.uploadVisit(visitData)
+                    this.updateVisit(visitData)
                         .then((response) => {
                             if (response.success) {
                                 this.$toast({
@@ -340,7 +340,7 @@ export default {
                                     },
                                 });
 
-                                this.$router.push({ name: "listings.visit", params: { id: this.id } });
+                                this.$router.push({ name: "listings.visit", params: { id: this.visitId } });
                             } else {
                                 console.log(response);
                                 this.$toast({
@@ -379,17 +379,14 @@ export default {
     },
     mounted() {
 
-        this.id = this.$route.params.listingId;
+        this.visitId = this.$route.params.visitId;
 
-        const getUser = JSON.parse(localStorage.getItem("userData")) || "";
-        const user_Role = getUser.user_role || "";
-        const userRoleID = user_Role.id || "";
-
-        this.loadListing({ id: this.id, role_id: userRoleID })
+        this.loadVisit({ id: this.visitId })
             .then((response) => {
                 if (response.success) {
-                    this.listing = response.data[0];
-                    console.log(response.data[0].images);
+                    this.listing = response.data.listing;
+                    this.listingVisit = response.data;
+                    console.log(response.data);
                 } else {
                     this.$toast({
                         component: ToastificationContent,

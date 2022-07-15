@@ -17,6 +17,8 @@ export const statuses_color = [
         // normal status
         "active": "Active",
         "inactive": "In-active",
+        "banned": "Banned",
+        "unbanned": "active",
     },
     {
         // Listing
@@ -36,6 +38,8 @@ export const statuses_color = [
         // status
         "active": "success",
         "inactive": "danger",
+        "banned": "danger",
+        "unbanned": "success",
     },
 ];
 

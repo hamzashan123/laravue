@@ -43,7 +43,7 @@
                         v-if="( listing.status === 'contract_started' && can('create', 'listing') ) || (listing.status === 'contract_started' && can('create', 'all-listing') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        :to="{ name: 'listings.detail', params:{ listingId: id } }"
+                        :to="{ name: 'listings.visit', params:{ listingId: id } }"
                     >
                         Visits Updates
                     </b-button>

@@ -5,7 +5,7 @@
             <b-col sm="3">
                 <b-card>
                     <b-form-input
-                        v-if="loggedinUser.user_role.id == 3"
+                        v-if="loggedinUser ? loggedinUser.user_role.id == 3 : ''"
                         id="searchUser"
                         v-model="searchUser"
                         type="search"
@@ -15,7 +15,7 @@
                         :settings="perfectScrollbarSettings"
                         class="scroll-area mb-0"
                     >
-                        <div class="position-relative" style="height: 60vh">
+                        <div class="position-relative" style="height: 60vh" v-if="filteredUsers.length != 0">
                             <div
                                 class="d-flex align-item-center cursor-pointer rounded users-list"
                                 :class="{ active: chatUser.id === userSelected}"
@@ -33,6 +33,7 @@
                                 </div>
                             </div>
                         </div>
+                        <div v-if="filteredUsers.length == 0"> No user found to chat!</div>
                     </vue-perfect-scrollbar>
                 </b-card>
             </b-col>

@@ -65,7 +65,7 @@ export default {
             });
         },
 
-        // Getting Single
+        // Getting Single listing
         loadListing({ commit }, ids) {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
@@ -209,6 +209,42 @@ export default {
             });
         },
 
+        // update visit of lsiting
+        updateVisit({ commit }, visitData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "edit-visit",
+                    data: visitData,
+                    method: "post",
+                    headers: {
+                        Accept: "*/*",
+                        "Content-type": "multipart/form-data charset=utf-8; boundary=" + Math.random().toString().substr(2),
+                    },
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+
+                            commit("setIsCreated", true);
+                            commit("setMessage", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsCreated", false);
+                            commit("setError", response.data.message);
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
         // Get listing visits
         loadListingVisits({ commit }, listingId) {
             commit("setIsLoading", true);
@@ -277,6 +313,24 @@ export default {
                         console.log(error);
                         commit("setError", error);
                         commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
+        // Getting Single Visit
+        loadVisit({ commit }, id) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({ url: "get-visit-details", data: id, method: "POST" })
+                    .then((response) => {
+                        commit("setIsLoading", false);
+                        return resolve(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setIsLoading", false);
+                        commit("setError", error);
                         return reject(error);
                     });
             });
