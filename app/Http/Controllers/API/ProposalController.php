@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Listing;
 use App\Models\ListingImages;
+use App\Models\Contracts;
 
 use App\Http\Resources\ListingResource;
 use App\Http\Resources\ProposalsResource;
@@ -187,13 +188,14 @@ class ProposalController extends Controller
             $isSucess = Helper::saveNotification($data->user_id, 'proposal', 'Proposal Reject', 'Your ' . $data->getListing->title . ' proposal has been rejected');
 
             $user = User::where('id', $data->user_id)->first();
+            
             Helper::sendEmailToNotify($user, "Proposal Reject", $data->getListing->title);
 
-            $listing = Listing::where('id', $data->listing_id)->first();
-            if($listing != null) {
-                $listing->status = 'publish';
-                $listing->save();
-            }
+            // $listing = Listing::where('id', $data->listing_id)->first();
+            // if($listing != null) {
+            //     $listing->status = 'publish';
+            //     $listing->save();
+            // }
 
             $response_data = [
                 'success' => true,
@@ -422,7 +424,7 @@ class ProposalController extends Controller
         $user = Auth::user();
         if($user->role_id == Helper::$contractor || $user->role_id == Helper::$staff) {
             
-            $proposal = Proposals::where('id', $request->proposal_id)->whereIn('status' , ['pending','approved','pre_contract'])->first();
+            $proposal = Proposals::where('id', $request->proposal_id)->whereIn('status' , ['reject','pending','approved','pre_contract'])->first();
             if($proposal != null) {
                 if($user->role_id == Helper::$contractor && $proposal->user_id != $user->id) {
                     $response_data = [
@@ -431,22 +433,33 @@ class ProposalController extends Controller
                     ];
                     return response()->json($response_data, $this->successStatus);
                 } else {
+                    $proposalData = $proposal;
+                    //delete proposal step
                     $proposal->delete();
-                    $proposals= Proposals::where('listing_id', $proposal->listing_id)->whereNotIn('status' , ['reject','contract_started','contract_completed']);
+                   
+                    $proposals= Proposals::where('listing_id', $proposalData->listing_id)->whereNotIn('status' , ['contract_started','contract_completed'])->get();
                     $precontract = $proposals->where('status','pre_contract')->count();
                     $approved = $proposals->where('status','approved')->count();
                     $pending = $proposals->where('status','pending')->count();
                     
                     if($precontract > 0 ) {
-                        $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
+                        $rows_affect = Listing::where(['id' => $proposalData->listing_id])
                                         ->update(['status' => 'pre_contract']);
                     }else if($approved > 0 ){
-                        $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
+                        $rows_affect = Listing::where(['id' => $proposalData->listing_id])
                         ->update(['status' => 'waiting_assignment']);
+                        Contracts::where('listing_id', $proposalData->listing_id)->delete();
                     }else if($pending > 0){
-                        $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
+                        $rows_affect = Listing::where(['id' => $proposalData->listing_id])
                         ->update(['status' => 'publish']);
+                        Contracts::where('listing_id', $proposalData->listing_id)->delete();
+                    }else{
+                        $rows_affect = Listing::where(['id' => $proposalData->listing_id])
+                                        ->update(['status' => 'publish']);
+                        Contracts::where('listing_id', $proposalData->listing_id)->delete();
                     }
+
+                    
 
                     $response_data = [
                         'success' => true,
