@@ -216,9 +216,10 @@
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="success"
                             size="sm"
-                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id)"
+                            @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id, data.index)"
                         >
                             Assign
+                            <b-spinner small v-if="isAssignLoading && clickedIndex === data.index" />
                         </b-button>
 
                         <b-button
@@ -331,6 +332,7 @@ import {
     BOverlay,
     BFormDatepicker,
     BMedia,
+    BSpinner,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapGetters, mapActions } from "vuex";
@@ -359,6 +361,7 @@ export default {
         BOverlay,
         BFormDatepicker,
         BMedia,
+        BSpinner,
     },
     data() {
         return {
@@ -387,6 +390,8 @@ export default {
             ListingAddress: '',
             listingId: '',
             statuses_color,
+            isAssignLoading: false,
+            clickedIndex: '',
 
             can,
         };
@@ -443,7 +448,9 @@ export default {
     methods: {
         ...mapActions({ loadListingProposals: "proposal/loadListingProposals", assignContract: 'proposal/assignContract', deleteListingsProposal: "proposal/deleteListingsProposal" }),
 
-        assignContractTrigger(listingId, contractortId) {
+        assignContractTrigger(listingId, contractortId, clickedIndex) {
+            this.clickedIndex = clickedIndex
+            this.isAssignLoading = true
             console.log(listingId, contractortId);
             let assignData = new FormData();
             assignData.append( "listing_id", listingId );
@@ -473,9 +480,11 @@ export default {
                             },
                         });
                     }
+                    this.isAssignLoading = false
                 })
                 .catch((error) => {
                     console.log(error);
+                    this.isAssignLoading = false
                     this.$toast({
                         component: ToastificationContent,
                         props: {
