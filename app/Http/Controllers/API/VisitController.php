@@ -124,7 +124,7 @@ class VisitController extends Controller
         }
 
         $visitPercentage = Visits::where('user_id', Auth::user()->id)->where('listing_id', $request->listing_id)->sum('percentage');
-        $data = Visits::where('listing_id',$request->listing_id)->orderBy('id','asc')->paginate(20);
+        $data = Visits::where('listing_id',$request->listing_id)->orderBy('id','asc')->paginate(50);
 
         if(count($data) > 0)
         {
@@ -280,7 +280,7 @@ class VisitController extends Controller
             return response()->json($response_data, $this->successStatus);
         }
     }
-    
+
     public function archiveVisitDocuments(Request $request) {
         $validator = Validator::make($request->all(), [
             'visit_id'     => 'required',

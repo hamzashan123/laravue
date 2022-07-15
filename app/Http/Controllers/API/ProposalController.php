@@ -289,7 +289,7 @@ class ProposalController extends Controller
             })->whereNotIn('status', ['draft']);
         }            
 
-        $data = $data->paginate(10);    
+        $data = $data->paginate(100);    
 
         if (count($data) > 0) {
             $response_data = [
@@ -324,12 +324,12 @@ class ProposalController extends Controller
         }
         //only client can see approved proposal by staff
         if(Auth::user()->role_id == 1){
-            $data = Proposals::where(['listing_id' => $request->listing_id])->whereIn('status' , ['approved','pre_contract','contract_started','contract_completed'])->paginate(10);
+            $data = Proposals::where(['listing_id' => $request->listing_id])->whereIn('status' , ['approved','pre_contract','contract_started','contract_completed'])->paginate(100);
         //contractor can see only his proposal
         }else if(Auth::user()->role_id == 2){
-            $data = Proposals::where(['listing_id' => $request->listing_id, 'user_id' => Auth::user()->id])->whereNotIn('status', ['withdraw'])->paginate(10);
+            $data = Proposals::where(['listing_id' => $request->listing_id, 'user_id' => Auth::user()->id])->whereNotIn('status', ['withdraw'])->paginate(100);
         }else{
-            $data = Proposals::where('listing_id', $request->listing_id)->whereNotIn('status', ['withdraw'])->paginate(10);
+            $data = Proposals::where('listing_id', $request->listing_id)->whereNotIn('status', ['withdraw'])->paginate(100);
         }
                
 

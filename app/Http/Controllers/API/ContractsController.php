@@ -112,11 +112,11 @@ class ContractsController extends Controller
         if($user->role_id == 1 ) {
             $contract = Contracts::with('getListing')->whereHas('getListing', function($query) use($user){
                 $query->where('user_id', $user->id);
-            })->whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+            })->whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(100);      
         }else if ($user->role_id == 2){
-            $contract = Contracts::where('contractor_id', $user->id)->whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+            $contract = Contracts::where('contractor_id', $user->id)->whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(100);      
         }else{
-            $contract = Contracts::whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(10);      
+            $contract = Contracts::whereIn('status', ['pre_contract','contract_started','contract_completed'])->paginate(100);      
         }
          
         // $visitImages = Contracts::with('getImages')->whereHas('getImages', function($query) use($image_) {
