@@ -284,9 +284,9 @@ class ProposalController extends Controller
         } else if (Auth::user()->role_id == 3) {
             //EB Staff
             //$data = Listing::whereNotIn('status', ['draft']);
-            $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
-                $query->whereNotIn('status' , ['withdraw']);
-            })->whereNotIn('status', ['draft']);
+            $data = Listing::whereNotIn('status', ['draft']);
+            // $data = Listing::with('getListingProposals')->whereHas('getListingProposals',function($query){
+            // })->whereNotIn('status', ['draft']);
         }            
 
         $data = $data->paginate(100);    
@@ -431,19 +431,26 @@ class ProposalController extends Controller
                     ];
                     return response()->json($response_data, $this->successStatus);
                 } else {
-                    $proposal->status = 'withdraw';
-                    $proposal->save();
-
-
-                    $proposalCount = Proposals::where('listing_id', $proposal->listing_id)->whereNotIn('status' , ['pending','withdraw','reject'])->count('id');
-                    if($proposalCount <= 0) {
+                    $proposal->delete();
+                    $proposals= Proposals::where('listing_id', $proposal->listing_id)->whereNotIn('status' , ['reject','contract_started','contract_completed']);
+                    $precontract = $proposals->where('status','pre_contract')->count();
+                    $approved = $proposals->where('status','approved')->count();
+                    $pending = $proposals->where('status','pending')->count();
+                    
+                    if($precontract > 0 ) {
                         $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
-                                        ->update(['status' => 'publish']);
+                                        ->update(['status' => 'pre_contract']);
+                    }else if($approved > 0 ){
+                        $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
+                        ->update(['status' => 'waiting_assignment']);
+                    }else if($pending > 0){
+                        $rows_affect = Listing::where(['id' => $proposal->listing_id, 'status' => 'active'])
+                        ->update(['status' => 'publish']);
                     }
 
                     $response_data = [
                         'success' => true,
-                        'message' => 'Proposal update successfully!',
+                        'message' => 'Proposal withdrawn successfully!',
                         'data' => new ProposalsResource($proposal),
                     ];
                     return response()->json($response_data, $this->successStatus);
