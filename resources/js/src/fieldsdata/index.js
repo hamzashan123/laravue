@@ -9,6 +9,7 @@ export const statuses_color = [
         "reject": "Rejected",
         "waiting_assignment": "Waiting to Assign",
         "pre_contract": "Pre Contract",
+        "withdraw": "Withdraw",
         // Contract
         "contract_assigned": "Contract Assigned",
         "contract_started": "Contract Started!",
@@ -27,6 +28,7 @@ export const statuses_color = [
         "reject": "light-danger",
         "waiting_assignment": "light-warning",
         "pre_contract": "light-info",
+        "withdraw": "light-danger",
         // Contract
         "contract_assigned": "primary",
         "contract_started": "info",

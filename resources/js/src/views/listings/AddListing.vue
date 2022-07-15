@@ -324,7 +324,7 @@ import { ValidationProvider, ValidationObserver, extend  } from "vee-validate";
 extend('minVal', {
   params: ['target'],
   validate(value, { target }) {
-    return value > target;
+    return parseInt(value)  > parseInt(target);
   },
   message: 'The {_field_} should be greater then {target}'
 });

@@ -489,9 +489,9 @@ export default {
         },
 
         deleteTrigger( id, index ) {
-            if( confirm("Are you sure?") ) {
+            if( confirm("Are you sure, you want to withdraw your proposal?") ) {
 
-                this.deleteListingsProposal({ id: id })
+                this.deleteListingsProposal({ proposal_id: id })
                     .then((response) => {
                         if(response.success) {
                             this.$toast({
@@ -499,7 +499,7 @@ export default {
                                 props: {
                                     title: response.message,
                                     icon: "EditIcon",
-                                    variant: "danger",
+                                    variant: "success",
                                 },
                             });
                             this.items.splice(index, 1)
