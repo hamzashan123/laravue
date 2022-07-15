@@ -254,9 +254,9 @@ class VisitController extends Controller
                 foreach ($files as $file) {
                     $extension = $file->getClientOriginalExtension();
                     $image = Str::random(20) . ($extension != "" && $extension != null ? "." : "") . $extension;
-                    Storage::disk('local')->put('/public/Visit/' . $visits->id . '/images/' . $image, File::get($file));
+                    Storage::disk('local')->put('/public/Visit/' . $visit->id . '/images/' . $image, File::get($file));
                     VisitImages::create([
-                        'visit_id' => $visits->id,
+                        'visit_id' => $visit->id,
                         'image'  => $image,
                         'status' => 'active'
                     ]);
