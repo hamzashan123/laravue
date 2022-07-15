@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('get-listing-visit', [App\Http\Controllers\API\VisitController::class, 'getListingVisit']);
     Route::post('get-visit-details', [App\Http\Controllers\API\VisitController::class, 'getVisitDetails']);
     Route::post('archive-visit-documents', [App\Http\Controllers\API\VisitController::class, 'archiveVisitDocuments']);
+    Route::post('edit-visit', [App\Http\Controllers\API\VisitController::class, 'editVisit']);
     Route::post('delete-visit', [App\Http\Controllers\API\VisitController::class, 'deleteVisit']);
 
     //Upload Legal Document

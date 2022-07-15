@@ -57,7 +57,7 @@ class VisitController extends Controller
             return response()->json($response_data);
         }
 
-        $data = Listing::where('id',$request->listing_id)->whereIn('status' , ['pre_contract','contract_started','contract_completed'])->first();
+        $data = Listing::where('id',$request->listing_id)->whereIn('status' , ['pre_contract','contract_started'])->first();
 
         if ($data != null) {
             $input = $request->all();
@@ -78,7 +78,7 @@ class VisitController extends Controller
                 $files = $request->file('images');
                 foreach ($files as $file) {
                     $extension = $file->getClientOriginalExtension();
-                    $image = Str::random(20) . ".png";
+                    $image = Str::random(20) . ($extension != "" && $extension != null ? "." : "") . $extension;
                     Storage::disk('local')->put('/public/Visit/' . $visits->id . '/images/' . $image, File::get($file));
                     VisitImages::create([
                         'visit_id' => $visits->id,
@@ -124,7 +124,7 @@ class VisitController extends Controller
         }
 
         $visitPercentage = Visits::where('user_id', Auth::user()->id)->where('listing_id', $request->listing_id)->sum('percentage');
-        $data = Visits::where('listing_id',$request->listing_id)->orderBy('id','asc')->paginate(20);
+        $data = Visits::where('listing_id',$request->listing_id)->orderBy('id','asc')->paginate(50);
 
         if(count($data) > 0)
         {
@@ -173,6 +173,109 @@ class VisitController extends Controller
             $response_data = [
                 'success' => false,
                 'message' => 'Data Not Found',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+    }
+
+    public function editVisit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'visit_id'          => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Incomplete data provided!',
+                'errors' => $validator->errors()
+            ];
+            return response()->json($response_data);
+        }
+
+        $visit;
+        $authUser = Auth::user();
+        if($authUser->role_id == Helper::$staff) 
+        {
+            $visit = Visits::where('id', $request->visit_id)->first();
+        } 
+        else if ($authUser->role_id == Helper::$contractor) 
+        {
+            $visit = Visits::where('user_id', $authUser->id)->where('id', $request->visit_id)->first();
+        } 
+        else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Client cannot update visit yet',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        
+        if($visit == null) {
+            $response_data = [
+                'success' => false,
+                'message' => 'Visit not available',
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+
+        //$visit = Visits::where('user_id', Auth::user()->id)->where('listing_id', $request->listing_id)->sum('percentage');
+
+        $visitPercentage = Visits::where('listing_id', $visit->listing_id)->sum('percentage');
+        $visitPercentage = ($visitPercentage - $visit->percentage);
+        
+        if($request->percentage != null) {
+            if($request->percentage > (100 - $visitPercentage)) {
+                $response_data = [
+                    'success' => false,
+                    'message' => 'percentage has been exceed'                   
+                ];
+                return response()->json($response_data);
+            }
+            $visitPercentage = ($visitPercentage + $request->percentage);
+        }
+
+        $data = Listing::where('id', $visit->listing_id)->whereIn('status' , ['pre_contract','contract_started'])->first();
+
+        if ($data != null) {
+
+            $visit->visit_date = ($request->visit_date != null ? $request->visit_date : $visit->visit_date);
+            $visit->percentage = ($request->percentage != null ? $request->percentage : $visit->percentage);
+            $visit->visit_summary = ($request->visit_summary != null ? $request->visit_summary : $visit->visit_summary);
+            $visit->visit_detail = ($request->visit_detail != null ? $request->visit_detail : $visit->visit_detail);
+            $visit->save();
+            //$visits = Visits::create($input);
+            
+
+            //region Visit Images
+            if($request->hasfile('images'))
+            {
+                $files = $request->file('images');
+                foreach ($files as $file) {
+                    $extension = $file->getClientOriginalExtension();
+                    $image = Str::random(20) . ($extension != "" && $extension != null ? "." : "") . $extension;
+                    Storage::disk('local')->put('/public/Visit/' . $visits->id . '/images/' . $image, File::get($file));
+                    VisitImages::create([
+                        'visit_id' => $visits->id,
+                        'image'  => $image,
+                        'status' => 'active'
+                    ]);
+                }
+            }
+            //endregion
+
+            $response_data = [
+                'success' => true,
+                'message' => 'Visit update successfully!',
+                'data' => new VisitResource($visit),
+                'percentage' => ($visitPercentage),
+            ];
+            return response()->json($response_data, $this->successStatus);
+        }
+        else {
+            $response_data = [
+                'success' => false,
+                'message' => 'Listing Not Available For Visit',
             ];
             return response()->json($response_data, $this->successStatus);
         }
