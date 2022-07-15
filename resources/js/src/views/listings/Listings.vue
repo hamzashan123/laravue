@@ -375,7 +375,7 @@ export default {
                                 props: {
                                     title: response.message,
                                     icon: "EditIcon",
-                                    variant: "danger",
+                                    variant: "success",
                                 },
                             });
                             this.items.splice(index, 1)

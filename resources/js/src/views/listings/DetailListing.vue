@@ -56,13 +56,32 @@
                                     <div
                                         class="
                                             d-flex
-                                            align-items-start
+                                            align-items-center
                                             flex-sm-row flex-column flex-wrap
-                                            justify-content-between
                                             mb-1 mb-sm-50
                                         "
                                     >
-                                        <h6>{{ visit.visit_summary }} - {{ visit.percentage }}%</h6>
+                                        <h6 class="mr-auto">{{ visit.visit_summary }} - {{ visit.percentage }}%</h6>
+                                        <b-button
+                                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                            variant="warning"
+                                            class="mr-1"
+                                            size="sm"
+                                        >
+                                            <feather-icon icon="EditIcon" size="15" />
+                                        </b-button>
+                                        <!-- delete -->
+                                        <b-button
+                                            v-if="can('update', 'listing') || can('update', 'all-listing')"
+                                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                            variant="danger"
+                                            class="mr-1"
+                                            size="sm"
+                                            @click="deleteTrigger( visit.id, index )"
+                                        >
+                                            <feather-icon icon="XIcon" size="15" />
+                                        </b-button>
                                         <b-button
                                             v-ripple.400="
                                                 'rgba(113, 102, 240, 0.15)'
@@ -150,6 +169,8 @@ import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
 import ShowAddress from '@/components/ShowAddress.vue'
 import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
 import ShowClientDateBudget from '@/components/ShowClientDateBudget.vue'
+import { can } from '@/auth/authentication.js'
+
 export default {
     components: {
         ValidationProvider,
@@ -200,15 +221,50 @@ export default {
             required,
             activeVisitData: false,
             statuses_color,
+            // check user
+            can,
         };
     },
     methods: {
-        ...mapActions({ loadListingVisits: "listing/loadListingVisits" }),
+        ...mapActions({ loadListingVisits: "listing/loadListingVisits", deleteVisit: "listing/deleteVisit" }),
 
         changeVisitData( index ) {
             this.activeVisitData = true
             this.listing.images = this.listingVisit[index].images
             this.listing.description = this.listingVisit[index].visit_detail
+        },
+
+        deleteTrigger( id, index ) {
+            if( confirm("Are you sure?") ) {
+
+                this.deleteVisit({ visit_id: id })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "success",
+                                },
+                            });
+                            this.listingVisit.splice(index, 1)
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
+
         },
     },
     computed: {
