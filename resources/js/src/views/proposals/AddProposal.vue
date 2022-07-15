@@ -14,7 +14,7 @@
                         variant="secondary"
                         :to="{ name: 'listings.view', params: { listingId: listing.id } }"
                     >
-                        Back 
+                        Back
                     </b-button>
                 </div>
             </b-col>
@@ -255,7 +255,7 @@ import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
 extend('minVal', {
   params: ['target'],
   validate(value, { target }) {
-    return value > target;
+    return parseInt(value)  > parseInt(target);
   },
   message: 'The {_field_} should be greater then {target}'
 });

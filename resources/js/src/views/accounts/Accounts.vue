@@ -160,6 +160,15 @@
 
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                            variant="danger"
+                            size="sm"
+                            @click="banUserTrigger( data.item.id, data.index )"
+                        >
+                            Ban
+                        </b-button>
+
+                        <b-button
+                            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                             variant="warning"
                             size="sm"
                             :to="{
@@ -366,12 +375,45 @@ export default {
 
     },
     methods: {
-        ...mapActions({ loadAccounts: "account/loadAccounts" }),
+        ...mapActions({ loadAccounts: "account/loadAccounts", banUser: "account/banUser" }),
 
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
+        },
+
+        banUserTrigger( id, index ) {
+            if( confirm("Are you sure?") ) {
+
+                this.banUser({ id: id })
+                    .then((response) => {
+                        if(response.success) {
+                            this.$toast({
+                                component: ToastificationContent,
+                                props: {
+                                    title: response.message,
+                                    icon: "EditIcon",
+                                    variant: "success",
+                                },
+                            });
+                            this.items.splice(index, 1)
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: "Error while loading",
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    });
+            }
+
         },
     },
     directives: {

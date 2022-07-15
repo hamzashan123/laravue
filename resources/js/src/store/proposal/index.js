@@ -263,7 +263,7 @@ export default {
             commit("setIsLoading", true);
             return new Promise((resolve, reject) => {
                 axios({
-                    url: "",
+                    url: "withdraw-proposal",
                     data: id,
                     method: "post",
                 })
