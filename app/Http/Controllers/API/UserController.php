@@ -281,8 +281,7 @@ class UserController extends Controller
     public function getUsers(Request $request) {
 
         $user = Auth::user();
-        $users = User::where('status', 'active')->whereNotIn('id',[$user->id]);        
-
+        $users = User::whereIn('status',['active','banned'] )->whereNotIn('id',[$user->id]);        
         if($user->role_id == 3) {
             $users = $users;
         } else {
@@ -457,7 +456,8 @@ class UserController extends Controller
     public function baneUser(Request $request) {
 
         $validator = Validator::make($request->all(), [
-            'id' => 'required'
+            'id' => 'required',
+            'status' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -470,17 +470,23 @@ class UserController extends Controller
         }
 
         $auth = Auth::user();
-        $user = User::where('status', 'active')->where('id', $request->id)->where('id', '!=', $auth->id)->first();
+        $user = User::where('id', $request->id)->where('id', '!=', $auth->id)->first();
         
-        if($user != null) {
-            User::where(['id' => $request->id, 'status' => 'active'])->update(['status' => 'in_active']);
-
+        if($user != null && $request->status == 'banned') {
+            User::where(['id' => $request->id])->update(['status' => 'banned']);
             $response_data = [
                 'success' => true,
-                'message' => 'User bane successfully',
+                'message' => 'User Ban successfully',
             ];
             return response()->json($response_data, $this->successStatus);
 
+        }elseif($user != null && $request->status == 'unbanned'){
+            User::where(['id' => $request->id])->update(['status' => 'active']);
+            $response_data = [
+                'success' => true,
+                'message' => 'User unbanned successfully',
+            ];
+            return response()->json($response_data, $this->successStatus);
         } else {
             $response_data = [
                 'success' => false,
