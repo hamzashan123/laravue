@@ -22,6 +22,7 @@ class MessageResource extends JsonResource
             'from_user'=> $this->getFromUser->first_name . ' ' . $this->getFromUser->last_name,
             'to_user'=> $this->getToUser->first_name . ' ' . $this->getToUser->last_name,
             'message' => $this->message,
+            'my_message' => ($this->getFromUser->id == Auth::user()->id ? true : false),
             'seen' => $this->seen,
             'status'=> $this->status,            
             'created_at'=> $this->created_at,
