@@ -65,20 +65,20 @@
 
                                 <div
                                     class="d-flex align-item-center mb-1 mt-1 pb-1"
-                                    :class="loggedinUser.user_name == chat.from_user ? 'my-chat flex-row-reverse text-right' : ''"
+                                    :class="chat.my_message ? 'my-chat flex-row-reverse text-right' : ''"
                                     v-for="chat in chats"
                                     :key="chat.id"
                                 >
                                     <b-avatar
                                         size="32"
                                         variant="light-primary"
-                                        :class="loggedinUser.user_name == chat.from_user ? 'ml-1' : 'mr-1'"
+                                        :class="chat.my_message ? 'ml-1' : 'mr-1'"
                                     />
                                     <div>
                                     <div class="chat-info col shadow p-1 bg-white rounded">
-                                        <div :class="loggedinUser.user_name == chat.from_user ? 'd-flex flex-row-reverse' : ''">
+                                        <div :class="chat.my_message ? 'd-flex flex-row-reverse' : ''">
                                             <h5 class="mb-0 p-0 d-inline"
-                                                :class="loggedinUser.user_name == chat.from_user ? 'ml-2' : 'mr-2'"
+                                                :class="chat.my_message ? 'ml-2' : 'mr-2'"
                                             >
                                                 {{ chat.from_user }}
                                             </h5>
