@@ -39,7 +39,7 @@
             </b-col>
             <b-col sm="9">
                 <b-card>
-                    <topbar :user="toUser" />
+                    <topbar :user="toUser" @refresh-chat="refreshChat" />
 
                     <div class="">
                         <vue-perfect-scrollbar
@@ -75,7 +75,8 @@
                                         :class="chat.my_message ? 'ml-1' : 'mr-1'"
                                     />
                                     <div>
-                                    <div class="chat-info col shadow p-1 bg-white rounded">
+                                    <div class="chat-info col shadow p-1 bg-white rounded"
+                                        :class="chat.my_message ? 'my-message bg-success bg-lighten-1' : ''">
                                         <div :class="chat.my_message ? 'd-flex flex-row-reverse' : ''">
                                             <h5 class="mb-0 p-0 d-inline"
                                                 :class="chat.my_message ? 'ml-2' : 'mr-2'"
@@ -122,7 +123,17 @@
                                     />
                                     <b-spinner small v-if="isLoading" />
                                 </b-button>
-                            </b-form>
+                                </b-form>
+                                <!-- <b-button
+                                    v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                                    variant="primary"
+                                    @click="refreshChat"
+                                >
+                                    <feather-icon
+                                        icon="RefreshCwIcon"
+                                    />
+                                    <b-spinner small v-if="isLoading" /> -->
+                                <!-- </b-button>  -->
                         </div>
                     </div>
                 </b-card>
@@ -217,6 +228,11 @@ export default {
         InfiniteLoading,
     },
     methods: {
+        ...mapActions({
+            loadAccounts: "account/loadAccounts",
+            loadChats: "chat/loadChats",
+            sendMessage: "chat/sendMessage",
+        }),
 
         handleLoadMore($state) {
             this.page = this.page + 1;
@@ -236,11 +252,6 @@ export default {
                 });
 
         },
-        ...mapActions({
-            loadAccounts: "account/loadAccounts",
-            loadChats: "chat/loadChats",
-            sendMessage: "chat/sendMessage",
-        }),
 
         startChat(ChatThisUser) {
             this.chats = [] // empty chat on selection/change of user
@@ -258,6 +269,19 @@ export default {
                 .catch( error => console.log(error) );
 
             this.toUser = ChatThisUser;
+        },
+
+        refreshChat() {
+            this.chats = [] // empty chat on selection/change of user
+            this.page = 1
+             this.infiniteId += 1
+            this.isChartStarted = true;
+            this.loadChats( { toUserId: this.toUserId, pageNo: this.page } )
+                .then((response) => {
+                    if(response.success) { this.chats = response.data }
+                    this.scrollToEnd()
+                })
+                .catch( error => console.log(error) );
         },
 
         // Add commments

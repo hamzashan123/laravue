@@ -4,13 +4,12 @@
             <b-button
                 v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                 variant="flat-primary"
-                class="p-0"
+                class="p-0 mb-1"
                 :href="doc.legal_document_path"
                 target="_blank"
             >
                 <b-avatar
-                    variant="light"
-                    class="mb-1"
+                    variant="light-dark"
                     square
                     :text="doc.legal_document_name.split('.').pop()"
                     :src="
@@ -18,7 +17,7 @@
                         doc.legal_document_name.split('.').pop() +
                         '.png'
                     "
-                    size="lg"
+                    size="md"
                 />
             </b-button>
 

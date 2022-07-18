@@ -25,6 +25,17 @@
           <p class="user-name font-weight-bolder mb-0">{{ user.first_name }} {{ user.last_name }}</p>
     </div>
 
+
+                            <b-button
+                                variant="default"
+                                @click="$emit('refresh-chat')"
+                            >
+                                <feather-icon
+                                    icon="RefreshCwIcon"
+                                />
+                                <!-- <b-spinner small v-if="isLoading" /> -->
+                            </b-button>
+
   </div>
 </template>
 
@@ -36,6 +47,7 @@ import {
   BDropdownItem,
   BDropdownDivider,
   BAvatar,
+  BButton,
 } from "bootstrap-vue";
 import { mapActions, mapGetters } from "vuex";
 import { can } from '@/auth/authentication'
@@ -57,6 +69,7 @@ export default {
     BDropdownItem,
     BDropdownDivider,
     BAvatar,
+    BButton,
   },
   // mounted() {
   //     const getUser = JSON.parse(localStorage.getItem("userData"))
