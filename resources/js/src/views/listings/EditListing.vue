@@ -84,6 +84,7 @@
                                     <validation-provider
                                         #default="{ errors }"
                                         name="Minimum budget"
+                                        vid="min_budget"
                                         rules="required"
                                     >
                                         <b-form-input
@@ -103,7 +104,8 @@
                                     <validation-provider
                                         #default="{ errors }"
                                         name="Maximum budget"
-                                        rules="required"
+                                        vid="max_budget"
+                                        rules="required|minVal:@min_budget"
                                     >
                                         <b-form-input
                                             v-model="listing.max_budget"
@@ -300,7 +302,15 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+extend('minVal', {
+  params: ['target'],
+  validate(value, { target }) {
+    return parseInt(value)  > parseInt(target);
+  },
+  message: 'The {_field_} should be greater then {target}'
+});
+
 import {
     BCard,
     BRow,

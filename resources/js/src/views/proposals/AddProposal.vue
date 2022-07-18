@@ -102,6 +102,7 @@
                                             v-model="proposal.target_startdate"
                                             name="target_startdate"
                                             :state="errors.length > 0 ? false:null"
+                                            label-class="overflow-hidden"
                                         />
                                         <small class="text-danger">{{ errors[0] }}</small>
                                         </validation-provider>

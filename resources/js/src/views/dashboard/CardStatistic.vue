@@ -25,8 +25,8 @@
 
     <!-- Stats Card Vertical -->
     <b-row class="match-height">
-      <b-col 
-        
+      <b-col
+
         xl="3"
         md="4"
         sm="6"
@@ -39,7 +39,7 @@
         />
       </b-col>
       <b-col
-        v-if="loggedinUser.user_role.id == 3"
+        v-if="loggedinUser ? loggedinUser.user_role.id == 3 : ''"
         xl="3"
         md="4"
         sm="6"
@@ -52,7 +52,7 @@
         />
       </b-col>
       <b-col
-        v-if="loggedinUser.user_role.id == 3"
+        v-if="loggedinUser ? loggedinUser.user_role.id == 3 : ''"
         xl="3"
         md="4"
         sm="6"
@@ -65,7 +65,7 @@
         />
       </b-col>
       <b-col
-        v-if="loggedinUser.user_role.id == 3"
+        v-if="loggedinUser ? loggedinUser.user_role.id == 3 : ''"
         xl="3"
         md="4"
         sm="6"
@@ -78,7 +78,7 @@
         />
       </b-col>
       <b-col
-        v-if="loggedinUser.user_role.id == 3"
+        v-if="loggedinUser ? loggedinUser.user_role.id == 3 : ''"
         xl="3"
         md="4"
         sm="6"

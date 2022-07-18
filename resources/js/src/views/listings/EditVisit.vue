@@ -267,8 +267,8 @@ export default {
         onFileUpload(e) {
             let getImages = e.target.files;
 
+
             let maxImg = this.imagesShowWhileUpload.length;
-            console.log(maxImg);
 
             if (maxImg < 5) {
                 getImages.forEach((getImage) => {
@@ -386,6 +386,7 @@ export default {
                 if (response.success) {
                     this.listing = response.data.listing;
                     this.listingVisit = response.data;
+                    this.imagesShowWhileUpload = response.data.images
                     console.log(response.data);
                 } else {
                     this.$toast({

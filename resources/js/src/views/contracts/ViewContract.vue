@@ -20,6 +20,7 @@
                         @click="completeContractTrigger"
                     >
                         Complete Contract
+                        <b-spinner small v-if="isLoading" />
                     </b-button>
                     <b-button
                         v-if="can('create', 'all-contract') && listing.status == 'pre_contract'"
@@ -28,6 +29,7 @@
                         @click="startContractTrigger"
                     >
                         Start Contract
+                        <b-spinner small v-if="isLoading" />
                     </b-button>
                     <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"

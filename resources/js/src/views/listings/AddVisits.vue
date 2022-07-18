@@ -131,6 +131,23 @@
                                         :src="image"
                                     />
 
+                                    <b-avatar
+                                        variant="light-dark"
+                                        square
+                                        :text="image"
+                                        size="md"
+                                    />
+                                    <!-- link button -->
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        :href="image"
+                                        target="_blank"
+                                    >
+                                        {{ image }}
+                                    </b-button>
+
                                 </div>
                             </div>
                             <div class="d-flex align-items-end">
@@ -266,9 +283,8 @@ export default {
     methods: {
         onFileUpload(e) {
             let getImages = e.target.files;
-
             let maxImg = this.imagesShowWhileUpload.length;
-            console.log(maxImg);
+
 
             if (maxImg < 5) {
                 getImages.forEach((getImage) => {
