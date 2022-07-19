@@ -129,7 +129,21 @@
                                         thumbnail
                                         class="w-100"
                                         :src="image"
+                                        v-if="image.split('.').pop() == 'jpeg' || image.split('.').pop() == 'png'"
                                     />
+
+                                    <!-- file -->
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        class="ml-4 mb-2"
+                                        target="_blank"
+                                        v-if="image.split('.').pop() == 'pdf' || image.split('.').pop() == 'doc'"
+                                    >
+                                     {{ image.split('.').pop() }}
+                                    </b-button>
+
 
                                 </div>
                             </div>

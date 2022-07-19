@@ -32,7 +32,7 @@ class VisitResource extends JsonResource
                 $imageurl = URL::to('/') . Storage::disk('local')->url('public/Visit/' .$image->visit_id  . '/images/' . $image->image);
             }
 
-            $ImageArray["image" . $rownumber] = $imageurl;
+            $ImageArray[] = $imageurl;
             $rownumber = ($rownumber + 1);
         }
 
