@@ -129,23 +129,19 @@
                                         thumbnail
                                         class="w-100"
                                         :src="image"
+                                        v-if="image.split(';')[0].split('/')[1] == 'jpeg' || image.split(';')[0].split('/')[1] == 'png'"
                                     />
 
-                                    <b-avatar
-                                        variant="light-dark"
-                                        square
-                                        :text="image"
-                                        size="md"
-                                    />
-                                    <!-- link button -->
+                                    <!-- file -->
                                     <b-button
                                         v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                         variant="outline-dark"
                                         size="sm"
-                                        :href="image"
+                                        class="ml-4 mb-2"
                                         target="_blank"
+                                        v-if="image.split(';')[0].split('/')[1] == 'pdf' || !image.split(';')[0].split('/')[1] == 'doc'"
                                     >
-                                        {{ image }}
+                                     {{ image.split(';')[0].split('/')[1] }}
                                     </b-button>
 
                                 </div>
@@ -226,6 +222,7 @@ import {
     BEmbed,
     BSpinner,
     BBadge,
+    BAvatar,
 } from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
 import { mapActions, mapGetters } from "vuex";
@@ -259,6 +256,7 @@ export default {
         BEmbed,
         BSpinner,
         BBadge,
+        BAvatar,
         ShowMap,
         ShowTitleDescription,
         ShowAddress,
@@ -284,7 +282,6 @@ export default {
         onFileUpload(e) {
             let getImages = e.target.files;
             let maxImg = this.imagesShowWhileUpload.length;
-
 
             if (maxImg < 5) {
                 getImages.forEach((getImage) => {
@@ -405,7 +402,6 @@ export default {
             .then((response) => {
                 if (response.success) {
                     this.listing = response.data[0];
-                    console.log(response.data[0].images);
                 } else {
                     this.$toast({
                         component: ToastificationContent,

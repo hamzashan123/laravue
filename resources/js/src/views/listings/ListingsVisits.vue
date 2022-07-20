@@ -115,7 +115,9 @@
                         <b-col md="6" class="mb-2">
                             <show-title-description heading="Listing Details" :listing="listing" />
 
-                            <show-images-slider :listing="listing" />
+                            <!-- <show-images-slider :listing="listing" /> -->
+                            <show-image-doc :listing="listing ? listing : ''" />
+
                             <!-- <b-row>
                                 <b-col lg="6" class="mb-2">
                                     <show-map lat=20.5937 lng=78.9629 />
@@ -169,6 +171,7 @@ import 'swiper/css/swiper.css'
 import ShowTitleDescription from '@/components/ShowTitleDescription.vue'
 import ShowAddress from '@/components/ShowAddress.vue'
 import ShowImagesSlider from '@/components/ShowImagesSlider.vue'
+import showImageDoc from '@/components/showImageDoc.vue'
 import ShowClientDateBudget from '@/components/ShowClientDateBudget.vue'
 import { can } from '@/auth/authentication.js'
 
@@ -204,6 +207,7 @@ export default {
         ShowAddress,
         ShowImagesSlider,
         ShowClientDateBudget,
+        showImageDoc,
     },
     data() {
         return {
@@ -216,8 +220,8 @@ export default {
             // listing
             imagesShowWhileUpload: [],
             id: "",
-            listing: {},
-            listingVisit: {},
+            listing: [],
+            listingVisit: [],
             //   Validation
             required,
             activeVisitData: false,
@@ -231,6 +235,7 @@ export default {
 
         changeVisitData( index ) {
             this.activeVisitData = true
+            console.log(this.listingVisit[index].images);
             this.listing.images = this.listingVisit[index].images
             this.listing.description = this.listingVisit[index].visit_detail
         },
@@ -279,6 +284,7 @@ export default {
 
         this.loadListingVisits({ listing_id: this.id })
             .then((response) => {
+                console.log(response);
                 if (response.success) {
                     this.listing = response.data[0].listing;
                     this.listingVisit = response.data;
