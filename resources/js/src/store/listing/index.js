@@ -209,6 +209,33 @@ export default {
             });
         },
 
+        // archive visit documents
+        archiveDocuments({ commit }, docsData) {
+            commit("setIsLoading", true);
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: "archive-visit-documents",
+                    data: docsData,
+                    method: "post",
+                })
+                    .then((response) => {
+                        if (response.data.success) {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        } else {
+                            commit("setIsLoading", false);
+                            return resolve(response.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        commit("setError", error);
+                        commit("setIsLoading", false);
+                        return reject(error);
+                    });
+            });
+        },
+
         // update visit of lsiting
         updateVisit({ commit }, visitData) {
             commit("setIsLoading", true);
