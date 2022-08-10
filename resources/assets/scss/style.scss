@@ -53,3 +53,9 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
     background-repeat: repeat;
     background-size: 200px;
 }
+
+@media only screen and (max-width: 768px) {
+    div#map {
+        height: 300px !important;
+    }
+  }

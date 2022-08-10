@@ -2,7 +2,7 @@
     <div>
         <!-- Header -->
         <b-row class="mb-4">
-            <b-col md="6" sm="12">
+            <b-col md="6" sm="12" class="mb-2">
                 <b-card-text>
                     <h1>Contract of {{ listing.title }}</h1>
 
@@ -16,6 +16,7 @@
                     <b-button
                         v-if="can('create', 'all-contract') && listing.status == 'contract_started'"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="success"
                         @click="completeContractTrigger"
                     >
@@ -25,6 +26,7 @@
                     <b-button
                         v-if="can('create', 'all-contract') && listing.status == 'pre_contract'"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="info"
                         @click="startContractTrigger"
                     >
@@ -32,7 +34,8 @@
                         <b-spinner small v-if="isLoading" />
                     </b-button>
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         :to="{
                             name: 'contracts.add',
@@ -42,7 +45,8 @@
                         Upload Docs
                     </b-button>
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="secondary"
                         :to="{ name: 'contracts' }"
                     >
@@ -189,7 +193,8 @@
                         </div>
                     </div>
                     <!-- <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="success"
                         block
                         :to="{
@@ -528,7 +533,7 @@
 
                             <b-row>
                                 <b-col lg="6" class="mb-2">
-                                    <show-map lat=20.5937 lng=78.9629 />
+                                    <show-map :lat="listing.latitude" :lng="listing.longitude" />
                                 </b-col>
                                 <b-col lg="6">
                                     <show-address :listing="listing"/>

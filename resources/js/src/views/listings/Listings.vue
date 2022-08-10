@@ -8,7 +8,8 @@
             <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         v-if="can('create', 'listing') || can('create', 'all-listing')"
                         :to="{ name: 'listings.add' }"
@@ -23,7 +24,7 @@
             <b-overlay :show="isLoading" spinner-variant="primary">
                 <b-card-body>
                     <b-row>
-                        <b-col>
+                        <b-col md="4" class="mb-2 mb-md-0" >
                             <!-- filter -->
                             <b-form-group
                                 label="Search"
@@ -51,9 +52,9 @@
                                 </b-input-group>
                             </b-form-group>
                         </b-col>
-                        <b-col class="text-center">
+                        <b-col md="4" class="text-center mb-2 mb-md-0">
                             <!-- Dates Filter -->
-                            <b-button
+                            <!-- <b-button
                                 v-ripple.400="'rgba(113, 102, 240, 0.15)'"
                                 variant="flat-primary"
                             >
@@ -62,9 +63,9 @@
                                     class="mr-50"
                                 />
                                 <span class="align-middle">Last 3 Months</span>
-                            </b-button>
+                            </b-button> -->
                         </b-col>
-                        <b-col>
+                        <!-- <b-col md="4" class="mb-2 mb-md-0">
                             <div class="form-row">
                                 <div class="col p-0">
                                     <b-form-datepicker
@@ -83,7 +84,7 @@
                                     />
                                 </div>
                             </div>
-                        </b-col>
+                        </b-col> -->
                     </b-row>
                 </b-card-body>
 
@@ -141,6 +142,7 @@
                     <template #cell(actions)="data">
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="primary"
                             size="sm"
                             :class="data.value"
@@ -156,6 +158,7 @@
                         <b-button
                             v-if="can('update', 'listing') || can('update', 'all-listing')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="warning"
                             size="sm"
                             :class="data.value"
@@ -170,6 +173,7 @@
                         <b-button
                             v-if="can('update', 'listing') || can('update', 'all-listing')"
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="danger"
                             size="sm"
                             @click="deleteTrigger( data.item.id, data.index )"

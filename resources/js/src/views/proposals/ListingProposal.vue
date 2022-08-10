@@ -14,7 +14,8 @@
             <b-col md="4" sm="12">
                 <div class="text-right">
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         :to="{ name: 'proposals' }"
                     >
@@ -214,6 +215,7 @@
                         <b-button
                          v-if=" ( data.item.status === 'approved' && can('create', 'all-proposal') || data.item.status === 'approved' && can('create', 'precontract') ) "
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="success"
                             size="sm"
                             @click="assignContractTrigger(data.item.listing.id, data.item.contractor.id, data.index)"
@@ -224,6 +226,7 @@
 
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="primary"
                             size="sm"
                             :to="{
@@ -237,6 +240,7 @@
                         <!-- delete -->
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="danger"
                             size="sm"
                             @click="withdrawProposalTrigger( data.item.id, data.index )"
@@ -247,6 +251,7 @@
 
                         <b-button
                             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                             variant="warning"
                             size="sm"
                             :to="{

@@ -2,7 +2,7 @@
     <div>
         <!-- Header -->
         <b-row class="mb-4">
-            <b-col md="6" sm="12">
+            <b-col md="6" sm="12" class="mb-2">
                 <b-card-text> <h1>New Listing</h1> </b-card-text>
             </b-col>
             <b-col md="6" sm="12">
@@ -10,6 +10,7 @@
                     <b-button
                         v-if="draftListingId"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         @click="publishListingTrigger"
                     >
@@ -186,7 +187,7 @@
                                 />
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                                    class="ml-2"
+                                    class="mb-1 ml-2"
                                     type="submit"
                                     variant="dark"
                                     @click="clearFiles"
@@ -302,6 +303,7 @@
                             <b-col class="text-right">
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                                     type="submit"
                                     variant="primary"
                                     @click.prevent="saveListingTrigger"
@@ -490,6 +492,8 @@ export default {
                     listingData.append("country", this.listing.country);
                     listingData.append("state", this.listing.state);
                     listingData.append("district", this.listing.district);
+                    listingData.append("lat", this.latLng.lat);
+                    listingData.append("lon", this.latLng.lng);
 
                     this.newImages.forEach((newImage) => {
                         listingData.append("images[]", newImage);
@@ -588,22 +592,15 @@ export default {
                     types: ["address"],
                 }
             );
-            this.autocomplete.addListener(
-                "place_changed",
-                this.getAddressOnChange
-            );
+            this.autocomplete.addListener("place_changed", this.getAddressOnChange);
         },
         // Get address on change
         getAddressOnChange() {
             this.place = this.autocomplete.getPlace();
 
-            // let lat = place.geometry.location.lat()
-            // let lng = place.geometry.location.lng()
+            this.latLng = { lat: this.place.geometry.location.lat(), lng: this.place.geometry.location.lng() }
 
-            this.latLng = {
-                lat: this.place.geometry.location.lat(),
-                lng: this.place.geometry.location.lng(),
-            };
+            console.log(this.latLng);
 
             this.initMap();
 

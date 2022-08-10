@@ -114,6 +114,7 @@
                                 />
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                                     type="submit"
                                     variant="primary"
                                 >
@@ -126,6 +127,7 @@
                                 </b-form>
                                 <!-- <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                                     variant="primary"
                                     @click="refreshChat"
                                 >
