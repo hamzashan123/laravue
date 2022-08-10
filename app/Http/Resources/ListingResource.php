@@ -48,6 +48,8 @@ class ListingResource extends JsonResource
             'country'=> $this->country,
             'state'=> $this->state,
             'district'=> $this->district,
+            'latitude'=> $this->lat,
+            'longitude'=> $this->lon,
             'published_by' => new UserResource($this->getPublishBy) ?? null,
             'status'=> $this->status,
             'created_at'=> $this->created_at,
