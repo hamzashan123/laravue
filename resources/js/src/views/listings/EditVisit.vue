@@ -118,32 +118,51 @@
                                     :key="idx"
                                 >
                                     <b-button
-                                        @click="removeSelectedImage(idx)"
+                                        @click="removeSelectedImage(idx, image)"
                                         variant="gradient-danger"
                                         class="btn-icon rounded-circle position-absolute z-index"
                                         >
                                         <feather-icon icon="XIcon" />
                                     </b-button>
+                                    <!-- for images and file coming from db -->
                                     <b-img
                                         fluid
                                         thumbnail
                                         class="w-100"
                                         :src="image"
-                                        v-if="image.split('.').pop() == 'jpeg' || image.split('.').pop() == 'png'"
+                                        v-if="image.split('.').pop().toLowerCase() == 'jpeg' || image.split('.').pop().toLowerCase() == 'jpg' || image.split('.').pop().toLowerCase() == 'png'"
                                     />
 
-                                    <!-- file -->
                                     <b-button
                                         v-ripple.400="'rgba(30, 30, 30, 0.15)'"
                                         variant="outline-dark"
                                         size="sm"
                                         class="ml-4 mb-2"
                                         target="_blank"
-                                        v-if="image.split('.').pop() == 'pdf' || image.split('.').pop() == 'doc'"
+                                        v-if="image.split('.').pop().toLowerCase() == 'pdf' || image.split('.').pop().toLowerCase() == 'doc'"
                                     >
-                                     {{ image.split('.').pop() }}
+                                     {{ image.split('.').pop().toLowerCase() }}
                                     </b-button>
 
+                                    <!-- For new uploaded images and files -->
+                                    <b-img
+                                        fluid
+                                        thumbnail
+                                        class="w-100"
+                                        :src="image"
+                                        v-if="image.split(';')[0].split('/')[1] == 'jpeg' || image.split(';')[0].split('/')[1] == 'jpg' || image.split(';')[0].split('/')[1] == 'png'"
+                                    />
+                                    <!-- and file -->
+                                    <b-button
+                                        v-ripple.400="'rgba(30, 30, 30, 0.15)'"
+                                        variant="outline-dark"
+                                        size="sm"
+                                        class="ml-4 mb-2"
+                                        target="_blank"
+                                        v-if="image.split(';')[0].split('/')[1] == 'pdf' || !image.split(';')[0].split('/')[1] == 'doc'"
+                                    >
+                                     {{ image.split(';')[0].split('/')[1] }}
+                                    </b-button>
 
                                 </div>
                             </div>
@@ -317,7 +336,11 @@ export default {
             this.isFileUploaderFull = false;
         },
 
-        removeSelectedImage(index) {
+        removeSelectedImage(index, imageLink) {
+
+            if ( this.validURL(imageLink) ) {
+                this.archiveDocumentsTrigger(imageLink)
+            }
             this.imagesShowWhileUpload.splice(index, 1);
             this.newImages.splice(index, 1);
             this.imagesFileUploader.splice(index, 1);
@@ -326,7 +349,55 @@ export default {
         ...mapActions({
             loadVisit: "listing/loadVisit",
             updateVisit: "listing/updateVisit",
+            archiveDocuments: 'listing/archiveDocuments'
         }),
+
+        validURL(str) {
+            var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+            return regexp.test(str);
+
+        },
+
+        archiveDocumentsTrigger( imageLink ) {
+            let formData = new FormData();
+            formData.append("visit_id", this.visitId);
+            formData.append("image_url", imageLink);
+
+            this.archiveDocuments(formData)
+                .then((response) => {
+                    if (response.success) {
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "success",
+                            },
+                        });
+                    } else {
+                        console.log(response);
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.message,
+                                icon: "EditIcon",
+                                variant: "danger",
+                            },
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: "Error While Adding!",
+                            icon: "EditIcon",
+                            variant: "danger",
+                        },
+                    });
+                });
+        },
 
         updateVisitTrigger() {
             this.$refs.validationRules.validate().then((success) => {
@@ -354,7 +425,7 @@ export default {
                                     },
                                 });
 
-                                this.$router.push({ name: "listings.visit", params: { id: this.visitId } });
+                                this.$router.push({ name: "listings.visit", params: { listingId: this.visitId } });
                             } else {
                                 console.log(response);
                                 this.$toast({
