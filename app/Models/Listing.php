@@ -28,6 +28,8 @@ class Listing extends Model
         'country',
         'state',
         'district',
+        'lat',
+        'lon',
         'published_by',
         'status',
         'created_at',

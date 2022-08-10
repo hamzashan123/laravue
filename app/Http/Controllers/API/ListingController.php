@@ -90,6 +90,8 @@ class ListingController extends Controller
         $input['country']  = $input['country'] ?? '';
         $input['state']  = $input['state'] ?? '';
         $input['district']  = $input['district'] ?? '';
+        $input['lat']  = $input['lat'] ?? '';
+        $input['lon']  = $input['lon'] ?? '';
         $input['status']  = 'draft';
         $listing = Listing::create($input);
 
@@ -174,6 +176,8 @@ class ListingController extends Controller
             $listingdata->country = $input['country'] ?? $listingdata->country;
             $listingdata->state = $input['state'] ?? $listingdata->state;
             $listingdata->district = $input['district'] ?? $listingdata->district;
+            $listingdata->lat = $input['lat'] ?? $listingdata->lat;
+            $listingdata->lon = $input['lon'] ?? $listingdata->lon;
             $listingdata->status = $input['status'] ?? $listingdata->status;
             $listingdata->save();
 
