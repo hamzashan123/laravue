@@ -17,7 +17,8 @@
             <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         :to="{
                             name: 'contracts.view',
@@ -27,7 +28,8 @@
                         See Details
                     </b-button>
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="secondary"
                         :to="{ name: 'contracts' }"
                     >
@@ -636,7 +638,7 @@
                         <show-title-description heading="Listing Details" :listing="listing" />
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <show-map lat=20.5937 lng=78.9629 />
+                                <show-map :lat="listing.latitude" :lng="listing.longitude" />
                             </b-col>
                             <b-col lg="6">
                                 <show-address :listing="listing"/>

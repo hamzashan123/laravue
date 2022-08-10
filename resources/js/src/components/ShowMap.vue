@@ -6,35 +6,59 @@
 export default {
     props: ['lat', 'lng'],
     data() {
-            return {
-                latVal: Number(this.lat),
-                lngVal: Number(this.lng),
-            }
+        return {
+            latVal: Number(this.lat),
+            lngVal: Number(this.lng),
+        }
     },
     methods: {
         initMap() {
+            console.log(this.latVal);
             let map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: this.latVal, lng: this.lngVal },
                 zoom: 12,
             });
 
-            //  var geocoder = new google.maps.Geocoder();
-            // geocoder.geocode({ 'address': "Navale Bridge, Maharashtra," }, function (results, status) {
-            //     if (status == google.maps.GeocoderStatus.OK) {
-            //         map.setCenter(results[0].geometry.location);
-            //         var marker = new google.maps.Marker({
-            //             map: map,
-            //             position: results[0].geometry.location,
-            //         });
-            //     } else
-            //       alert("Problem with geolocation");
+            const latlng = {
+                lat: parseFloat(this.latVal),
+                lng: parseFloat(this.lngVal),
+            };
+             const geocoder = new google.maps.Geocoder();
+            // const infowindow = new google.maps.InfoWindow();
+             geocoder.geocode({ location: latlng })
+                .then((response) => {
+                if (response.results[0]) {
+                    map.setZoom(15);
 
-            // });
+                    const marker = new google.maps.Marker({
+                    position: latlng,
+                    map: map,
+                    });
+
+                    // infowindow.setContent(response.results[0].formatted_address);
+                    // infowindow.open(map, marker);
+                } else {
+                    window.alert("No results found");
+                }
+                })
+                .catch((e) => console.log("Geocoder failed due to: " + e));
         },
     },
     mounted() {
-        this.initMap()
+        // this.initMap()
     },
+    watch: {
+        lat: function(value) {
+            console.log(value)
+            this.latVal = Number(value)
+        },
+        lng: function(value) {
+            console.log(value)
+            this.lngVal = Number(value)
+
+            this.initMap()
+        },
+    }
 
 }
 </script>

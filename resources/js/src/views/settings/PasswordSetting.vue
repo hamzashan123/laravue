@@ -57,9 +57,9 @@
                 <!-- buttons -->
                 <b-col cols="12">
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                         variant="primary"
-                        class="mt-1 mr-1"
+                        class="mt-1 mr-1 mb-1"
                         type="submit"
                         @click="updatePassTrigger"
                     >

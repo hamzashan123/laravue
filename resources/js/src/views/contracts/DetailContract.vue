@@ -2,7 +2,7 @@
     <div>
         <!-- Header -->
         <b-row class="mb-4">
-            <b-col md="6" sm="12">
+            <b-col md="6" sm="12" class="mb-2">
                 <b-card-text>
                     <h1>Approve proposal on - {{ listing.title }}</h1>
                 </b-card-text>
@@ -10,7 +10,8 @@
             <b-col md="6" sm="12">
                 <div class="text-right">
                     <b-button
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                       v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="secondary"
                         :to="{ name: 'proposals' }"
                     >
@@ -131,6 +132,7 @@
                         <div class="text-right">
                             <b-button
                                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                                 variant="primary"
                                 @click="approveProposalTrigger"
                             >

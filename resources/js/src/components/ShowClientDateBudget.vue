@@ -5,6 +5,7 @@
                 <b-button
                 v-if="can('update', 'listing') || can('update', 'all-listing')"
                 v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                 variant="primary"
                 :to="{ name: 'listings.edit', params: { listingId: id } }"
             >

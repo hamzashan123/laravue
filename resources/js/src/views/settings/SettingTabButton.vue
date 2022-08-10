@@ -3,6 +3,7 @@
     <b-col>
       <b-button
         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
         variant="flat-primary"
         :class=" this.$router.history.current.path == '/settings/account' ? 'active ' : 'mr-1 ' "
         :to="{ name: 'settings' }"
@@ -11,6 +12,7 @@
       </b-button>
       <b-button
         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
         variant="flat-primary"
         :class=" this.$router.history.current.path == '/settings/profile' ? 'active ' : 'mr-1 ' "
         :to="{ name: 'profile-setting' }"

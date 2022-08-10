@@ -2,7 +2,7 @@
     <div>
         <!-- Header -->
         <b-row class="mb-4">
-            <b-col md="6" sm="12">
+            <b-col md="6" sm="12" class="mb-2">
                 <b-card-text>
                     <h1> {{ listing.title }} </h1>
                     <b-badge :variant="statuses_color[1][listing.status]" v-if="listing.status">
@@ -16,6 +16,7 @@
                     <b-button
                         v-if="listing.status === 'draft'"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         @click="publishListingTrigger"
                     >
@@ -23,8 +24,9 @@
                     </b-button>
 
                     <b-button
-                        v-if=" ( listing.status === 'publish' || listing.status === 'waiting_assignment' && can('create', 'proposal') ) || ( listing.status === 'publish' || listing.status === 'waiting_assignment'  && can('create', 'all-proposal') )"
+                        v-if=" ( (listing.status === 'publish' || listing.status === 'waiting_assignment') && can('create', 'proposal') ) || ( ( listing.status === 'publish' || listing.status === 'waiting_assignment' )  && can('create', 'all-proposal') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         :to="{ name: 'proposals.add', params: { listingId: id } }"
                     >
@@ -34,6 +36,7 @@
                     <b-button
                         v-if="listing.status === 'contract_started' && can('update', 'all-visit')"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="success"
                         :to="{ name: 'listings.add-visits', params:{ listingId: id } }"
                     >
@@ -42,6 +45,7 @@
                     <b-button
                         v-if="( listing.status === 'contract_started' && can('create', 'listing') ) || (listing.status === 'contract_started' && can('create', 'all-listing') )"
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="primary"
                         :to="{ name: 'listings.visit', params:{ listingId: id } }"
                     >
@@ -49,6 +53,7 @@
                     </b-button>
                      <b-button
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        class="mb-1"
                         variant="secondary"
                         :to="{ name: 'listings'}"
                     >
@@ -77,7 +82,7 @@
                         <show-title-description heading="Listing Details" :listing="listing" />
                         <b-row>
                             <b-col lg="6" class="mb-2">
-                                <show-map lat=20.5937 lng=78.9629 />
+                                <show-map :lat="listing.latitude" :lng="listing.longitude" />
                             </b-col>
                             <b-col lg="6">
                                 <show-address :listing="listing"/>

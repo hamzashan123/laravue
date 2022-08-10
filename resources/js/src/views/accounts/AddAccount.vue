@@ -42,7 +42,7 @@
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
                                     variant="primary"
                                     size="sm"
-                                    class="mb-75 mr-75"
+                                    class="mb-1 mr-2"
                                     @click="$refs.refInputEl.$el.click()"
                                 >
                                     Upload

@@ -42,7 +42,7 @@
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            class="mr-1 mt-1"
+            class="mb-1 mr-1 mt-1"
           >
             Save changes
           </b-button>
