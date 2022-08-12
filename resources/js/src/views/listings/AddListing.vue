@@ -187,7 +187,7 @@
                                 />
                                 <b-button
                                     v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                                    class="mb-1 ml-2"
+                                    class="ml-2"
                                     type="submit"
                                     variant="dark"
                                     @click="clearFiles"
