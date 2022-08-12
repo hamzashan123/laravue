@@ -598,7 +598,7 @@
                                                         </small>
 
                                                         <b-badge
-                                                            class="ml-3px"
+                                                            class="ml-md-3"
                                                             :variant="
                                                                 comment.user_role ==
                                                                 'Contractor'
