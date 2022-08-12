@@ -559,7 +559,7 @@
                                                 <b-avatar
                                                     size="32"
                                                     variant="light-primary"
-                                                    class="mr-1"
+                                                    class="mr-1 d-md-inline-flex d-none"
                                                     src=""
                                                 />
                                                 <div
@@ -580,7 +580,7 @@
                                                     class="chat-info col shadow p-1 bg-white rounded border-bottom-0 border-right-0 border-top-0"
                                                 >
                                                     <div
-                                                        class="d-flex align-item-center justify-content-between"
+                                                        class="d-flex align-item-center justify-content-between flex-wrap"
                                                     >
                                                         <h5
                                                             class="mb-0 p-0 mr-2 d-inline"
