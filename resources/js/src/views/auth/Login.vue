@@ -15,7 +15,7 @@
         <div
           class="w-100 d-lg-flex align-items-center justify-content-center px-5"
         >
-          <b-img fluid :src="imgUrl" alt="Login V2" />
+          <b-img fluid src="/images/_/_/_/_/Acme-inc/resources/js/src/assets/images/pages/login-v2.svg" alt="Login V2" />
         </div>
       </b-col>
       <!-- /Left Text-->

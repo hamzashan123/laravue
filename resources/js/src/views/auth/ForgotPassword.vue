@@ -20,7 +20,7 @@
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
           <b-img
             fluid
-            :src="imgUrl"
+            src="/images/_/_/_/_/Acme-inc/resources/js/src/assets/images/pages/forgot-password-v2.svg"
             alt="Forgot password V2"
           />
         </div>
